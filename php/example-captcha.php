@@ -29,7 +29,7 @@ require_once "recaptchalib.php";
 // Register API keys at https://www.google.com/recaptcha/admin
 $siteKey = "";
 $secret = "";
-// TODO: provide a link to 40+ languages supported in reCAPTCHA.
+// reCAPTCHA supported 40+ languages listed here: https://developers.google.com/recaptcha/docs/language
 $lang = "en";
 
 // The response from reCAPTCHA
