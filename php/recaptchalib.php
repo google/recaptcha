@@ -39,6 +39,8 @@ class ReCaptchaResponse
     public $errorCodes;
 }
 
+class ReCaptchaException extends \Exception {}
+
 class ReCaptcha
 {
     private static $_signupUrl = "https://www.google.com/recaptcha/admin";
@@ -56,7 +58,7 @@ class ReCaptcha
     public function __construct($secret, array $curl_opts)
     {
         if ($secret == null || $secret == "") {
-            die("To use reCAPTCHA you must get an API key from <a href='"
+            throw new ReCaptchaException("To use reCAPTCHA you must get an API key from <a href='"
                 . self::$_signupUrl . "'>" . self::$_signupUrl . "</a>");
         }
         $this->_secret=$secret;
@@ -103,7 +105,7 @@ class ReCaptcha
                         CURLOPT_HEADER         => false,
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_USERAGENT      => "ReCaptcha ".ReCaptcha::$version,
+                        CURLOPT_USERAGENT      => "ReCaptcha ".self::$version,
                         CURLOPT_AUTOREFERER    => true,
                         CURLOPT_CONNECTTIMEOUT => 60,
                         CURLOPT_TIMEOUT        => 60,
@@ -114,9 +116,18 @@ class ReCaptcha
             if (is_array($this->_curl_opts) && !empty($this->_curl_opts)) {
                 $opts = array_merge($opts, $this->_curl_opts);
             }
+
             $conn = curl_init($path . $req);
             curl_setopt_array($conn, $opts);
             $response = curl_exec($conn);
+            // handle a connection error
+            $errno = curl_errno($conn);
+            if ($errno !== 0) {
+                throw new ReCaptchaException("Fatal error while contacting reCAPTCHA. ".
+                    $errno . ": " . curl_error($conn) . "."
+                );
+            }
+            curl_close($conn);
         } else {  // fallback 
             $response = file_get_contents($path . $req);
         }
