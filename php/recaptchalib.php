@@ -46,19 +46,23 @@ class ReCaptcha
         "https://www.google.com/recaptcha/api/siteverify?";
     private $_secret;
     private static $_version = "php_1.0";
+    private $_curl_opts;
 
     /**
      * Constructor.
      *
      * @param string $secret shared secret between site and ReCAPTCHA server.
      */
-    public function __construct($secret)
+    public function __construct($secret, array $curl_opts)
     {
         if ($secret == null || $secret == "") {
             die("To use reCAPTCHA you must get an API key from <a href='"
                 . self::$_signupUrl . "'>" . self::$_signupUrl . "</a>");
         }
         $this->_secret=$secret;
+        if (!empty($curl_opts)){
+            $this->_curl_opts = $curl_opts;
+        }
     }
 
     /**
@@ -91,7 +95,31 @@ class ReCaptcha
     private function _submitHTTPGet($path, $data)
     {
         $req = $this->_encodeQS($data);
-        $response = file_get_contents($path . $req);
+        // prefer curl
+        if (function_exists("curl_version")) {
+            // default cURL options
+            // modified from: http://stackoverflow.com/a/6595108
+            $opts = array(
+                        CURLOPT_HEADER         => false,
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_USERAGENT      => "ReCaptcha ".ReCaptcha::$version,
+                        CURLOPT_AUTOREFERER    => true,
+                        CURLOPT_CONNECTTIMEOUT => 60,
+                        CURLOPT_TIMEOUT        => 60,
+                        CURLOPT_MAXREDIRS      => 5,
+                        CURLOPT_ENCODING       => "",
+                    );
+            // check if we got overrides, or extra options (eg. proxy configuration)
+            if (is_array($this->_curl_opts) && !empty($this->_curl_opts)) {
+                $opts = array_merge($opts, $this->_curl_opts);
+            }
+            $conn = curl_init($path . $req);
+            curl_setopt_array($conn, $opts);
+            $response = curl_exec($conn);
+        } else {  // fallback 
+            $response = file_get_contents($path . $req);
+        }
         return $response;
     }
 
