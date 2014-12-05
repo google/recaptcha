@@ -55,7 +55,7 @@ class ReCaptcha
      *
      * @param string $secret shared secret between site and ReCAPTCHA server.
      */
-    public function __construct($secret, array $curl_opts)
+    public function __construct($secret, array $curl_opts=array())
     {
         if ($secret == null || $secret == "") {
             throw new ReCaptchaException("To use reCAPTCHA you must get an API key from <a href='"
@@ -105,7 +105,7 @@ class ReCaptcha
                         CURLOPT_HEADER         => false,
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_USERAGENT      => "ReCaptcha ".self::$version,
+                        CURLOPT_USERAGENT      => "ReCaptcha ".self::$_version,
                         CURLOPT_AUTOREFERER    => true,
                         CURLOPT_CONNECTTIMEOUT => 60,
                         CURLOPT_TIMEOUT        => 60,
