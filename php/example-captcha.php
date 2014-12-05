@@ -32,26 +32,28 @@ $secret = "";
 // reCAPTCHA supported 40+ languages listed here: https://developers.google.com/recaptcha/docs/language
 $lang = "en";
 
-// The response from reCAPTCHA
+// The response object from reCAPTCHA
 $resp = null;
-// The error code from reCAPTCHA, if any
-$error = null;
 
 $reCaptcha = new ReCaptcha($secret);
 
 // Was there a reCAPTCHA response?
 if ($_POST["g-recaptcha-response"]) {
-    $resp = $reCaptcha->verifyResponse(
-        $_SERVER["REMOTE_ADDR"],
-        $_POST["g-recaptcha-response"]
-    );
+    try {
+        $resp = $reCaptcha->verifyResponse(
+            $_SERVER["REMOTE_ADDR"],
+            $_POST["g-recaptcha-response"]
+        );
+    } catch (ReCaptchaException $e) {
+        // handle exception
+    }
 }
 ?>
 <html>
   <head><title>reCAPTCHA Example</title></head>
   <body>
 <?php
-if ($resp != null && $resp->success) {
+if (is_object($resp) && $resp->success === true) {
     echo "You got it!";
 }
 ?>
