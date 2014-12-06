@@ -57,7 +57,7 @@ class ReCaptcha
      */
     public function __construct($secret, array $curl_opts=array())
     {
-        if ($secret == null || $secret == "") {
+        if (is_null($secret) || $secret == "") {
             throw new ReCaptchaException("To use reCAPTCHA you must get an API key from <a href='"
                 . self::$_signupUrl . "'>" . self::$_signupUrl . "</a>");
         }
@@ -128,7 +128,7 @@ class ReCaptcha
                 );
             }
             curl_close($conn);
-        } else {  // fallback 
+        } else {  // fallback
             $response = file_get_contents($path . $req);
         }
         return $response;
@@ -146,7 +146,7 @@ class ReCaptcha
     public function verifyResponse($remoteIp, $response)
     {
         // Discard empty solution submissions
-        if ($response == null || strlen($response) == 0) {
+        if (is_null($response) || strlen($response) == 0) {
             $recaptchaResponse = new ReCaptchaResponse();
             $recaptchaResponse->success = false;
             $recaptchaResponse->errorCodes = 'missing-input';
