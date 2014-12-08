@@ -43,11 +43,11 @@ class ReCaptchaException extends \Exception {}
 
 class ReCaptcha
 {
-    private static $_signupUrl = "https://www.google.com/recaptcha/admin";
+    private static $_signupUrl = 'https://www.google.com/recaptcha/admin';
     private static $_siteVerifyUrl =
-        "https://www.google.com/recaptcha/api/siteverify?";
+        'https://www.google.com/recaptcha/api/siteverify?';
     private $_secret;
-    private static $_version = "php_1.0";
+    private static $_version = 'php_1.0';
     private $_curl_opts;
 
     /**
@@ -57,9 +57,9 @@ class ReCaptcha
      */
     public function __construct($secret, array $curl_opts=array())
     {
-        if (is_null($secret) || $secret == "") {
-            throw new ReCaptchaException("To use reCAPTCHA you must get an API key from <a href='"
-                . self::$_signupUrl . "'>" . self::$_signupUrl . "</a>");
+        if (is_null($secret) || $secret == '') {
+            throw new ReCaptchaException('To use reCAPTCHA you must get an API key from <a href=\''
+                . self::$_signupUrl . '\'>' . self::$_signupUrl . '</a>');
         }
         $this->_secret=$secret;
         if (!empty($curl_opts)){
@@ -76,14 +76,12 @@ class ReCaptcha
      */
     private function _encodeQS($data)
     {
-        $req = "";
+        $req = array();
         foreach ($data as $key => $value) {
-            $req .= $key . '=' . urlencode(stripslashes($value)) . '&';
+            $req[] = $key . '=' . urlencode(stripslashes(trim($value)));
         }
 
-        // Cut the last '&'
-        $req=substr($req, 0, strlen($req)-1);
-        return $req;
+        return implode('&', $req);
     }
 
     /**
@@ -98,19 +96,19 @@ class ReCaptcha
     {
         $req = $this->_encodeQS($data);
         // prefer curl
-        if (function_exists("curl_version")) {
+        if (function_exists('curl_version')) {
             // default cURL options
             // modified from: http://stackoverflow.com/a/6595108
             $opts = array(
                         CURLOPT_HEADER         => false,
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_USERAGENT      => "ReCaptcha ".self::$_version,
+                        CURLOPT_USERAGENT      => 'ReCaptcha '.self::$_version,
                         CURLOPT_AUTOREFERER    => true,
                         CURLOPT_CONNECTTIMEOUT => 60,
                         CURLOPT_TIMEOUT        => 60,
                         CURLOPT_MAXREDIRS      => 5,
-                        CURLOPT_ENCODING       => "",
+                        CURLOPT_ENCODING       => '',
                     );
             // check if we got overrides, or extra options (eg. proxy configuration)
             if (is_array($this->_curl_opts) && !empty($this->_curl_opts)) {
@@ -123,8 +121,8 @@ class ReCaptcha
             // handle a connection error
             $errno = curl_errno($conn);
             if ($errno !== 0) {
-                throw new ReCaptchaException("Fatal error while contacting reCAPTCHA. ".
-                    $errno . ": " . curl_error($conn) . "."
+                throw new ReCaptchaException('Fatal error while contacting reCAPTCHA. '.
+                    $errno . ': ' . curl_error($conn) . '.'
                 );
             }
             curl_close($conn);
@@ -165,15 +163,13 @@ class ReCaptcha
         $answers = json_decode($getResponse, true);
         $recaptchaResponse = new ReCaptchaResponse();
 
-        if (trim($answers ['success']) == true) {
+        if (trim($answers['success']) == true) {
             $recaptchaResponse->success = true;
         } else {
             $recaptchaResponse->success = false;
-            $recaptchaResponse->errorCodes = $answers [error-codes];
+            $recaptchaResponse->errorCodes = $answers['error-codes'];
         }
 
         return $recaptchaResponse;
     }
 }
-
-?>
