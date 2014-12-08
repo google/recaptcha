@@ -45,7 +45,7 @@ $proxy_opts = array(
                 CURLOPT_FAILONERROR => true,  // use only during tests
                 );
 
-$reCaptcha = new ReCaptcha($secret, $proxy_opts);
+$reCaptcha = new Google\ReCaptcha\Client($secret, $proxy_opts);
 
 // Was there a reCAPTCHA response?
 if ($_POST["g-recaptcha-response"]) {

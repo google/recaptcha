@@ -35,7 +35,7 @@ $lang = "en";
 // The response object from reCAPTCHA
 $resp = null;
 
-$reCaptcha = new ReCaptcha($secret);
+$reCaptcha = new Google\ReCaptcha\Client($secret);
 
 // Was there a reCAPTCHA response?
 if ($_POST["g-recaptcha-response"]) {

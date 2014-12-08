@@ -30,24 +30,26 @@
  * THE SOFTWARE.
  */
 
+namespace Google\ReCaptcha;
+
+const SIGNUP_URL = 'https://www.google.com/recaptcha/admin';
+const SITEVERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify?';
+const VERSION = 'php_1.0';
+
 /**
  * A ReCaptchaResponse is returned from checkAnswer().
  */
-class ReCaptchaResponse
+class Response
 {
     public $success;
     public $errorCodes;
 }
 
-class ReCaptchaException extends \Exception {}
+class Exception extends \Exception {}
 
-class ReCaptcha
+class Client
 {
-    private static $_signupUrl = 'https://www.google.com/recaptcha/admin';
-    private static $_siteVerifyUrl =
-        'https://www.google.com/recaptcha/api/siteverify?';
     private $_secret;
-    private static $_version = 'php_1.0';
     private $_curl_opts;
 
     /**
@@ -58,8 +60,9 @@ class ReCaptcha
     public function __construct($secret, array $curl_opts=array())
     {
         if (is_null($secret) || $secret == '') {
-            throw new ReCaptchaException('To use reCAPTCHA you must get an API key from <a href=\''
-                . self::$_signupUrl . '\'>' . self::$_signupUrl . '</a>');
+            throw new Exception(
+                 'To use reCAPTCHA you must get an API key from <a href=\''
+                . SIGNUP_URL . '\'>' . SIGNUP_URL . '</a>');
         }
         $this->_secret=$secret;
         if (!empty($curl_opts)){
@@ -103,7 +106,7 @@ class ReCaptcha
                         CURLOPT_HEADER         => false,
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_USERAGENT      => 'ReCaptcha '.self::$_version,
+                        CURLOPT_USERAGENT      => 'ReCaptcha '.VERSION,
                         CURLOPT_AUTOREFERER    => true,
                         CURLOPT_CONNECTTIMEOUT => 60,
                         CURLOPT_TIMEOUT        => 60,
@@ -121,7 +124,8 @@ class ReCaptcha
             // handle a connection error
             $errno = curl_errno($conn);
             if ($errno !== 0) {
-                throw new ReCaptchaException('Fatal error while contacting reCAPTCHA. '.
+                throw new Exception(
+                    'Fatal error while contacting reCAPTCHA. '.
                     $errno . ': ' . curl_error($conn) . '.'
                 );
             }
@@ -139,35 +143,35 @@ class ReCaptcha
      * @param string $remoteIp   IP address of end user.
      * @param string $response   response string from recaptcha verification.
      *
-     * @return ReCaptchaResponse
+     * @return ReCaptcha\Response
      */
     public function verifyResponse($remoteIp, $response)
     {
         // Discard empty solution submissions
         if (is_null($response) || strlen($response) == 0) {
-            $recaptchaResponse = new ReCaptchaResponse();
+            $recaptchaResponse = new Response();
             $recaptchaResponse->success = false;
             $recaptchaResponse->errorCodes = 'missing-input';
             return $recaptchaResponse;
         }
 
         $getResponse = $this->_submitHttpGet(
-            self::$_siteVerifyUrl,
+            SITEVERIFY_URL,
             array (
                 'secret' => $this->_secret,
                 'remoteip' => $remoteIp,
-                'v' => self::$_version,
+                'v' => VERSION,
                 'response' => $response
             )
         );
         $answers = json_decode($getResponse, true);
-        $recaptchaResponse = new ReCaptchaResponse();
+        $recaptchaResponse = new Response();
 
-        if (trim($answers['success']) == true) {
+        if (trim($answers ['success']) == true) {
             $recaptchaResponse->success = true;
         } else {
             $recaptchaResponse->success = false;
-            $recaptchaResponse->errorCodes = $answers['error-codes'];
+            $recaptchaResponse->errorCodes = $answers [error-codes];
         }
 
         return $recaptchaResponse;
