@@ -44,7 +44,7 @@ if ($_POST["g-recaptcha-response"]) {
             $_SERVER["REMOTE_ADDR"],
             $_POST["g-recaptcha-response"]
         );
-    } catch (ReCaptchaException $e) {
+    } catch (Google\RecCaptcha\Exception $e) {
         // handle exception
     }
 }
