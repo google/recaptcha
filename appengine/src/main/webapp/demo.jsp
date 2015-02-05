@@ -2,8 +2,8 @@
 <%@ page import="com.google.recaptcha.STokenUtils" %>
 
 <%
-  String siteKey = "6LdCSgETAAAAAOlx6NMvpAKGiVUMpRUG2lJEvEmx";
-  String siteSecret = "6LdCSgETAAAAAEJGCBTBHoUEJ1B9WIvhKY_ET4to";
+  String siteKey = "site_key";
+  String siteSecret = "site_secret";
 %>
 
 <html>
