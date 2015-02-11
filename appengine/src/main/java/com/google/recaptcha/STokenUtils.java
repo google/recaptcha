@@ -44,6 +44,14 @@ public class STokenUtils {
     return null;
   }
 
+  private static String decryptAes(String input, String key) throws Exception {
+    SecretKeySpec secretKey = getKey(key);
+    Cipher cipher = Cipher.getInstance(CIPHER_INSTANCE_NAME);
+    cipher.init(Cipher.DECRYPT_MODE, secretKey);
+    return new String(cipher.doFinal(
+        BaseEncoding.base64Url().omitPadding().decode(input)), "UTF-8");
+  }
+
   private static SecretKeySpec getKey(String siteSecret){
     try {
       byte[] key = siteSecret.getBytes("UTF-8");
@@ -55,11 +63,7 @@ public class STokenUtils {
     return null;
   }
 
-  public static void main(String [] args) {
-    String sessionId = UUID.randomUUID().toString();
-    String siteSecret = "12345678";
-    String jsonToken = createJsonToken(sessionId);
-
+  private static void logo() {
     System.out.println("\n                                                                 ");
     System.out.println("            _____          _____ _______ _____ _    _          ");
     System.out.println("           / ____|   /\\   |  __ \\__   __/ ____| |  | |   /\\     ");
@@ -67,6 +71,13 @@ public class STokenUtils {
     System.out.println(" | '__/ _ \\ |      / /\\ \\ |  ___/  | | | |    |  __  | / /\\ \\ ");
     System.out.println(" | | |  __/ |____ / ____ \\| |      | | | |____| |  | |/ ____ \\   ");
     System.out.println(" |_|  \\___|\\_____/_/    \\_\\_|      |_|  \\_____|_|  |_/_/    \\_\\ ");
+  }
+
+  private static void demo() {
+    String sessionId = UUID.randomUUID().toString();
+    String siteSecret = "12345678";
+    String jsonToken = createJsonToken(sessionId);
+
     System.out.println("\n Demo for stoken generation.\n                                   ");
 
     System.out.println(" Session Id: " + sessionId);
@@ -74,5 +85,17 @@ public class STokenUtils {
     System.out.println(" siteSecret: " + siteSecret);
     System.out.println(" Encrypted stoken: " + encryptAes(jsonToken, siteSecret));
     System.out.println("\n");
+  }
+
+  public static void main(String [] args) throws Exception {
+    logo();
+    if (args.length <= 1) {
+      demo();
+    } else {
+      System.out.println("\n Decode .\n                                   ");
+      System.out.println(" siteSecret: " + args[1]);
+      System.out.println(" Encrypted stoken: " + args[0]);
+      System.out.println(" Raw input: " + decryptAes(args[0], args[1]));
+    }
   }
 }
