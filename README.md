@@ -1,7 +1,8 @@
 # ReCAPTCHA #
 
-* URL: https://github.com/google/ReCAPTCHA
-* Version:
+* Project page: http://www.google.com/recaptcha/
+* Repository: https://github.com/google/ReCAPTCHA
+* Version: 1.00
 * License: BSD
 * License File: [LICENSE](https://github.com/google/ReCAPTCHA/blob/master/LICENSE)
 
