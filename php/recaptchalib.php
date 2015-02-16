@@ -4,7 +4,7 @@
  *    - Documentation and latest version
  *          https://developers.google.com/recaptcha/docs/php
  *    - Get a reCAPTCHA API Key
- *          https://www.google.com/recaptcha/admin/create
+ *          https://www.google.com/recaptcha/admin#list
  *    - Discussion group
  *          http://groups.google.com/group/recaptcha
  *
