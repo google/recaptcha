@@ -35,7 +35,17 @@ $lang = "en";
 // The response object from reCAPTCHA
 $resp = null;
 
-$reCaptcha = new Google\ReCaptcha\Client($secret);
+// set up proxy parameters
+$proxy_opts = array(
+                CURLOPT_PROXY => "127.0.0.1",
+                CURLOPT_PROXYPORT => 80,
+                CURLOPT_PROXYTYPE => "HTTP",
+                CURLOPT_PROTOCOLS => "CURLPROTO_HTTP | CURLPROTO_HTTPS",
+                CURLOPT_PROXYUSERPWD => "user:password",
+                CURLOPT_FAILONERROR => true,  // use only during tests
+                );
+
+$reCaptcha = new Google\ReCaptcha\Client($secret, $proxy_opts);
 
 // Was there a reCAPTCHA response?
 if ($_POST["g-recaptcha-response"]) {

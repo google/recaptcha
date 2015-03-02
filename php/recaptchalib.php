@@ -30,35 +30,44 @@
  * THE SOFTWARE.
  */
 
+namespace Google\ReCaptcha;
+
+const SIGNUP_URL = 'https://www.google.com/recaptcha/admin';
+const SITEVERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify?';
+const VERSION = 'php_1.0';
+
 /**
  * A ReCaptchaResponse is returned from checkAnswer().
  */
-class ReCaptchaResponse
+class Response
 {
     public $success;
     public $errorCodes;
 }
 
-class ReCaptcha
+class Exception extends \Exception {}
+
+class Client
 {
-    private static $_signupUrl = "https://www.google.com/recaptcha/admin";
-    private static $_siteVerifyUrl =
-        "https://www.google.com/recaptcha/api/siteverify?";
     private $_secret;
-    private static $_version = "php_1.0";
+    private $_curl_opts;
 
     /**
      * Constructor.
      *
      * @param string $secret shared secret between site and ReCAPTCHA server.
      */
-    function ReCaptcha($secret)
+    public function __construct($secret, array $curl_opts=array())
     {
-        if ($secret == null || $secret == "") {
-            die("To use reCAPTCHA you must get an API key from <a href='"
-                . self::$_signupUrl . "'>" . self::$_signupUrl . "</a>");
+        if (is_null($secret) || $secret == '') {
+            throw new Exception(
+                 'To use reCAPTCHA you must get an API key from <a href=\''
+                . SIGNUP_URL . '\'>' . SIGNUP_URL . '</a>');
         }
         $this->_secret=$secret;
+        if (!empty($curl_opts)){
+            $this->_curl_opts = $curl_opts;
+        }
     }
 
     /**
@@ -70,14 +79,12 @@ class ReCaptcha
      */
     private function _encodeQS($data)
     {
-        $req = "";
+        $req = array();
         foreach ($data as $key => $value) {
-            $req .= $key . '=' . urlencode(stripslashes($value)) . '&';
+            $req[] = $key . '=' . urlencode(stripslashes(trim($value)));
         }
 
-        // Cut the last '&'
-        $req=substr($req, 0, strlen($req)-1);
-        return $req;
+        return implode('&', $req);
     }
 
     /**
@@ -91,7 +98,41 @@ class ReCaptcha
     private function _submitHTTPGet($path, $data)
     {
         $req = $this->_encodeQS($data);
-        $response = file_get_contents($path . $req);
+        // prefer curl
+        if (function_exists('curl_version')) {
+            // default cURL options
+            // modified from: http://stackoverflow.com/a/6595108
+            $opts = array(
+                        CURLOPT_HEADER         => false,
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_USERAGENT      => 'ReCaptcha '.VERSION,
+                        CURLOPT_AUTOREFERER    => true,
+                        CURLOPT_CONNECTTIMEOUT => 60,
+                        CURLOPT_TIMEOUT        => 60,
+                        CURLOPT_MAXREDIRS      => 5,
+                        CURLOPT_ENCODING       => '',
+                    );
+            // check if we got overrides, or extra options (eg. proxy configuration)
+            if (is_array($this->_curl_opts) && !empty($this->_curl_opts)) {
+                $opts = array_merge($opts, $this->_curl_opts);
+            }
+
+            $conn = curl_init($path . $req);
+            curl_setopt_array($conn, $opts);
+            $response = curl_exec($conn);
+            // handle a connection error
+            $errno = curl_errno($conn);
+            if ($errno !== 0) {
+                throw new Exception(
+                    'Fatal error while contacting reCAPTCHA. '.
+                    $errno . ': ' . curl_error($conn) . '.'
+                );
+            }
+            curl_close($conn);
+        } else {  // fallback
+            $response = file_get_contents($path . $req);
+        }
         return $response;
     }
 
@@ -102,29 +143,29 @@ class ReCaptcha
      * @param string $remoteIp   IP address of end user.
      * @param string $response   response string from recaptcha verification.
      *
-     * @return ReCaptchaResponse
+     * @return ReCaptcha\Response
      */
     public function verifyResponse($remoteIp, $response)
     {
         // Discard empty solution submissions
-        if ($response == null || strlen($response) == 0) {
-            $recaptchaResponse = new ReCaptchaResponse();
+        if (is_null($response) || strlen($response) == 0) {
+            $recaptchaResponse = new Response();
             $recaptchaResponse->success = false;
             $recaptchaResponse->errorCodes = 'missing-input';
             return $recaptchaResponse;
         }
 
         $getResponse = $this->_submitHttpGet(
-            self::$_siteVerifyUrl,
+            SITEVERIFY_URL,
             array (
                 'secret' => $this->_secret,
                 'remoteip' => $remoteIp,
-                'v' => self::$_version,
+                'v' => VERSION,
                 'response' => $response
             )
         );
         $answers = json_decode($getResponse, true);
-        $recaptchaResponse = new ReCaptchaResponse();
+        $recaptchaResponse = new Response();
 
         if (trim($answers ['success']) == true) {
             $recaptchaResponse->success = true;
@@ -136,5 +177,3 @@ class ReCaptcha
         return $recaptchaResponse;
     }
 }
-
-?>
