@@ -40,7 +40,7 @@ $error = null;
 $reCaptcha = new ReCaptcha($secret);
 
 // Was there a reCAPTCHA response?
-if ($_POST["g-recaptcha-response"]) {
+if (isset($_POST["g-recaptcha-response"])) {
     $resp = $reCaptcha->verifyResponse(
         $_SERVER["REMOTE_ADDR"],
         $_POST["g-recaptcha-response"]
