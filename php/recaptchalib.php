@@ -1,4 +1,5 @@
 <?php
+ 
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *    - Documentation and latest version
@@ -33,9 +34,10 @@
 /**
  * A ReCaptchaResponse is returned from checkAnswer().
  */
+ 
 class ReCaptchaResponse
 {
-    public $success;
+    public $success=false; 
     public $errorCodes;
 }
 
@@ -52,13 +54,14 @@ class ReCaptcha
      *
      * @param string $secret shared secret between site and ReCAPTCHA server.
      */
-    function ReCaptcha($secret)
+    function ReCaptcha($secret=null)
     {
-        if ($secret == null || $secret == "") {
+        if ( empty($secret) ) {
             die("To use reCAPTCHA you must get an API key from <a href='"
                 . self::$_signupUrl . "'>" . self::$_signupUrl . "</a>");
         }
-        $this->_secret=$secret;
+		
+        else $this->_secret=$secret;
     }
 
     /**
@@ -108,7 +111,7 @@ class ReCaptcha
     {
         // Discard empty solution submissions
         if ($response == null || strlen($response) == 0) {
-            $recaptchaResponse = new ReCaptchaResponse();
+            $recaptchaResponse = new ReCaptchaResponse;
             $recaptchaResponse->success = false;
             $recaptchaResponse->errorCodes = 'missing-input';
             return $recaptchaResponse;
@@ -123,18 +126,17 @@ class ReCaptcha
                 'response' => $response
             )
         );
+		
         $answers = json_decode($getResponse, true);
         $recaptchaResponse = new ReCaptchaResponse();
 
-        if (trim($answers ['success']) == true) {
+        if ( isset($answers[0]) && trim($answers[0] ) == true) {
             $recaptchaResponse->success = true;
         } else {
             $recaptchaResponse->success = false;
-            $recaptchaResponse->errorCodes = $answers [error-codes];
+            $recaptchaResponse->errorCodes = isset($answers[1]) ? $answers[1] : null;
         }
 
         return $recaptchaResponse;
     }
 }
-
-?>
