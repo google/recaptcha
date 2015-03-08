@@ -58,7 +58,7 @@ class ReCaptcha
     /**
      * Create a configured instance to use the reCAPTCHA service.
      *
-     * @param string $secret shared secret between site and ReCAPTCHA server.
+     * @param string $secret shared secret between site and reCAPTCHA server.
      * @param RequestMethod $requestMethod method used to send the request. Defaults to POST.
      */
     public function __construct($secret, RequestMethod $requestMethod = null)
