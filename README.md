@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/google/ReCAPTCHA.svg)](https://travis-ci.org/google/ReCAPTCHA)
+
 # ReCAPTCHA
 
 * Project page: http://www.google.com/recaptcha/
