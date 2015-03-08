@@ -1,14 +1,14 @@
 <?php
 /**
  * Working sample code to accompany the library.
- * 
+ *
  * 1. Run the server. For example, under Linux you can probably use:
  * /usr/bin/php -S "localhost:8000" "examples/example-captcha.php"
  * 2. Point your browser at http://localhost:8000
  * 3. Follow the instructions
- * 
+ *
  * The code here is heavily commented to explain what's going on.
- * 
+ *
  *    - Documentation and latest version
  *          https://developers.google.com/recaptcha/docs/php
  *    - Get a reCAPTCHA API Key

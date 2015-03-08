@@ -13,4 +13,6 @@ with ReCAPTCHA.
 
 ## Contributing
 
-We accept contributions via Github Pull Requests, but all contributors need to be covered by the standard Google Contributor License Agreement. You can find instructions for this in [CONTRIBUTING.md](https://github.com/google/ReCAPTCHA/blob/master/CONTRIBUTING.md)
+We accept contributions via Github Pull Requests, but all contributors need to
+be covered by the standard Google Contributor License Agreement. You can find
+instructions for this in [CONTRIBUTING.md](https://github.com/google/ReCAPTCHA/blob/master/CONTRIBUTING.md)
