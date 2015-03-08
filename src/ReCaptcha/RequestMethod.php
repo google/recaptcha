@@ -33,13 +33,14 @@
 namespace ReCaptcha;
 
 /**
- *
+ * Method used to send the request to the service.
  */
 interface RequestMethod
 {
 
     /**
-     * 
+     * Submit the request to the service.
+     *
      * @param RequestParameters $params
      * @return string
      */

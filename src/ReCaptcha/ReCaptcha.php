@@ -33,7 +33,7 @@
 namespace ReCaptcha;
 
 /**
- * reCAPTCHA client
+ * reCAPTCHA client.
  */
 class ReCaptcha
 {
@@ -51,14 +51,15 @@ class ReCaptcha
 
     /**
      * Method used to communicate  with service. Defaults to POST request.
-     * @var RequestMethod 
+     * @var RequestMethod
      */
     private $_requestMethod;
 
     /**
      * Create a configured instance to use the reCAPTCHA service.
-     * 
+     *
      * @param string $secret shared secret between site and ReCAPTCHA server.
+     * @param RequestMethod $requestMethod method used to send the request. Defaults to POST.
      */
     public function __construct($secret, RequestMethod $requestMethod = null)
     {
@@ -85,7 +86,7 @@ class ReCaptcha
      *
      * @param string $response The value of 'g-recaptcha-response' in the submitted form.
      * @param string $remoteIp The end user's IP address.
-     * @return Response
+     * @return Response Response from the service.
      */
     public function verify($response, $remoteIp = null)
     {

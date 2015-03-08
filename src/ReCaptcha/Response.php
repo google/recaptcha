@@ -33,13 +33,28 @@
 namespace ReCaptcha;
 
 /**
- * A ReCaptchaResponse is returned from checkAnswer().
+ * The response returned from the service.
  */
 class Response
 {
+    /**
+     * Succes or failure.
+     * @var boolean
+     */
     private $_success = false;
+
+    /**
+     * Error code strings.
+     * @var array
+     */
     private $_errorCodes = array();
 
+    /**
+     * Build the response from the expected JSON returned by the service.
+     *
+     * @param string $json
+     * @return \ReCaptcha\Response
+     */
     public static function fromJson($json)
     {
         $answers = json_decode($json, true);
@@ -51,7 +66,8 @@ class Response
     }
 
     /**
-     * 
+     * Constructor.
+     *
      * @param boolean $success
      * @param array $errorCodes
      */
@@ -62,7 +78,8 @@ class Response
     }
 
     /**
-     * 
+     * Is success?
+     *
      * @return boolean
      */
     public function isSuccess()
@@ -71,7 +88,8 @@ class Response
     }
 
     /**
-     * 
+     * Get error codes.
+     *
      * @return array
      */
     public function getErrorCodes()

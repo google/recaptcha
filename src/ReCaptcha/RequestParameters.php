@@ -33,39 +33,41 @@
 namespace ReCaptcha;
 
 /**
- * 
+ * Stores and formats the parameters for the request to the reCAPTCHA service.
  */
 class RequestParameters
 {
     /**
-     * Site secret
-     * @var string 
+     * Site secret.
+     * @var string
      */
     private $_secret;
 
     /**
-     * Form response
+     * Form response.
      * @var string
      */
     private $_response;
 
     /**
-     * Remote user's IP address
+     * Remote user's IP address.
      * @var string
      */
     private $_remoteIp;
 
     /**
-     * Client version
+     * Client version.
      * @var string
      */
     private $_version;
 
     /**
-     * 
-     * @param string $secret
-     * @param string $response
-     * @param string $remoteIp
+     * Initialise parameters.
+     *
+     * @param string $secret Site secret.
+     * @param string $response Value from g-captcha-response form field.
+     * @param string $remoteIp User's IP address.
+     * @param string $version Version of this client library.
      */
     public function __construct($secret, $response, $remoteIp = null, $version = null)
     {
@@ -76,9 +78,9 @@ class RequestParameters
     }
 
     /**
-     * Array representation
-     * 
-     * @return array
+     * Array representation.
+     *
+     * @return array Array formatted parameters.
      */
     public function toArray()
     {
@@ -96,9 +98,9 @@ class RequestParameters
     }
 
     /**
-     * Query string representation for GET request
-     * 
-     * @return string
+     * Query string representation for HTTP request.
+     *
+     * @return string Query string formatted parameters.
      */
     public function toQueryString()
     {

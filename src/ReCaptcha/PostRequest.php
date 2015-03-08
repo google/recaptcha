@@ -33,12 +33,21 @@
 namespace ReCaptcha;
 
 /**
- * Sends POST requests to the reCAPTCHA service
+ * Sends POST requests to the reCAPTCHA service.
  */
 class PostRequest implements RequestMethod
 {
+    /**
+     * @param string
+     */
     const SITE_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
 
+    /**
+     * Submit the POST request with the specified parameters.
+     *
+     * @param \ReCaptcha\RequestParameters $params
+     * @return string Body of the reCAPTCHA response
+     */
     public function submit(RequestParameters $params)
     {
         $options = array(
