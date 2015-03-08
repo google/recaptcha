@@ -4,7 +4,7 @@
 
 * Project page: http://www.google.com/recaptcha/
 * Repository: https://github.com/google/recaptcha
-* Version: 1.00
+* Version: 1.1.0
 * License: BSD
 * License File: [LICENSE](https://github.com/google/recaptcha/blob/master/LICENSE)
 
