@@ -47,8 +47,12 @@ if ($_POST["g-recaptcha-response"]) {
     );
 }
 ?>
+<!DOCTYPE html>
 <html>
-  <head><title>reCAPTCHA Example</title></head>
+  <head>
+  <meta charset="utf-8" />
+  <title>reCAPTCHA Example</title>
+  </head>
   <body>
 <?php
 if ($resp != null && $resp->success) {
