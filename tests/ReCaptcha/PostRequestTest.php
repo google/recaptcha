@@ -41,16 +41,17 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
     protected $parameters = null;
     protected $runcount = 0;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->parameters = new RequestParameters("secret", "response", "remoteip", "version");
     }
 
-    public function tearDown() 
+    public function tearDown()
     {
         self::$assert = null;
     }
 
-    public function testHTTPContextOptions() 
+    public function testHTTPContextOptions()
     {
         $req = new PostRequest();
         self::$assert = array($this, "httpContextOptionsCallback");
@@ -58,7 +59,7 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $this->runcount, "The assertion was ran");
     }
 
-    public function testSSLContextOptions() 
+    public function testSSLContextOptions()
     {
         $req = new PostRequest();
         self::$assert = array($this, "sslContextOptionsCallback");
@@ -103,7 +104,6 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey($key, $options['http']);
         $this->assertEquals("www.google.com", $options['http'][$key]);
-
     }
 
     protected function assertCommonOptions(array $args)
@@ -115,7 +115,7 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-function file_get_contents() 
+function file_get_contents()
 {
     if (PostRequestTest::$assert) {
         return call_user_func(PostRequestTest::$assert, func_get_args());
