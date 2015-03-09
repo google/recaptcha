@@ -15,7 +15,7 @@ with reCAPTCHA.
 
 ## Installation
 
-Use [Composer])(https://getcomposer.org/) to install the library. Either use
+Use [Composer](https://getcomposer.org/) to install the library. Either use
 `composer require google/recaptcha "~1.1"` or add the following to your
 `composer.json`:
 ```json
@@ -47,4 +47,4 @@ You can see an end-to-end working example in [examples/example-recaptcha.php](ex
 
 We accept contributions via GitHub Pull Requests, but all contributors need to
 be covered by the standard Google Contributor License Agreement. You can find
-instructions for this in [CONTRIBUTING.md](https://github.com/google/recaptcha/blob/master/CONTRIBUTING.md)
+instructions for this in [CONTRIBUTING](CONTRIBUTING.md)
