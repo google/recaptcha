@@ -41,7 +41,7 @@ if ($resp->isSuccess()) {
 }
 ```
 
-You can see an end-to-end working example in [examples/example-recaptcha.php](examples/example-recaptcha.php)
+You can see an end-to-end working example in [examples/example-captcha.php](examples/example-captcha.php)
 
 ## Contributing
 
