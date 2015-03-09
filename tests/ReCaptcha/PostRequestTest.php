@@ -45,23 +45,54 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
         $this->parameters = new RequestParameters("secret", "response", "remoteip", "version");
     }
 
-    public function tearDown() {
+    public function tearDown() 
+    {
         self::$assert = null;
     }
 
-    public function testSSLContextOptions() {
+    public function testHTTPContextOptions() 
+    {
+        $req = new PostRequest();
+        self::$assert = array($this, "httpContextOptionsCallback");
+        $req->submit($this->parameters);
+        $this->assertEquals(1, $this->runcount, "The assertion was ran");
+    }
+
+    public function testSSLContextOptions() 
+    {
         $req = new PostRequest();
         self::$assert = array($this, "sslContextOptionsCallback");
         $req->submit($this->parameters);
         $this->assertEquals(1, $this->runcount, "The assertion was ran");
     }
 
-    public function sslContextOptionsCallback(array $args) {
+    public function httpContextOptionsCallback(array $args)
+    {
         $this->runcount++;
-        $this->assertCount(3, $args);
-        $this->assertStringStartsWith("https://www.google.com/", $args[0]);
-        $this->assertFalse($args[1]);
-        $this->assertTrue(is_resource($args[2]), "The context options should be a resource");
+        $this->assertCommonOptions($args);
+
+        $options = stream_context_get_options($args[2]);
+        $this->assertArrayHasKey('http', $options);
+        
+        $this->assertArrayHasKey('method', $options['http']);
+        $this->assertEquals("POST", $options['http']['method']);
+
+        $this->assertArrayHasKey('content', $options['http']);
+        $this->assertEquals($this->parameters->toQueryString(), $options['http']['content']);
+
+        $this->assertArrayHasKey('header', $options['http']);
+        $headers = array(
+            "Content-type: application/x-www-form-urlencoded",
+        );
+        foreach ($headers as $header) {
+            $this->assertContains($header, $options['http']['header']);
+        }
+    }
+
+    public function sslContextOptionsCallback(array $args)
+    {
+        $this->runcount++;
+        $this->assertCommonOptions($args);
 
         $options = stream_context_get_options($args[2]);
         $this->assertArrayHasKey('http', $options);
@@ -75,9 +106,17 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    protected function assertCommonOptions(array $args)
+    {
+        $this->assertCount(3, $args);
+        $this->assertStringStartsWith("https://www.google.com/", $args[0]);
+        $this->assertFalse($args[1]);
+        $this->assertTrue(is_resource($args[2]), "The context options should be a resource");
+    }
 }
 
-function file_get_contents() {
+function file_get_contents() 
+{
     if (PostRequestTest::$assert) {
         $cb = PostRequestTest::$assert;
         return $cb(func_get_args());
