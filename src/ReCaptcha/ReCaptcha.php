@@ -47,13 +47,13 @@ class ReCaptcha
      * Shared secret for the site.
      * @var type string
      */
-    private $_secret;
+    private $secret;
 
     /**
      * Method used to communicate  with service. Defaults to POST request.
      * @var RequestMethod
      */
-    private $_requestMethod;
+    private $requestMethod;
 
     /**
      * Create a configured instance to use the reCAPTCHA service.
@@ -71,12 +71,12 @@ class ReCaptcha
             throw new \RuntimeException('The provided secret must be a string');
         }
 
-        $this->_secret = $secret;
+        $this->secret = $secret;
 
         if (!is_null($requestMethod)) {
-            $this->_requestMethod = $requestMethod;
+            $this->requestMethod = $requestMethod;
         } else {
-            $this->_requestMethod = new PostRequest();
+            $this->requestMethod = new PostRequest();
         }
     }
 
@@ -96,8 +96,8 @@ class ReCaptcha
             return $recaptchaResponse;
         }
 
-        $params = new RequestParameters($this->_secret, $response, $remoteIp, self::VERSION);
-        $rawResponse = $this->_requestMethod->submit($params);
+        $params = new RequestParameters($this->secret, $response, $remoteIp, self::VERSION);
+        $rawResponse = $this->requestMethod->submit($params);
         return Response::fromJson($rawResponse);
     }
 }

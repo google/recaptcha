@@ -41,13 +41,13 @@ class Response
      * Succes or failure.
      * @var boolean
      */
-    private $_success = false;
+    private $success = false;
 
     /**
      * Error code strings.
      * @var array
      */
-    private $_errorCodes = array();
+    private $errorCodes = array();
 
     /**
      * Build the response from the expected JSON returned by the service.
@@ -73,8 +73,8 @@ class Response
      */
     public function __construct($success, array $errorCodes = array())
     {
-        $this->_success = $success;
-        $this->_errorCodes = $errorCodes;
+        $this->success = $success;
+        $this->errorCodes = $errorCodes;
     }
 
     /**
@@ -84,7 +84,7 @@ class Response
      */
     public function isSuccess()
     {
-        return $this->_success;
+        return $this->success;
     }
 
     /**
@@ -94,6 +94,6 @@ class Response
      */
     public function getErrorCodes()
     {
-        return $this->_errorCodes;
+        return $this->errorCodes;
     }
 }

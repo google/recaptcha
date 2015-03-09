@@ -73,7 +73,7 @@ class ReCaptchaTest extends \PHPUnit_Framework_TestCase
         $method = $this->getMock('\\ReCaptcha\\RequestMethod', array('submit'));
         $method->expects($this->once())
                 ->method('submit')
-                ->with($this->callback(function($params) {
+                ->with($this->callback(function ($params) {
 
                             return true;
                         }))

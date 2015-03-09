@@ -41,25 +41,25 @@ class RequestParameters
      * Site secret.
      * @var string
      */
-    private $_secret;
+    private $secret;
 
     /**
      * Form response.
      * @var string
      */
-    private $_response;
+    private $response;
 
     /**
      * Remote user's IP address.
      * @var string
      */
-    private $_remoteIp;
+    private $remoteIp;
 
     /**
      * Client version.
      * @var string
      */
-    private $_version;
+    private $version;
 
     /**
      * Initialise parameters.
@@ -71,10 +71,10 @@ class RequestParameters
      */
     public function __construct($secret, $response, $remoteIp = null, $version = null)
     {
-        $this->_secret = $secret;
-        $this->_response = $response;
-        $this->_remoteIp = $remoteIp;
-        $this->_version = $version;
+        $this->secret = $secret;
+        $this->response = $response;
+        $this->remoteIp = $remoteIp;
+        $this->version = $version;
     }
 
     /**
@@ -84,14 +84,14 @@ class RequestParameters
      */
     public function toArray()
     {
-        $params = array('secret' => $this->_secret, 'response' => $this->_response);
+        $params = array('secret' => $this->secret, 'response' => $this->response);
 
-        if (!is_null($this->_remoteIp)) {
-            $params['remoteip'] = $this->_remoteIp;
+        if (!is_null($this->remoteIp)) {
+            $params['remoteip'] = $this->remoteIp;
         }
 
-        if (!is_null($this->_version)) {
-            $params['version'] = $this->_version;
+        if (!is_null($this->version)) {
+            $params['version'] = $this->version;
         }
 
         return $params;
