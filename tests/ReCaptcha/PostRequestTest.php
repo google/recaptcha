@@ -118,8 +118,7 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
 function file_get_contents() 
 {
     if (PostRequestTest::$assert) {
-        $cb = PostRequestTest::$assert;
-        return $cb(func_get_args());
+        return call_user_func(PostRequestTest::$assert, func_get_args());
     }
     // Since we can't represent maxlen in userland...
     return call_user_func_array("file_get_contents", func_get_args());
