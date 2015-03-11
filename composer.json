@@ -2,7 +2,7 @@
     "name": "google/recaptcha",
     "description": "Client library for reCAPTCHA, a free service that protect websites from spam and abuse.",
     "type": "library",
-    "keywords": "recaptcha, captcha, spam, abuse",
+    "keywords": ["recaptcha", "captcha", "spam", "abuse"],
     "homepage": "https://github.com/google/recaptcha",
     "license": "BSD-3-Clause",
     "support": {
