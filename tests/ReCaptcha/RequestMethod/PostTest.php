@@ -34,9 +34,6 @@ namespace ReCaptcha\RequestMethod;
 
 use ReCaptcha\RequestParameters;
 
-/**
- * Test the Post Request, mocking out the actual request
- */
 class PostTest extends \PHPUnit_Framework_TestCase
 {
     public static $assert = null;

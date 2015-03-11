@@ -32,11 +32,6 @@
 
 namespace ReCaptcha;
 
-/**
- * Description of ReCaptchaTest
- *
- * @author merewood
- */
 class ReCaptchaTest extends \PHPUnit_Framework_TestCase
 {
 

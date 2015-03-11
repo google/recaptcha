@@ -32,14 +32,10 @@
 
 namespace ReCaptcha;
 
-/**
- * Test Response
- */
 class ResponseTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @covers ReCaptcha\Response::fromJson
      * @dataProvider provideJson
      */
     public function testFromJson($json, $success, $errorCodes)
@@ -59,10 +55,6 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @covers ReCaptcha\Response::isSuccess
-     * @todo   Implement testIsSuccess().
-     */
     public function testIsSuccess()
     {
         $response = new Response(true);
@@ -72,10 +64,6 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($response->isSuccess());
     }
 
-    /**
-     * @covers ReCaptcha\Response::getErrorCodes
-     * @todo   Implement testGetErrorCodes().
-     */
     public function testGetErrorCodes()
     {
         $errorCodes = array('test');

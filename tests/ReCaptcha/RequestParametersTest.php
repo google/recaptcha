@@ -32,9 +32,6 @@
 
 namespace ReCaptcha;
 
-/**
- * Test RequestParameters
- */
 class RequestParametersTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -51,7 +48,6 @@ class RequestParametersTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ReCaptcha\RequestParameters::toArray
      * @dataProvider provideValidData
      */
     public function testToArray($secret, $response, $remoteIp, $version, $expectedArray, $expectedQuery)
@@ -61,7 +57,6 @@ class RequestParametersTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ReCaptcha\RequestParameters::toQueryString
      * @dataProvider provideValidData
      */
     public function testToQueryString($secret, $response, $remoteIp, $version, $expectedArray, $expectedQuery)
