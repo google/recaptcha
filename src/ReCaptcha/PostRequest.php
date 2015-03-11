@@ -38,19 +38,19 @@ namespace ReCaptcha;
 class PostRequest implements RequestMethod
 {
     /**
-     * @param string
+     * URL to which requests are POSTed.
+     * @const string
      */
     const SITE_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
 
     /**
      * Submit the POST request with the specified parameters.
      *
-     * @param \ReCaptcha\RequestParameters $params
+     * @param RequestParameters $params Request parameters
      * @return string Body of the reCAPTCHA response
      */
     public function submit(RequestParameters $params)
     {
-
         /**
          * PHP 5.6.0 changed the way you specify the peer name for SSL context options.
          * Using "CN_name" will still work, but it will raise deprecated errors.

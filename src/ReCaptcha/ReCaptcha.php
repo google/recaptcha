@@ -39,7 +39,7 @@ class ReCaptcha
 {
     /**
      * Version of this client library.
-     * @var string
+     * @const string
      */
     const VERSION = 'php_1.1.0';
 
