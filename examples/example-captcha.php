@@ -7,15 +7,6 @@
  * 2. Point your browser at http://localhost:8000
  * 3. Follow the instructions
  *
- * The code here is heavily commented to explain what's going on.
- *
- *    - Documentation and latest version
- *          https://developers.google.com/recaptcha/docs/php
- *    - Get a reCAPTCHA API Key
- *          https://www.google.com/recaptcha/admin/create
- *    - Discussion group
- *          http://groups.google.com/group/recaptcha
- *
  * @copyright Copyright (c) 2015, Google Inc.
  * @link      http://www.google.com/recaptcha
  *
