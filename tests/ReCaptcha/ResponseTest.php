@@ -55,6 +55,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
             array('{"success": true}', true, array()),
             array('{"success": false, "error-codes": ["test"]}', false, array('test')),
             array('{"success": true, "error-codes": ["test"]}', true, array()),
+            array('BAD JSON', false, array('invalid-json')),
         );
     }
 

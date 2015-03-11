@@ -58,11 +58,16 @@ class Response
     public static function fromJson($json)
     {
         $answers = json_decode($json, true);
+
+        if (!$answers) {
+            return new Response(false, array('invalid-json'));
+        }
+
         if (trim($answers['success']) == true) {
             return new Response(true);
-        } else {
-            return new Response(false, $answers['error-codes']);
         }
+
+        return new Response(false, $answers['error-codes']);
     }
 
     /**
