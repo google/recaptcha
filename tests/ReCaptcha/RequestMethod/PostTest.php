@@ -120,5 +120,5 @@ function file_get_contents()
         return call_user_func(PostTest::$assert, func_get_args());
     }
     // Since we can't represent maxlen in userland...
-    return call_user_func_array("file_get_contents", func_get_args());
+    return call_user_func_array('file_get_contents', func_get_args());
 }
