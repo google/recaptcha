@@ -43,6 +43,20 @@ if ($resp->isSuccess()) {
 
 You can see an end-to-end working example in [examples/example-captcha.php](examples/example-captcha.php)
 
+## Upgrading
+
+### From 1.0.0
+
+The previous version of this client is still available on the `1.0.0` tag
+[in this repo](/tree/1.0.0) but it is purely for reference and will not receive
+any updates.
+
+The major changes in 1.1.0 are:
+ * installation now via Composer;
+ * class loading also via Composer;
+ * classes now namespaced;
+ * old method call was `$rc->verifyResponse($remoteIp, $response)`, new call is `$rc->verify($response, $remoteIp)`
+
 ## Contributing
 
 We accept contributions via GitHub Pull Requests, but all contributors need to
