@@ -30,12 +30,14 @@
  * THE SOFTWARE.
  */
 
-namespace ReCaptcha;
+namespace ReCaptcha\RequestMethod;
+
+use ReCaptcha\RequestParameters;
 
 /**
  * Test the Post Request, mocking out the actual request
  */
-class PostRequestTest extends \PHPUnit_Framework_TestCase
+class PostTest extends \PHPUnit_Framework_TestCase
 {
     public static $assert = null;
     protected $parameters = null;
@@ -53,7 +55,7 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
 
     public function testHTTPContextOptions()
     {
-        $req = new PostRequest();
+        $req = new Post();
         self::$assert = array($this, "httpContextOptionsCallback");
         $req->submit($this->parameters);
         $this->assertEquals(1, $this->runcount, "The assertion was ran");
@@ -61,7 +63,7 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
 
     public function testSSLContextOptions()
     {
-        $req = new PostRequest();
+        $req = new Post();
         self::$assert = array($this, "sslContextOptionsCallback");
         $req->submit($this->parameters);
         $this->assertEquals(1, $this->runcount, "The assertion was ran");
@@ -74,7 +76,7 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
 
         $options = stream_context_get_options($args[2]);
         $this->assertArrayHasKey('http', $options);
-        
+
         $this->assertArrayHasKey('method', $options['http']);
         $this->assertEquals("POST", $options['http']['method']);
 
@@ -117,8 +119,8 @@ class PostRequestTest extends \PHPUnit_Framework_TestCase
 
 function file_get_contents()
 {
-    if (PostRequestTest::$assert) {
-        return call_user_func(PostRequestTest::$assert, func_get_args());
+    if (PostTest::$assert) {
+        return call_user_func(PostTest::$assert, func_get_args());
     }
     // Since we can't represent maxlen in userland...
     return call_user_func_array("file_get_contents", func_get_args());

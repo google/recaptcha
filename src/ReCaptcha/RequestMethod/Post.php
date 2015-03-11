@@ -30,12 +30,15 @@
  * THE SOFTWARE.
  */
 
-namespace ReCaptcha;
+namespace ReCaptcha\RequestMethod;
+
+use ReCaptcha\RequestMethod;
+use ReCaptcha\RequestParameters;
 
 /**
  * Sends POST requests to the reCAPTCHA service.
  */
-class PostRequest implements RequestMethod
+class Post implements RequestMethod
 {
     /**
      * URL to which requests are POSTed.

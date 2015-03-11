@@ -76,7 +76,7 @@ class ReCaptcha
         if (!is_null($requestMethod)) {
             $this->requestMethod = $requestMethod;
         } else {
-            $this->requestMethod = new PostRequest();
+            $this->requestMethod = new RequestMethod\Post();
         }
     }
 
