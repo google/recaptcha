@@ -48,8 +48,8 @@ You can see an end-to-end working example in [examples/example-captcha.php](exam
 ### From 1.0.0
 
 The previous version of this client is still available on the `1.0.0` tag
-[in this repo](/tree/1.0.0) but it is purely for reference and will not receive
-any updates.
+[in this repo](https://github.com/google/recaptcha/tree/1.0.0) but it is purely
+for reference and will not receive any updates.
 
 The major changes in 1.1.0 are:
  * installation now via Composer;
