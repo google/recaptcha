@@ -1,6 +1,8 @@
 <?php
 /**
- * Working sample code to accompany the library.
+ * Working sample code to accompany the library. The instructions here assume
+ * you've just cloned the repo. If you've installed via composer, you will want
+ * to adjust the path to the autoloader.
  *
  * 1. Run the server. For example, under Linux you can probably use:
  * /usr/bin/php -S "localhost:8000" "examples/example-captcha.php"
