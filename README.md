@@ -1,6 +1,8 @@
 # reCAPTCHA PHP client library
 
 [![Build Status](https://travis-ci.org/google/recaptcha.svg)](https://travis-ci.org/google/recaptcha)
+[![Latest Stable Version](https://poser.pugx.org/google/recaptcha/v/stable.svg)](https://packagist.org/packages/google/recaptcha)
+[![Total Downloads](https://poser.pugx.org/google/recaptcha/downloads.svg)](https://packagist.org/packages/google/recaptcha)
 
 * Project page: http://www.google.com/recaptcha/
 * Repository: https://github.com/google/recaptcha
