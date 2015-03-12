@@ -19,5 +19,10 @@
         "psr-4": {
             "ReCaptcha\\": "src/ReCaptcha"
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1.x-dev"
+        }
     }
 }
