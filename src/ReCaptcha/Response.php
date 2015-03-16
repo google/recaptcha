@@ -51,17 +51,21 @@ class Response
      */
     public static function fromJson($json)
     {
-        $answers = json_decode($json, true);
+        $responseData = json_decode($json, true);
 
-        if (!$answers) {
+        if (!$responseData) {
             return new Response(false, array('invalid-json'));
         }
 
-        if (trim($answers['success']) == true) {
+        if (isset($responseData['success']) && $responseData['success'] == true) {
             return new Response(true);
         }
 
-        return new Response(false, $answers['error-codes']);
+        if (isset($responseData['error-codes']) && is_array($responseData['error-codes'])) {
+            return new Response(false, $responseData['error-codes']);
+        }
+
+        return new Response(false);
     }
 
     /**
