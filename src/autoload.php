@@ -17,7 +17,7 @@ spl_autoload_register(function ($class) {
      * test classes in the common case.
      */
     $path = dirname(__FILE__).'/'.$class.'.php';
-    if (file_exists($path)) {
+    if (is_readable($path)) {
         require_once $path;
     }
 
@@ -25,7 +25,7 @@ spl_autoload_register(function ($class) {
      * a test class?
      */
     $path = dirname(__FILE__).'/../tests/'.$class.'.php';
-    if (file_exists($path)) {
+    if (is_readable($path)) {
         require_once $path;
     }
 });
