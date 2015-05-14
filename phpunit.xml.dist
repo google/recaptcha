@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.4/phpunit.xsd" 
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.4/phpunit.xsd"
          colors="true"
-         verbose="true">
+         verbose="true"
+         bootstrap="src/autoload.php">
     <testsuites>
         <testsuite name="reCAPTCHA Test Suite">
             <directory>tests/ReCaptcha/</directory>

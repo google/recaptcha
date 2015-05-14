@@ -26,6 +26,20 @@ Use [Composer](https://getcomposer.org/) to install the library. Either use
     }
 ```
 
+### Manual installation
+
+If you wish to install the library manually (i.e. without Composer),
+an autoloader is provided as `src/autoload.php`. You can require it in
+your script instead of the usual `vendor/autoload.php` created by
+Composer. For example,
+
+```php
+require('/path/to/recaptcha/autoload.php');
+
+$recaptcha = new \ReCaptcha\ReCaptcha($secret);
+// etc.
+```
+
 ## Usage
 
 First, register keys for your site at https://www.google.com/recaptcha/admin
