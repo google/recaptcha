@@ -100,7 +100,7 @@ elseif (isset($_POST['g-recaptcha-response'])):
         <h2>Something went wrong</h2>
         <p>The following error was returned: <?php
             foreach ($resp->getErrorCodes() as $code) {
-                echo '<tt>' . $code . '</tt> ';
+                echo '<tt>' , $code , '</tt> ';
             }
             ?></p>
         <p>Check the error code reference at <tt><a href="https://developers.google.com/recaptcha/docs/verify#error-code-reference">https://developers.google.com/recaptcha/docs/verify#error-code-reference</a></tt>.
