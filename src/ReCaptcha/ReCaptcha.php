@@ -26,6 +26,8 @@
 
 namespace ReCaptcha;
 
+use Psr\Http\Message\ServerRequestInterface;
+
 /**
  * reCAPTCHA client.
  */
@@ -93,5 +95,23 @@ class ReCaptcha
         $params = new RequestParameters($this->secret, $response, $remoteIp, self::VERSION);
         $rawResponse = $this->requestMethod->submit($params);
         return Response::fromJson($rawResponse);
+    }
+
+    /**
+     * Calls the reCAPTCHA siteverify API to verify whether the user passes
+     * CAPTCHA test using a PSR-7 ServerRequest object.
+     *
+     * @param ServerRequestInterface $request The request object
+     * @return Response Response from the service.
+     */
+    public function verifyRequest(ServerRequestInterface $request)
+    {
+        $body = $request->getParsedBody();
+        $server = $request->getServerParams();
+
+        $response = isset($body['g-recaptcha-response']) ? $body['g-recaptcha-response'] : '';
+        $remoteIp = isset($server['REMOTE_ADDR']) ? $server['REMOTE_ADDR'] : null;
+
+        return $this->verify($response, $remoteIp);
     }
 }
