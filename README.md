@@ -44,12 +44,13 @@ Alternatively, add the dependency directly to your `composer.json` file:
 
 If you wish to install the library manually (i.e. without Composer), then you
 can use the links on the main project page to either clone the repo or download
-the ZIP file. For convenience, an autoloader script is provided in
-`src/autoload.php` which you can require into your script instead of Composer's
-`vendor/autoload.php`. For example:
-```php
-require('/path/to/recaptcha/autoload.php');
+the [ZIP file](https://github.com/google/recaptcha/archive/master.zip). For
+convenience, an autoloader script is provided in `src/autoload.php` which you
+can require into your script instead of Composer's `vendor/autoload.php`. For
+example:
 
+```php
+require('/path/to/recaptcha/src/autoload.php');
 $recaptcha = new \ReCaptcha\ReCaptcha($secret);
 ```
 
