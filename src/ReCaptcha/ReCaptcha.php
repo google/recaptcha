@@ -39,7 +39,7 @@ class ReCaptcha
 
     /**
      * Shared secret for the site.
-     * @var type string
+     * @var string
      */
     private $secret;
 
@@ -58,11 +58,11 @@ class ReCaptcha
     public function __construct($secret, RequestMethod $requestMethod = null)
     {
         if (empty($secret)) {
-            throw new \RuntimeException('No secret provided');
+            throw new \InvalidArgumentException('No secret provided');
         }
 
         if (!is_string($secret)) {
-            throw new \RuntimeException('The provided secret must be a string');
+            throw new \InvalidArgumentException('The provided secret must be a string');
         }
 
         $this->secret = $secret;
