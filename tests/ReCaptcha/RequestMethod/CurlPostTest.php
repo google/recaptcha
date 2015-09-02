@@ -26,49 +26,38 @@
 
 namespace ReCaptcha\RequestMethod;
 
-/**
- * Convenience wrapper around the cURL functions to allow mocking.
- */
-class Curl
+use \ReCaptcha\RequestParameters;
+
+class CurlPostTest extends \PHPUnit_Framework_TestCase
 {
 
-    /**
-     * @see http://php.net/curl_init
-     * @param string $url
-     * @return resource cURL handle
-     */
-    public function init($url = null)
+    protected function setUp()
     {
-        return curl_init($url);
+        if (!extension_loaded('curl')) {
+            $this->markTestSkipped(
+                    'The cURL extension is not available.'
+            );
+        }
     }
 
-    /**
-     * @see http://php.net/curl_setopt_array
-     * @param resource $ch
-     * @param array $options
-     * @return bool
-     */
-    public function setoptArray($ch, array $options)
+    public function testSubmit()
     {
-        return curl_setopt_array($ch, $options);
-    }
+        $curl = $this->getMock('\\ReCaptcha\\RequestMethod\\Curl',
+                array('init', 'setoptArray', 'exec', 'close'));
+        $curl->expects($this->once())
+                ->method('init')
+                ->willReturn(new \stdClass);
+        $curl->expects($this->once())
+                ->method('setoptArray')
+                ->willReturn(true);
+        $curl->expects($this->once())
+                ->method('exec')
+                ->willReturn('RESPONSEBODY');
+        $curl->expects($this->once())
+                ->method('close');
 
-    /**
-     * @see http://php.net/curl_exec
-     * @param resource $ch
-     * @return mixed
-     */
-    public function exec($ch)
-    {
-        return curl_exec($ch);
-    }
-
-    /**
-     * @see http://php.net/curl_close
-     * @param resource $ch
-     */
-    public function close($ch)
-    {
-        curl_close($ch);
+        $pc = new CurlPost($curl);
+        $response = $pc->submit(new RequestParameters("secret", "response"));
+        $this->assertEquals('RESPONSEBODY', $response);
     }
 }
