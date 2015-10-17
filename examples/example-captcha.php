@@ -95,7 +95,7 @@ elseif (isset($_POST['g-recaptcha-response'])):
         <p><a href="/">Try again</a></p>
         <?php
     else:
-// If it's not successfull, then one or more error codes will be returned.
+// If it's not successful, then one or more error codes will be returned.
         ?>
         <h2>Something went wrong</h2>
         <p>The following error was returned: <?php
