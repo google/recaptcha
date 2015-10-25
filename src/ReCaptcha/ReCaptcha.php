@@ -44,7 +44,7 @@ class ReCaptcha
     private $secret;
 
     /**
-     * Method used to communicate  with service. Defaults to POST request.
+     * Method used to communicate with service. Defaults to POST request.
      * @var RequestMethod
      */
     private $requestMethod;
