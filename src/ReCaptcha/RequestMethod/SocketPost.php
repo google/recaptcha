@@ -70,7 +70,7 @@ class SocketPost implements RequestMethod
      */
     public function __construct(Socket $socket = null)
     {
-        if (!is_null($socket)) {
+        if (isset($socket)) {
             $this->socket = $socket;
         } else {
             $this->socket = new Socket();
