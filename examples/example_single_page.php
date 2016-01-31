@@ -129,7 +129,7 @@ $msg = wordwrap($msg,70);
 
 // send email
 $to      = "you@yourwebsite.com";
-$subject = "New enquiry - IT Gorleston: " . $name;
+$subject = "New enquiry " . $name;
 $headers = "From: " . $email . "\r\n" .
     "Reply-To: " . $email . "\r\n" .
     'X-Mailer: PHP/' . phpversion();
@@ -138,7 +138,8 @@ mail($to, $subject, $msg, $headers);
 
 //In this case - email successfully sent with all enquiry data, we are sending the user to a thank-you page (you will need to add your own) and stop the script.
 header("Location:/thank_you.html");
-exit; // Location header is set, pointless to send HTML, stop the script
+
+exit; // Header set, script stopped
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
   echo "<br /><span class=\"error\">Your message haven't been sent! Please correct the mistakes above!<span>";
 }
