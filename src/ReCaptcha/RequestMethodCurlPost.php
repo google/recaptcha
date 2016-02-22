@@ -24,17 +24,12 @@
  * THE SOFTWARE.
  */
 
-namespace ReCaptcha\RequestMethod;
-
-use ReCaptcha\RequestMethod;
-use ReCaptcha\RequestParameters;
-
 /**
  * Sends cURL request to the reCAPTCHA service.
  * Note: this requires the cURL extension to be enabled in PHP
  * @see http://php.net/manual/en/book.curl.php
  */
-class CurlPost implements RequestMethod
+class ReCaptchaRequestMethodCurlPost implements ReCaptchaRequestMethod
 {
     /**
      * URL to which requests are sent via cURL.
@@ -48,22 +43,22 @@ class CurlPost implements RequestMethod
      */
     private $curl;
 
-    public function __construct(Curl $curl = null)
+    public function __construct(ReCaptchaRequestMethodCurl $curl = null)
     {
         if (!is_null($curl)) {
             $this->curl = $curl;
         } else {
-            $this->curl = new Curl();
+            $this->curl = new ReCaptchaRequestMethodCurl();
         }
     }
 
     /**
      * Submit the cURL request with the specified parameters.
      *
-     * @param RequestParameters $params Request parameters
+     * @param ReCaptchaRequestParameters $params Request parameters
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params)
+    public function submit(ReCaptchaRequestParameters $params)
     {
         $handle = $this->curl->init(self::SITE_VERIFY_URL);
 

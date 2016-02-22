@@ -24,17 +24,12 @@
  * THE SOFTWARE.
  */
 
-namespace ReCaptcha\RequestMethod;
-
-use ReCaptcha\RequestMethod;
-use ReCaptcha\RequestParameters;
-
 /**
  * Sends a POST request to the reCAPTCHA service, but makes use of fsockopen()
  * instead of get_file_contents(). This is to account for people who may be on
  * servers where allow_furl_open is disabled.
  */
-class SocketPost implements RequestMethod
+class ReCaptchaRequestMethodSocketPost implements ReCaptchaRequestMethod
 {
     /**
      * reCAPTCHA service host.
@@ -68,22 +63,22 @@ class SocketPost implements RequestMethod
      *
      * @param \ReCaptcha\RequestMethod\Socket $socket optional socket, injectable for testing
      */
-    public function __construct(Socket $socket = null)
+    public function __construct(ReCaptchaRequestMethodSocket $socket = null)
     {
         if (!is_null($socket)) {
             $this->socket = $socket;
         } else {
-            $this->socket = new Socket();
+            $this->socket = new ReCaptchaRequestMethodSocket();
         }
     }
 
     /**
      * Submit the POST request with the specified parameters.
      *
-     * @param RequestParameters $params Request parameters
+     * @param ReCaptchaRequestParameters $params Request parameters
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params)
+    public function submit(ReCaptchaRequestParameters $params)
     {
         $errno = 0;
         $errstr = '';

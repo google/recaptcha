@@ -24,12 +24,10 @@
  * THE SOFTWARE.
  */
 
-namespace ReCaptcha\RequestMethod;
-
 /**
  * Convenience wrapper around the cURL functions to allow mocking.
  */
-class Curl
+class ReCaptchaRequestMethodCurl
 {
 
     /**
