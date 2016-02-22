@@ -24,15 +24,10 @@
  * THE SOFTWARE.
  */
 
-namespace ReCaptcha\RequestMethod;
-
-use ReCaptcha\RequestMethod;
-use ReCaptcha\RequestParameters;
-
 /**
  * Sends POST requests to the reCAPTCHA service.
  */
-class Post implements RequestMethod
+class ReCaptchaRequestMethodPost implements ReCaptchaRequestMethod
 {
     /**
      * URL to which requests are POSTed.
@@ -43,10 +38,10 @@ class Post implements RequestMethod
     /**
      * Submit the POST request with the specified parameters.
      *
-     * @param RequestParameters $params Request parameters
+     * @param ReCaptchaRequestParameters $params Request parameters
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params)
+    public function submit(ReCaptchaRequestParameters $params)
     {
         /**
          * PHP 5.6.0 changed the way you specify the peer name for SSL context options.

@@ -24,12 +24,10 @@
  * THE SOFTWARE.
  */
 
-namespace ReCaptcha;
-
 /**
  * The response returned from the service.
  */
-class Response
+class ReCaptchaResponse
 {
     /**
      * Succes or failure.
@@ -54,18 +52,18 @@ class Response
         $responseData = json_decode($json, true);
 
         if (!$responseData) {
-            return new Response(false, array('invalid-json'));
+            return new ReCaptchaResponse(false, array('invalid-json'));
         }
 
         if (isset($responseData['success']) && $responseData['success'] == true) {
-            return new Response(true);
+            return new ReCaptchaResponse(true);
         }
 
         if (isset($responseData['error-codes']) && is_array($responseData['error-codes'])) {
-            return new Response(false, $responseData['error-codes']);
+            return new ReCaptchaResponse(false, $responseData['error-codes']);
         }
 
-        return new Response(false);
+        return new ReCaptchaResponse(false);
     }
 
     /**

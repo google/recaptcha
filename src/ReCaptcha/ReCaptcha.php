@@ -24,8 +24,6 @@
  * THE SOFTWARE.
  */
 
-namespace ReCaptcha;
-
 /**
  * reCAPTCHA client.
  */
@@ -45,7 +43,7 @@ class ReCaptcha
 
     /**
      * Method used to communicate with service. Defaults to POST request.
-     * @var RequestMethod
+     * @var ReCaptchaRequestMethod
      */
     private $requestMethod;
 
@@ -53,9 +51,9 @@ class ReCaptcha
      * Create a configured instance to use the reCAPTCHA service.
      *
      * @param string $secret shared secret between site and reCAPTCHA server.
-     * @param RequestMethod $requestMethod method used to send the request. Defaults to POST.
+     * @param ReCaptchaRequestMethod $requestMethod method used to send the request. Defaults to POST.
      */
-    public function __construct($secret, RequestMethod $requestMethod = null)
+    public function __construct($secret, ReCaptchaRequestMethod $requestMethod = null)
     {
         if (empty($secret)) {
             throw new \RuntimeException('No secret provided');
@@ -70,7 +68,7 @@ class ReCaptcha
         if (!is_null($requestMethod)) {
             $this->requestMethod = $requestMethod;
         } else {
-            $this->requestMethod = new RequestMethod\Post();
+            $this->requestMethod = new ReCaptchaRequestMethodPost();
         }
     }
 
@@ -80,18 +78,18 @@ class ReCaptcha
      *
      * @param string $response The value of 'g-recaptcha-response' in the submitted form.
      * @param string $remoteIp The end user's IP address.
-     * @return Response Response from the service.
+     * @return ReCaptchaResponse Response from the service.
      */
     public function verify($response, $remoteIp = null)
     {
         // Discard empty solution submissions
         if (empty($response)) {
-            $recaptchaResponse = new Response(false, array('missing-input-response'));
+            $recaptchaResponse = new ReCaptchaResponse(false, array('missing-input-response'));
             return $recaptchaResponse;
         }
 
-        $params = new RequestParameters($this->secret, $response, $remoteIp, self::VERSION);
+        $params = new ReCaptchaRequestParameters($this->secret, $response, $remoteIp, self::VERSION);
         $rawResponse = $this->requestMethod->submit($params);
-        return Response::fromJson($rawResponse);
+        return ReCaptchaResponse::fromJson($rawResponse);
     }
 }

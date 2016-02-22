@@ -24,19 +24,17 @@
  * THE SOFTWARE.
  */
 
-namespace ReCaptcha;
-
 /**
  * Method used to send the request to the service.
  */
-interface RequestMethod
+interface ReCaptchaRequestMethod
 {
 
     /**
      * Submit the request with the specified parameters.
      *
-     * @param RequestParameters $params Request parameters
+     * @param ReCaptchaRequestParameters $params Request parameters
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params);
+    public function submit(ReCaptchaRequestParameters $params);
 }
