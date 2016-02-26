@@ -47,14 +47,16 @@ class CurlPost implements RequestMethod
      * @var Curl
      */
     private $curl;
+    private $curlOptions = [];
 
-    public function __construct(Curl $curl = null)
+    public function __construct(Curl $curl = null, array $curlOptions = [])
     {
         if (!is_null($curl)) {
             $this->curl = $curl;
         } else {
             $this->curl = new Curl();
         }
+        $this->curlOptions = [];
     }
 
     /**
@@ -79,6 +81,7 @@ class CurlPost implements RequestMethod
             CURLOPT_SSL_VERIFYPEER => true
         );
         $this->curl->setoptArray($handle, $options);
+        $this->curl->setoptArray($handle, $this->curlOptions);
 
         $response = $this->curl->exec($handle);
         $this->curl->close($handle);
