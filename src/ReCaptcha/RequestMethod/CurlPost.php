@@ -47,16 +47,16 @@ class CurlPost implements RequestMethod
      * @var Curl
      */
     private $curl;
-    private $curlOptions = [];
+    private $curlOptions = array();
 
-    public function __construct(Curl $curl = null, array $curlOptions = [])
+    public function __construct(Curl $curl = null, array $curlOptions = array())
     {
         if (!is_null($curl)) {
             $this->curl = $curl;
         } else {
             $this->curl = new Curl();
         }
-        $this->curlOptions = [];
+        $this->curlOptions = array();
     }
 
     /**
