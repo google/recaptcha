@@ -80,8 +80,7 @@ class CurlPost implements RequestMethod
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true
         );
-        $this->curl->setoptArray($handle, $options);
-        $this->curl->setoptArray($handle, $this->curlOptions);
+        $this->curl->setoptArray($handle, ($options + $this->curlOptions));;
 
         $response = $this->curl->exec($handle);
         $this->curl->close($handle);
