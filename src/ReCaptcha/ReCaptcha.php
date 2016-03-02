@@ -39,7 +39,7 @@ class ReCaptcha
 
     /**
      * Shared secret for the site.
-     * @var type string
+     * @var string
      */
     private $secret;
 
