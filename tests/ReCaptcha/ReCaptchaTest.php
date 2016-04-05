@@ -72,4 +72,17 @@ class ReCaptchaTest extends \PHPUnit_Framework_TestCase
         $response = $rc->verify('response');
         $this->assertTrue($response->isSuccess());
     }
+
+    public function testVerifyReturnsResponseInstance()
+    {
+        $method = $this->getMock('\\ReCaptcha\\RequestMethod', array('submit'));
+        $method->expects($this->once())
+            ->method('submit')
+            ->will($this->returnValue(new Response(true)))
+        ;
+
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->verify('response');
+        $this->assertTrue($response->isSuccess());
+    }
 }
