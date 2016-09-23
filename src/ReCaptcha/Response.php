@@ -66,7 +66,7 @@ class Response
         $hostname = isset($responseData['hostname']) ? $responseData['hostname'] : null;
 
         if (isset($responseData['success']) && $responseData['success'] == true) {
-            return new Response(true, [], $hostname);
+            return new Response(true, array(), $hostname);
         }
 
         if (isset($responseData['error-codes']) && is_array($responseData['error-codes'])) {
