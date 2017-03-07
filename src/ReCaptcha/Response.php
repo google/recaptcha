@@ -47,7 +47,7 @@ class Response
      * The hostname of the site where the reCAPTCHA was solved.
      * @var string
      */
-    private $hostname = array();
+    private $hostname;
 
     /**
      * Build the response from the expected JSON returned by the service.
