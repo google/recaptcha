@@ -62,18 +62,18 @@ $lang = 'en';
         <h1>reCAPTCHA Example</h1>
         <?php if ($siteKey === '' || $secret === ''): ?>
             <h2>Add your keys</h2>
-            <p>If you do not have keys already then visit <tt>
+            <p>If you do not have keys already then visit <kbd>
             <a href = "https://www.google.com/recaptcha/admin">
-                https://www.google.com/recaptcha/admin</a></tt> to generate them.
-        Edit this file and set the respective keys in <tt>$siteKey</tt> and
-        <tt>$secret</tt>. Reload the page after this.</p>
+                https://www.google.com/recaptcha/admin</a></kbd> to generate them.
+        Edit this file and set the respective keys in <kbd>$siteKey</kbd> and
+        <kbd>$secret</kbd>. Reload the page after this.</p>
     <?php
 elseif (isset($_POST['g-recaptcha-response'])):
     // The POST data here is unfiltered because this is an example.
     // In production, *always* sanitise and validate your input'
     ?>
-    <h2><tt>POST</tt> data</h2>
-    <tt><pre><?php var_export($_POST); ?></pre></tt>
+    <h2><kbd>POST</kbd> data</h2>
+    <kbd><pre><?php var_export($_POST); ?></pre></kbd>
     <?php
 // If the form submission includes the "g-captcha-response" field
 // Create an instance of the service using your secret
@@ -100,11 +100,11 @@ elseif (isset($_POST['g-recaptcha-response'])):
         <h2>Something went wrong</h2>
         <p>The following error was returned: <?php
             foreach ($resp->getErrorCodes() as $code) {
-                echo '<tt>' , $code , '</tt> ';
+                echo '<kbd>' , $code , '</kbd> ';
             }
             ?></p>
-        <p>Check the error code reference at <tt><a href="https://developers.google.com/recaptcha/docs/verify#error-code-reference">https://developers.google.com/recaptcha/docs/verify#error-code-reference</a></tt>.
-        <p><strong>Note:</strong> Error code <tt>missing-input-response</tt> may mean the user just didn't complete the reCAPTCHA.</p>
+        <p>Check the error code reference at <kbd><a href="https://developers.google.com/recaptcha/docs/verify#error-code-reference">https://developers.google.com/recaptcha/docs/verify#error-code-reference</a></kbd>.
+        <p><strong>Note:</strong> Error code <kbd>missing-input-response</kbd> may mean the user just didn't complete the reCAPTCHA.</p>
         <p><a href="/">Try again</a></p>
     <?php
     endif;
