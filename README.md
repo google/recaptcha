@@ -83,8 +83,6 @@ $recaptcha = new \ReCaptcha\ReCaptcha($secret);
 $resp = $recaptcha->verify($gRecaptchaResponse, $remoteIp);
 if ($resp->isSuccess()) {
     // verified!
-    // if Domain Name Validation turned off don't forget to check hostname field
-    // if($resp->getHostName() === $_SERVER['SERVER_NAME']) {  }
 } else {
     $errors = $resp->getErrorCodes();
 }
