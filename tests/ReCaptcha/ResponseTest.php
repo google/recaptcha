@@ -57,6 +57,9 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
         $response = new Response(false);
         $this->assertFalse($response->isSuccess());
+
+        $response = new Response(true, array(), 'example.com');
+        $this->assertEquals('example.com', $response->getHostName());
     }
 
     public function testGetErrorCodes()
