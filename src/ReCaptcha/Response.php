@@ -44,10 +44,10 @@ class Response
     private $errorCodes = array();
 
     /**
-     * the hostname of the site where the reCAPTCHA was solved
+     * The hostname of the site where the reCAPTCHA was solved.
      * @var string
      */
-    private $hostName = '';
+    private $hostname;
 
     /**
      * Build the response from the expected JSON returned by the service.
@@ -63,15 +63,17 @@ class Response
             return new Response(false, array('invalid-json'));
         }
 
+        $hostname = isset($responseData['hostname']) ? $responseData['hostname'] : null;
+
         if (isset($responseData['success']) && $responseData['success'] == true) {
-            return new Response(true, array(), isset($responseData['hostname']) ? $responseData['hostname'] : '');
+            return new Response(true, array(), $hostname);
         }
 
         if (isset($responseData['error-codes']) && is_array($responseData['error-codes'])) {
-            return new Response(false, $responseData['error-codes']);
+            return new Response(false, $responseData['error-codes'], $hostname);
         }
 
-        return new Response(false);
+        return new Response(false, array(), $hostname);
     }
 
     /**
@@ -81,11 +83,11 @@ class Response
      * @param array $errorCodes
      * @param string $hostname
      */
-    public function __construct($success, array $errorCodes = array(), $hostname = '')
+    public function __construct($success, array $errorCodes = array(), $hostname = null)
     {
         $this->success = $success;
         $this->errorCodes = $errorCodes;
-        $this->hostName = $hostname;
+        $this->hostname = $hostname;
     }
 
     /**
@@ -109,10 +111,12 @@ class Response
     }
 
     /**
+     * Get hostname.
+     *
      * @return string
      */
-    public function getHostName()
+    public function getHostname()
     {
-        return $this->hostName;
+      return $this->hostname;
     }
 }
