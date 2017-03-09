@@ -6,7 +6,7 @@
 
 * Project page: http://www.google.com/recaptcha/
 * Repository: https://github.com/google/recaptcha
-* Version: 1.1.2
+* Version: 1.1.3
 * License: BSD, see [LICENSE](LICENSE)
 
 ## Description
