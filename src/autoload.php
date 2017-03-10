@@ -26,6 +26,8 @@ spl_autoload_register(function ($class) {
     $path = dirname(__FILE__).'/'.$class.'.php';
     if (is_readable($path)) {
         require_once $path;
+
+        return;
     }
 
     /* If we didn't find what we're looking for already, maybe it's
