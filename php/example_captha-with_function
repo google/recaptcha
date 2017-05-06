@@ -1,0 +1,88 @@
+<?php
+
+ /**
+ * Another Sample PHP code to use reCAPTCHA V2.
+ *
+ * @copyright Copyright (c) 2014, Google Inc.
+ * @link      http://www.google.com/recaptcha
+ 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+ 
+ /* ---- Your Api Set Here ----- */
+  
+  // reCAPTCHA supported 40+ languages listed here: https://developers.google.com/recaptcha/docs/language
+  define('G_Recaptcha_Lang','Your_captcha_languange_id'); // ex: id,es,en
+  
+  // Register API keys at https://www.google.com/recaptcha/admin
+  define('G_Recaptcha_Publickey','Your_captcha_public_keys');
+  define('G_Recaptcha_Secretkey','Your_captcha_secret_keys');
+ 
+ 
+ /* ---- The function example ----- */
+ 
+ // ex Function to display the form
+ 
+  function display_my_recaptcha(){
+
+	 $pub = ( defined('G_Recaptcha_Publickey') ? G_Recaptcha_Publickey : 0 );
+	 return $recaptchaform = '<div class="g-recaptcha" data-sitekey="'.$pub.'"></div>
+	 <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl='.( defined('G_Recaptcha_Lang') ? G_Recaptcha_Lang : 'en' ).'">
+	 </script>';
+  }
+  
+  // ex Functions to controlling the response (true/false)
+ 
+  function recaptcha_isvalid( $response=false, $rem=false ) {
+ 
+  require_once 'recaptchalib.php';
+  
+  $siteKey = ( defined('G_Recaptcha_Publickey') ? G_Recaptcha_Publickey : false );
+  $secret = ( defined('G_Recaptcha_Secretkey') ? G_Recaptcha_Secretkey : false );
+  $lang = ( defined('G_Recaptcha_Lang') ? G_Recaptcha_Lang : 'en' ); 
+  
+  $resp = null; 
+  $error = null;
+  
+  $reCaptcha = new ReCaptcha($secret);
+  
+  if ( $rem && $response ) $resp = $reCaptcha->verifyResponse($rem,$response);
+  
+  if ($resp != null && $resp->success) return true;
+  else return false; // exit;
+  
+ }
+ 
+ 
+ /* -----  Example The Pages ------- */
+ 
+ if( isset( $_POST['recaptcha_example'] ) ){
+   
+   if( recaptcha_isvalid($_POST['recaptcha_example']) ) exit('Sukses');
+   else exit('captcha wrong!');
+ 
+ }
+ 
+ 
+ $myform = '<form id="myid" name="recaptcha_example" method="post">
+		   '.( display_my_recaptcha() ).'
+		   <input type="submit" value="send">
+		   </form>';
+		   
+ echo $myform;
