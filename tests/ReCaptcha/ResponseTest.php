@@ -32,21 +32,26 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideJson
      */
-    public function testFromJson($json, $success, $errorCodes)
+    public function testFromJson($json, $success, $errorCodes, $hostname)
     {
         $response = Response::fromJson($json);
         $this->assertEquals($success, $response->isSuccess());
         $this->assertEquals($errorCodes, $response->getErrorCodes());
+        $this->assertEquals($hostname, $response->getHostname());
     }
 
     public function provideJson()
     {
         return array(
-            array('{"success": true}', true, array()),
-            array('{"success": false, "error-codes": ["test"]}', false, array('test')),
-            array('{"success": true, "error-codes": ["test"]}', true, array()),
-            array('{"success": false}', false, array()),
-            array('BAD JSON', false, array('invalid-json')),
+            array('{"success": true}', true, array(), null),
+            array('{"success": true, "hostname": "google.com"}', true, array(), 'google.com'),
+            array('{"success": false, "error-codes": ["test"]}', false, array('test'), null),
+            array('{"success": false, "error-codes": ["test"], "hostname": "google.com"}', false, array('test'), 'google.com'),
+            array('{"success": true, "error-codes": ["test"]}', true, array(), null),
+            array('{"success": true, "error-codes": ["test"], "hostname": "google.com"}', true, array(), 'google.com'),
+            array('{"success": false}', false, array(), null),
+            array('{"success": false, "hostname": "google.com"}', false, array(), 'google.com'),
+            array('BAD JSON', false, array('invalid-json'), null),
         );
     }
 
@@ -57,6 +62,9 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
         $response = new Response(false);
         $this->assertFalse($response->isSuccess());
+
+        $response = new Response(true, array(), 'example.com');
+        $this->assertEquals('example.com', $response->getHostName());
     }
 
     public function testGetErrorCodes()
@@ -64,5 +72,13 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $errorCodes = array('test');
         $response = new Response(true, $errorCodes);
         $this->assertEquals($errorCodes, $response->getErrorCodes());
+    }
+
+    public function testGetHostname()
+    {
+      $hostname = 'google.com';
+      $errorCodes = array();
+      $response = new Response(true, $errorCodes, $hostname);
+      $this->assertEquals($hostname, $response->getHostname());
     }
 }

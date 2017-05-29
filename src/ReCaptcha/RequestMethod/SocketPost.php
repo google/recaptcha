@@ -32,7 +32,7 @@ use ReCaptcha\RequestParameters;
 /**
  * Sends a POST request to the reCAPTCHA service, but makes use of fsockopen()
  * instead of get_file_contents(). This is to account for people who may be on
- * servers where allow_furl_open is disabled.
+ * servers where allow_url_open is disabled.
  */
 class SocketPost implements RequestMethod
 {
