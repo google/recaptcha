@@ -26,7 +26,9 @@
 
 namespace ReCaptcha;
 
-class ReCaptchaTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ReCaptchaTest extends TestCase
 {
 
     /**
@@ -59,7 +61,10 @@ class ReCaptchaTest extends \PHPUnit_Framework_TestCase
 
     public function testVerifyReturnsResponse()
     {
-        $method = $this->getMock('\\ReCaptcha\\RequestMethod', array('submit'));
+        $method = $this->getMockBuilder(\ReCaptcha\RequestMethod::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('submit'))
+            ->getMock();
         $method->expects($this->once())
                 ->method('submit')
                 ->with($this->callback(function ($params) {

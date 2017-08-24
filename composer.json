@@ -13,7 +13,7 @@
         "php": ">=5.5"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "^4.8.35|^5.7|^6.0"
     },
     "autoload": {
         "psr-4": {
@@ -24,5 +24,8 @@
         "branch-alias": {
             "dev-master": "1.1.x-dev"
         }
+    },
+    "scripts": {
+        "test": "@php vendor/bin/phpunit --colors=always"
     }
 }

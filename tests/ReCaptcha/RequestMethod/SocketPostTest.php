@@ -27,13 +27,16 @@
 namespace ReCaptcha\RequestMethod;
 
 use ReCaptcha\RequestParameters;
+use PHPUnit\Framework\TestCase;
 
-class SocketPostTest extends \PHPUnit_Framework_TestCase
+class SocketPostTest extends TestCase
 {
-
     public function testSubmitSuccess()
     {
-        $socket = $this->getMock('\\ReCaptcha\\RequestMethod\\Socket', array('fsockopen', 'fwrite', 'fgets', 'feof', 'fclose'));
+        $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('fsockopen', 'fwrite', 'fgets', 'feof', 'fclose'))
+            ->getMock();
         $socket->expects($this->once())
                 ->method('fsockopen')
                 ->willReturn(true);
@@ -56,7 +59,10 @@ class SocketPostTest extends \PHPUnit_Framework_TestCase
 
     public function testSubmitBadResponse()
     {
-        $socket = $this->getMock('\\ReCaptcha\\RequestMethod\\Socket', array('fsockopen', 'fwrite', 'fgets', 'feof', 'fclose'));
+        $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('fsockopen', 'fwrite', 'fgets', 'feof', 'fclose'))
+            ->getMock();
         $socket->expects($this->once())
                 ->method('fsockopen')
                 ->willReturn(true);
@@ -79,7 +85,10 @@ class SocketPostTest extends \PHPUnit_Framework_TestCase
 
     public function testSubmitBadRequest()
     {
-        $socket = $this->getMock('\\ReCaptcha\\RequestMethod\\Socket', array('fsockopen'));
+        $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('fsockopen'))
+            ->getMock();
         $socket->expects($this->once())
                 ->method('fsockopen')
                 ->willReturn(false);
