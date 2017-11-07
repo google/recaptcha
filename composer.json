@@ -1,6 +1,6 @@
 {
     "name": "google/recaptcha",
-    "description": "Client library for reCAPTCHA, a free service that protect websites from spam and abuse.",
+    "description": "Client library for reCAPTCHA, a free service that protects websites from spam and abuse.",
     "type": "library",
     "keywords": ["recaptcha", "captcha", "spam", "abuse"],
     "homepage": "http://www.google.com/recaptcha/",
