@@ -42,12 +42,13 @@ $secret = '';
 // reCAPTCHA supported 40+ languages listed here: https://developers.google.com/recaptcha/docs/language
 $lang = 'en';
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta charset="UTF-8">
         <title>reCAPTCHA Example</title>
         <link rel="shortcut icon" href="//www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
-        <style type="text/css">
+        <style>
             body {
                 margin: 1em 5em 0 5em;
                 font-family: sans-serif;
@@ -112,7 +113,7 @@ else:
 // Add the g-recaptcha tag to the form you want to include the reCAPTCHA element
     ?>
     <p>Complete the reCAPTCHA then submit the form.</p>
-    <form action="/" method="post">
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
         <fieldset>
             <legend>An example form</legend>
             <p>Example input A: <input type="text" name="ex-a" value="foo"></p>
