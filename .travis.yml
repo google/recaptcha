@@ -17,7 +17,8 @@ before_script:
   - phpenv version-name | grep ^5.[34] && echo "apc.enable_cli=1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini ; true
 
 script:
-  - vendor/bin/phpunit
+  - composer run lint
+  - composer run test
 
 cache:
   directories:

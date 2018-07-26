@@ -68,9 +68,8 @@ class ReCaptchaTest extends TestCase
         $method->expects($this->once())
                 ->method('submit')
                 ->with($this->callback(function ($params) {
-
-                            return true;
-                        }))
+                    return true;
+                }))
                 ->will($this->returnValue('{"success": true}'));
         ;
         $rc = new ReCaptcha('secret', $method);

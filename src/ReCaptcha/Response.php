@@ -117,6 +117,6 @@ class Response
      */
     public function getHostname()
     {
-      return $this->hostname;
+        return $this->hostname;
     }
 }

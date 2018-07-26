@@ -36,7 +36,7 @@ class Socket
 
     /**
      * fsockopen
-     * 
+     *
      * @see http://php.net/fsockopen
      * @param string $hostname
      * @param int $port
@@ -57,7 +57,7 @@ class Socket
 
     /**
      * fwrite
-     * 
+     *
      * @see http://php.net/fwrite
      * @param string $string
      * @param int $length
@@ -70,7 +70,7 @@ class Socket
 
     /**
      * fgets
-     * 
+     *
      * @see http://php.net/fgets
      * @param int $length
      * @return string
@@ -82,7 +82,7 @@ class Socket
 
     /**
      * feof
-     * 
+     *
      * @see http://php.net/feof
      * @return bool
      */
@@ -93,7 +93,7 @@ class Socket
 
     /**
      * fclose
-     * 
+     *
      * @see http://php.net/fclose
      * @return bool
      */

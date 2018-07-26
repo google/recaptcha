@@ -31,7 +31,6 @@ use PHPUnit\Framework\TestCase;
 
 class CurlPostTest extends TestCase
 {
-
     protected function setUp()
     {
         if (!extension_loaded('curl')) {

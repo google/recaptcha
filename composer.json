@@ -10,7 +10,8 @@
         "source": "https://github.com/google/recaptcha"
     },
     "require": {
-        "php": ">=5.5"
+        "php": ">=5.5",
+        "friendsofphp/php-cs-fixer": "^2.12"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8.35|^5.7|^6.0"
@@ -26,6 +27,7 @@
         }
     },
     "scripts": {
+        "lint": "@php vendor/bin/php-cs-fixer -vvv fix --using-cache=no --dry-run .",
         "test": "@php vendor/bin/phpunit --colors=always"
     }
 }

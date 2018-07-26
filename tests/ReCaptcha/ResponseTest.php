@@ -78,9 +78,9 @@ class ResponseTest extends TestCase
 
     public function testGetHostname()
     {
-      $hostname = 'google.com';
-      $errorCodes = array();
-      $response = new Response(true, $errorCodes, $hostname);
-      $this->assertEquals($hostname, $response->getHostname());
+        $hostname = 'google.com';
+        $errorCodes = array();
+        $response = new Response(true, $errorCodes, $hostname);
+        $this->assertEquals($hostname, $response->getHostname());
     }
 }
