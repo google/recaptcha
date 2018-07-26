@@ -35,7 +35,7 @@ class ReCaptcha
      * Version of this client library.
      * @const string
      */
-    const VERSION = 'php_1.1.3';
+    const VERSION = 'php_1.2';
 
     /**
      * Shared secret for the site.
