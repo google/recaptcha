@@ -4,7 +4,7 @@
 [![Latest Stable Version](https://poser.pugx.org/google/recaptcha/v/stable.svg)](https://packagist.org/packages/google/recaptcha)
 [![Total Downloads](https://poser.pugx.org/google/recaptcha/downloads.svg)](https://packagist.org/packages/google/recaptcha)
 
-- Project page: http://www.google.com/recaptcha/
+- Project page: https://www.google.com/recaptcha/
 - Repository: https://github.com/google/recaptcha
 - Version: 1.2
 - License: BSD, see [LICENSE](LICENSE)
