@@ -18,5 +18,9 @@ before_script:
 script:
   - vendor/bin/phpunit
 
+cache:
+  directories:
+    - "$HOME/.composer/cache/files"
+
 git:
   depth: 5
