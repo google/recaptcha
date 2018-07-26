@@ -50,6 +50,20 @@ class Response
     private $hostname;
 
     /**
+     * Constructor.
+     *
+     * @param boolean $success
+     * @param array $errorCodes
+     * @param string $hostname
+     */
+    public function __construct($success, array $errorCodes = array(), $hostname = null)
+    {
+        $this->success = $success;
+        $this->errorCodes = $errorCodes;
+        $this->hostname = $hostname;
+    }
+
+    /**
      * Build the response from the expected JSON returned by the service.
      *
      * @param string $json
@@ -74,20 +88,6 @@ class Response
         }
 
         return new Response(false, array(), $hostname);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param boolean $success
-     * @param array $errorCodes
-     * @param string $hostname
-     */
-    public function __construct($success, array $errorCodes = array(), $hostname = null)
-    {
-        $this->success = $success;
-        $this->errorCodes = $errorCodes;
-        $this->hostname = $hostname;
     }
 
     /**
