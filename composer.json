@@ -28,6 +28,7 @@
     },
     "scripts": {
         "lint": "@php vendor/bin/php-cs-fixer -vvv fix --using-cache=no --dry-run .",
-        "test": "@php vendor/bin/phpunit --colors=always"
+        "test": "@php vendor/bin/phpunit --colors=always",
+        "serve-examples": "@php -S localhost:8080 -t examples"
     }
 }
