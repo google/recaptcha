@@ -68,7 +68,7 @@ class ReCaptcha
 
         $this->secret = $secret;
 
-        if (!is_null($requestMethod)) {
+        if (isset($requestMethod)) {
             $this->requestMethod = $requestMethod;
         } else {
             $this->requestMethod = new RequestMethod\Post();

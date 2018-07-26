@@ -80,11 +80,11 @@ class RequestParameters
     {
         $params = array('secret' => $this->secret, 'response' => $this->response);
 
-        if (!is_null($this->remoteIp)) {
+        if (isset($this->remoteIp)) {
             $params['remoteip'] = $this->remoteIp;
         }
 
-        if (!is_null($this->version)) {
+        if (isset($this->version)) {
             $params['version'] = $this->version;
         }
 

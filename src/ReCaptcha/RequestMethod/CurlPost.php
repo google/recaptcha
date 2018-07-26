@@ -50,7 +50,7 @@ class CurlPost implements RequestMethod
 
     public function __construct(Curl $curl = null)
     {
-        if (!is_null($curl)) {
+        if (isset($curl)) {
             $this->curl = $curl;
         } else {
             $this->curl = new Curl();
