@@ -36,7 +36,7 @@ interface RequestMethod
      * Submit the request with the specified parameters.
      *
      * @param RequestParameters $params Request parameters
-     * @return string Body of the reCAPTCHA response
+     * @return string|Response Body of the reCAPTCHA response or Response instance
      */
     public function submit(RequestParameters $params);
 }
