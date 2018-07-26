@@ -26,7 +26,9 @@
 
 namespace ReCaptcha;
 
-class RequestParametersTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class RequestParametersTest extends Testcase
 {
 
     public function provideValidData()

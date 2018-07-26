@@ -27,8 +27,9 @@
 namespace ReCaptcha\RequestMethod;
 
 use ReCaptcha\RequestParameters;
+use PHPUnit\Framework\TestCase;
 
-class PostTest extends \PHPUnit_Framework_TestCase
+class PostTest extends TestCase
 {
     public static $assert = null;
     protected $parameters = null;

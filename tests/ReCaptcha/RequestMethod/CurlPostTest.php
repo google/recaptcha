@@ -27,8 +27,9 @@
 namespace ReCaptcha\RequestMethod;
 
 use \ReCaptcha\RequestParameters;
+use PHPUnit\Framework\TestCase;
 
-class CurlPostTest extends \PHPUnit_Framework_TestCase
+class CurlPostTest extends TestCase
 {
 
     protected function setUp()
@@ -42,8 +43,10 @@ class CurlPostTest extends \PHPUnit_Framework_TestCase
 
     public function testSubmit()
     {
-        $curl = $this->getMock('\\ReCaptcha\\RequestMethod\\Curl',
-                array('init', 'setoptArray', 'exec', 'close'));
+        $curl = $this->getMockBuilder(\ReCaptcha\RequestMethod\Curl::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('init', 'setoptArray', 'exec', 'close'))
+            ->getMock();
         $curl->expects($this->once())
                 ->method('init')
                 ->willReturn(new \stdClass);
