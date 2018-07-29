@@ -62,4 +62,9 @@
     <li><a href="/recaptcha-v2-invisible.php">Invisible</a></li>
   </ul>
   </li>
+  <li><h2>reCAPTCHA v3</h2>
+  <ul>
+    <li><a href="/recaptcha-v3-request-scores.php">Request scores</a></li>
+  </ul>
+  </li>
 </ul>
