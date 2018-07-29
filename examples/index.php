@@ -59,6 +59,7 @@
   <li><h2>reCAPTCHA v2</h2>
   <ul>
     <li><a href="/recaptcha-v2-checkbox.php">"I'm not a robot" checkbox</a></li>
+    <li><a href="/recaptcha-v2-invisible.php">Invisible</a></li>
   </ul>
   </li>
 </ul>
