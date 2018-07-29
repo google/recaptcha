@@ -30,7 +30,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $siteKey = '';
 $secret = '';
 
-// reCAPTCHA supported 40+ languages listed here: https://developers.google.com/recaptcha/docs/language
+// reCAPTCHA supports 40+ languages listed here: https://developers.google.com/recaptcha/docs/language
 $lang = 'en';
 ?>
 <!DOCTYPE html>
@@ -43,27 +43,32 @@ $lang = 'en';
   {
     "@context": "http://schema.org",
     "@type": "WebSite",
-    "name": "reCAPTCHA \"I'm not a robot\" checkbox demo",
+    "name": "reCAPTCHA demo - \"I'm not a robot\" checkbox demo",
     "url": "https://recaptcha-demo.appspot.com/recaptcha-v2-checkbox.php"
   }
 </script>
 
-<meta name="description" content="reCAPTCHA &quot;I'm not a robot&quot; checkbox demo" />
+<meta name="description" content="reCAPTCHA demo - &quot;I'm not a robot&quot; checkbox" />
 <meta property="og:url" content="https://recaptcha-demo.appspot.com/recaptcha-v2-checkbox.php" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="reCAPTCHA &quot;I'm not a robot&quot; checkbox demo" />
-<meta property="og:description" content="reCAPTCHA &quot;I'm not a robot&quot; checkbox demo" />
+<meta property="og:title" content="reCAPTCHA demo - &quot;I'm not a robot&quot; checkbox" />
+<meta property="og:description" content="reCAPTCHA demo - &quot;I'm not a robot&quot; checkbox" />
 
 <style>
   body {
     font-family: sans-serif;
     margin: 2rem;
   }
+
+  .form-field {
+      display: block;
+      margin: 1rem;
+  }
 </style>
 
-<title>reCAPTCHA demo</title>
-<h1>reCAPTCHA Example</h1>
-<p><a href="/">⬅ Home</a></p>
+<title>reCAPTCHA demo - "I'm not a robot" checkbox</title>
+<h1>reCAPTCHA demo</h1><h2>"I'm not a robot" checkbox</h2>
+<p><a href="/">↤ Home</a></p>
 <?php
 if ($siteKey === '' || $secret === ''):
 ?>
@@ -94,7 +99,7 @@ elseif (isset($_POST['g-recaptcha-response'])):
         ?>
         <h2>Success!</h2>
         <p>That's it. Everything is working. Go integrate this into your real project.</p>
-        <p><a href="/">Try again</a></p>
+        <p><a href="/recaptcha-v2-checkbox.php">⟳ Try again</a></p>
         <?php
     else:
         // If it's not successful, then one or more error codes will be returned.
@@ -108,7 +113,7 @@ elseif (isset($_POST['g-recaptcha-response'])):
         ?></p>
         <p>Check the error code reference at <kbd><a href="https://developers.google.com/recaptcha/docs/verify#error-code-reference">https://developers.google.com/recaptcha/docs/verify#error-code-reference</a></kbd>.
         <p><strong>Note:</strong> Error code <kbd>missing-input-response</kbd> may mean the user just didn't complete the reCAPTCHA.</p>
-        <p><a href="/">Try again</a></p>
+        <p><a href="/recaptcha-v2-checkbox.php">⟳ Try again</a></p>
         <?php
     endif;
 else:
@@ -118,14 +123,13 @@ else:
     <form action="/recaptcha-v2-checkbox.php" method="post">
         <fieldset>
             <legend>An example form</legend>
-            <p>Example input A: <input type="text" name="ex-a" value="foo"></p>
-            <p>Example input B: <input type="text" name="ex-b" value="bar"></p>
+            <label class="form-field">Example input A: <input type="text" name="ex-a" value="foo"></label>
+            <label class="form-field">Example input B: <input type="text" name="ex-b" value="bar"></label>
 
-            <div class="g-recaptcha" data-sitekey="<?php echo $siteKey; ?>"></div>
-            <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=<?php echo $lang; ?>">
-            </script>
-            <p><input type="submit" value="Submit" /></p>
+            <div class="g-recaptcha form-field" data-sitekey="<?php echo $siteKey; ?>"></div>
+            <button class="form-field" type="submit">Submit ↦</button>
         </fieldset>
     </form>
+    <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=<?php echo $lang; ?>" async defer></script>
     <?php
 endif;?>
