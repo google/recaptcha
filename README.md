@@ -1,6 +1,7 @@
 # reCAPTCHA PHP client library
 
 [![Build Status](https://travis-ci.org/google/recaptcha.svg)](https://travis-ci.org/google/recaptcha)
+[![Coverage Status](https://coveralls.io/repos/github/google/recaptcha/badge.svg?branch=v1.2)](https://coveralls.io/github/google/recaptcha)
 [![Latest Stable Version](https://poser.pugx.org/google/recaptcha/v/stable.svg)](https://packagist.org/packages/google/recaptcha)
 [![Total Downloads](https://poser.pugx.org/google/recaptcha/downloads.svg)](https://packagist.org/packages/google/recaptcha)
 
