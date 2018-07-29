@@ -50,6 +50,18 @@ class Response
     private $hostname;
 
     /**
+     * Score assigned to the request
+     * @var float
+     */
+    private $score;
+
+    /**
+     * Action as specified by the page
+     * @var string
+     */
+    private $action;
+
+    /**
      * Build the response from the expected JSON returned by the service.
      *
      * @param string $json
@@ -64,9 +76,11 @@ class Response
         }
 
         $hostname = isset($responseData['hostname']) ? $responseData['hostname'] : null;
+        $score = isset($responseData['score']) ? floatval($responseData['score']) : null;
+        $action = isset($responseData['action']) ? $responseData['action'] : null;
 
         if (isset($responseData['success']) && $responseData['success'] == true) {
-            return new Response(true, array(), $hostname);
+            return new Response(true, array(), $hostname, $score, $action);
         }
 
         if (isset($responseData['error-codes']) && is_array($responseData['error-codes'])) {
@@ -82,12 +96,16 @@ class Response
      * @param boolean $success
      * @param array $errorCodes
      * @param string $hostname
+     * @param float $score
+     * @param strong $action
      */
-    public function __construct($success, array $errorCodes = array(), $hostname = null)
+    public function __construct($success, array $errorCodes = array(), $hostname = null, $score = null, $action = null)
     {
         $this->success = $success;
         $this->errorCodes = $errorCodes;
         $this->hostname = $hostname;
+        $this->score = $score;
+        $this->action = $action;
     }
 
     /**
@@ -118,5 +136,36 @@ class Response
     public function getHostname()
     {
         return $this->hostname;
+    }
+
+    /**
+     * Get score
+     *
+     * @return float
+     */
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    /**
+     * Get action
+     *
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    public function toArray()
+    {
+        return array(
+            'success' => $this->success,
+            'error-codes' => $this->errorCodes,
+            'hostname' => $this->hostname,
+            'score' => $this->score,
+            'action' => $this->action,
+        );
     }
 }

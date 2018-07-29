@@ -83,4 +83,31 @@ class ResponseTest extends TestCase
         $response = new Response(true, $errorCodes, $hostname);
         $this->assertEquals($hostname, $response->getHostname());
     }
+
+    public function testGetScore()
+    {
+        $score = 0.5;
+        $response = new Response(true, array(), '', $score);
+        $this->assertEquals($score, $response->getScore());
+    }
+
+    public function testGetAction()
+    {
+        $action = 'homepage';
+        $response = new Response(true, array(), '', 0.5, $action);
+        $this->assertEquals($action, $response->getAction());
+    }
+
+    public function testToArray()
+    {
+        $response = new Response(true, array(), 'hostname', 0.5, 'homepage');
+        $expected = array(
+            'success' => true,
+            'error-codes' => array(),
+            'hostname' => 'hostname',
+            'score' => 0.5,
+            'action' => 'homepage',
+        );
+        $this->assertEquals($expected, $response->toArray());
+    }
 }
