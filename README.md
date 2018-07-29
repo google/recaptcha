@@ -13,8 +13,9 @@
 ## Description
 
 reCAPTCHA is a free CAPTCHA service that protect websites from spam and abuse.
-This is Google authored code that provides plugins for third-party integration
-with reCAPTCHA.
+This is a PHP library that provides wraps up the server-side verification of
+responses from the reCAPTCHA service. This client supports both reCAPTCHA v2 and
+v3.
 
 ## Installation
 
@@ -22,35 +23,30 @@ with reCAPTCHA.
 
 [Composer](https://getcomposer.org/) is a widely used dependency manager for PHP
 packages. This reCAPTCHA client is available on Packagist as
-[`google/recaptcha`](https://packagist.org/packages/google/recaptcha) and can be
-installed either by running the `composer require` command or adding the library
-to your `composer.json`. To enable Composer for you project, refer to the
-project's [Getting Started](https://getcomposer.org/doc/00-intro.md)
-documentation.
+[`google/recaptcha`](https://packagist.org/packages/google/recaptcha).
 
 To add this dependency using the command, run the following from within your
 project directory:
 
 ```sh
-composer require google/recaptcha "~1.2"
+composer require google/recaptcha "^1.2"
 ```
 
 Alternatively, add the dependency directly to your `composer.json` file:
 
 ```json
 "require": {
-    "google/recaptcha": "~1.2"
+    "google/recaptcha": "^1.2"
 }
 ```
 
 ### Direct download (no Composer)
 
 If you wish to install the library manually (i.e. without Composer), then you
-can use the links on the main project page to either clone the repo or download
-the [ZIP file](https://github.com/google/recaptcha/archive/master.zip). For
-convenience, an autoloader script is provided in `src/autoload.php` which you
-can require into your script instead of Composer's `vendor/autoload.php`. For
-example:
+can use the links on the main project page to download a [ZIP
+file](https://github.com/google/recaptcha/archive/master.zip). For convenience,
+an autoloader script is provided in `src/autoload.php` which you can require
+into your script. For example:
 
 ```php
 require('/path/to/recaptcha/src/autoload.php');
@@ -58,17 +54,17 @@ $recaptcha = new \ReCaptcha\ReCaptcha($secret);
 ```
 
 The classes in the project are structured according to the
-[PSR-4](http://www.php-fig.org/psr/psr-4/) standard, so you may of course also
-use your own autoloader or require the needed files directly in your code.
+[PSR-4](http://www.php-fig.org/psr/psr-4/) standard, so you can also use your
+own autoloader or require the needed files directly in your code.
 
 ### Development install
 
 If you would like to contribute to this project or run the unit tests on within
-your own environment you will need to install the development dependencies, in
-this case that means [PHPUnit](https://phpunit.de/). If you clone the repo and
-run `composer install` from within the repo, this will also grab PHPUnit and all
-its dependencies for you. If you only need the autoloader installed, then you
-can always specify to Composer not to run in development mode, e.g.
+your own environment you will need to install the development dependencies. If
+you clone the repo and run `composer install` from within the repo, this will
+also grab PHPUnit and all its dependencies for you. If you only need the
+autoloader installed, then you can always specify to Composer not to run in
+development mode, e.g.
 
 ```sh
 composer install --no-dev`.
@@ -79,10 +75,18 @@ requirement for them to be included in your production code.
 
 ## Usage
 
-First, register keys for your site at https://www.google.com/recaptcha/admin
+First obtain the appropriate keys for the type of reCAPTCHA you wish to
+integrate for v2 at https://www.google.com/recaptcha/admin or v3 at
+https://g.co/recaptcha/v3.
 
-When your app receives a form submission containing the `g-recaptcha-response`
-field, you can verify it using:
+Then follow the [integration guide on the developer
+site](https://developers.google.com/recaptcha/intro) to add the reCAPTCHA
+functionality into your frontend.
+
+This library comes in when you need to verify the user's response. On the PHP
+side you need the response from the reCAPTCHA service and secret key from your
+credentials. Instantiate the `ReCaptcha` class with your secret key and then
+pass the response to the `verify()` method.
 
 ```php
 <?php
@@ -90,7 +94,7 @@ $recaptcha = new \ReCaptcha\ReCaptcha($secret);
 $resp = $recaptcha->verify($gRecaptchaResponse, $remoteIp);
 if ($resp->isSuccess()) {
     // verified!
-    // if Domain Name Validation turned off don't forget to check hostname field
+    // if Domain Name Validation is turned off don't forget to check hostname field
     // if($resp->getHostName() === $_SERVER['SERVER_NAME']) {  }
 } else {
     $errors = $resp->getErrorCodes();
@@ -106,7 +110,7 @@ You can see an end-to-end working example in
 
 The previous version of this client is still available on the `1.0.0` tag [in
 this repo](https://github.com/google/recaptcha/tree/1.0.0) but it is purely for
-reference and will not receive any updates.
+reference and will not receive any updates. The v1 API no longer active.
 
 The major changes in 1.1.0 are:
 
