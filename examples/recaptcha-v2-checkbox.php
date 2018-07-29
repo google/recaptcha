@@ -43,7 +43,7 @@ $lang = 'en';
   {
     "@context": "http://schema.org",
     "@type": "WebSite",
-    "name": "reCAPTCHA demo - \"I'm not a robot\" checkbox demo",
+    "name": "reCAPTCHA demo - \"I'm not a robot\" checkbox",
     "url": "https://recaptcha-demo.appspot.com/recaptcha-v2-checkbox.php"
   }
 </script>
@@ -98,6 +98,7 @@ elseif (isset($_POST['g-recaptcha-response'])):
         // If the response is a success, that's it!
         ?>
         <h2>Success!</h2>
+        <kbd><pre><?php var_export($resp);?></pre></kbd>
         <p>That's it. Everything is working. Go integrate this into your real project.</p>
         <p><a href="/recaptcha-v2-checkbox.php">⟳ Try again</a></p>
         <?php
@@ -125,7 +126,6 @@ else:
             <legend>An example form</legend>
             <label class="form-field">Example input A: <input type="text" name="ex-a" value="foo"></label>
             <label class="form-field">Example input B: <input type="text" name="ex-b" value="bar"></label>
-
             <div class="g-recaptcha form-field" data-sitekey="<?php echo $siteKey; ?>"></div>
             <button class="form-field" type="submit">Submit ↦</button>
         </fieldset>
