@@ -31,10 +31,10 @@ $siteKey = '';
 $secret = '';
 
 // Copy the config.php.dist file to config.php and update it with your keys to run the examples
-if(is_readable(__DIR__ . '/config.php')) {
-  $config = include __DIR__ . '/config.php';
-  $siteKey = $config['v3']['site'];
-  $secret = $config['v3']['secret'];
+if (is_readable(__DIR__ . '/config.php')) {
+    $config = include __DIR__ . '/config.php';
+    $siteKey = $config['v3']['site'];
+    $secret = $config['v3']['secret'];
 }
 
 $recaptcha = new \ReCaptcha\ReCaptcha($secret);
