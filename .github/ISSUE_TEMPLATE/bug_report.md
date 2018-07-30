@@ -1,3 +1,9 @@
+---
+name: PHP client issue
+about: Report an issue with the PHP client library
+
+---
+
 **Issue description**
 <!-- One or two sentences describing the problem -->
 
