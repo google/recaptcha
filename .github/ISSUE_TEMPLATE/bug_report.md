@@ -1,35 +1,22 @@
----
-name: Bug report
-about: Create a report to help us improve
+**Issue description**
+<!-- One or two sentences describing the problem -->
 
----
+**Environment**
+<!-- The server or development environment where you're seeing the problem -->
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+ * OS name and version:
+ * PHP version:
+ * Web server name and version:
+ * `google/recaptcha` version:
+ * Browser name and version:
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**Reproducing the issue**
+<!-- Where possible link to a URL where the problem can be seen or show code that causes it -->
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+  * URL (optional): <!-- if your integration is already deployed and the issue is visible -->
+  * Code (optional): <!-- share a link to the code you're using or an example in a Gist -->
+  
+  ***User steps***
+  <!-- Detail the necessary steps to reproduce the issue. Include the output of any error messages. -->
+  
+    1. Visit page...
