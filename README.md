@@ -6,9 +6,9 @@
 [![Total Downloads](https://poser.pugx.org/google/recaptcha/downloads.svg)](https://packagist.org/packages/google/recaptcha)
 
 reCAPTCHA is a free CAPTCHA service that protect websites from spam and abuse.
-This is a PHP library that provides wraps up the server-side verification step
-required to process responses from the reCAPTCHA service. This client supports
-both v2 and v3.
+This is a PHP library that wraps up the server-side verification step required
+to process responses from the reCAPTCHA service. This client supports both v2
+and v3.
 
 - reCAPTCHA: https://www.google.com/recaptcha
 - This repo: https://github.com/google/recaptcha
