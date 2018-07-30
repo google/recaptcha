@@ -30,13 +30,20 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $siteKey = '';
 $secret = '';
 
+// Copy the config.php.dist file to config.php and update it with your keys to run the examples
+if(is_readable(__DIR__ . '/config.php')) {
+    $config = include __DIR__ . '/config.php';
+    $siteKey = $config['v2-invisible']['site'];
+    $secret = $config['v2-invisible']['secret'];
+}
+
 // reCAPTCHA supports 40+ languages listed here: https://developers.google.com/recaptcha/docs/language
 $lang = 'en';
 ?>
 <!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,height=device-height,minimum-scale=1">
-<link rel="shortcut icon" href="//www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="https://www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
 <link rel="canonical" href="https://recaptcha-demo.appspot.com/recaptcha-v2-invisible.php">
 
 <script type="application/ld+json">
@@ -53,22 +60,14 @@ $lang = 'en';
 <meta property="og:type" content="website" />
 <meta property="og:title" content="reCAPTCHA demo - Invisible" />
 <meta property="og:description" content="reCAPTCHA demo - Invisible" />
-
-<style>
-  body {
-    font-family: sans-serif;
-    margin: 2rem;
-  }
-
-  .form-field {
-      display: block;
-      margin: 1rem;
-  }
-</style>
+<link rel="stylesheet" type="text/css" href="/examples.css">
 
 <title>reCAPTCHA demo - Invisible</title>
-<h1>reCAPTCHA demo</h1><h2>Invisible</h2>
-<p><a href="/">↤ Home</a></p>
+<header>
+    <h1>reCAPTCHA demo</h1><h2>Invisible</h2>
+    <p><a href="/">↤ Home</a></p>
+</header>
+<main>
 <?php
 if ($siteKey === '' || $secret === ''):
 ?>
@@ -137,3 +136,14 @@ else:
     </script>
     <?php
 endif;?>
+</main>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-123057962-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-123057962-1');
+</script>

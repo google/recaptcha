@@ -29,6 +29,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 // Register API keys at https://www.google.com/recaptcha/admin
 $siteKey = '';
 $secret = '';
+
+// Copy the config.php.dist file to config.php and update it with your keys to run the examples
+if(is_readable(__DIR__ . '/config.php')) {
+  $config = include __DIR__ . '/config.php';
+  $siteKey = $config['v3']['site'];
+  $secret = $config['v3']['secret'];
+}
+
 $recaptcha = new \ReCaptcha\ReCaptcha($secret);
 $resp = $recaptcha->verify($_GET['token'], $_SERVER['REMOTE_ADDR']);
 header('Content-type:application/json');

@@ -30,6 +30,13 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $siteKey = '';
 $secret = '';
 
+// Copy the config.php.dist file to config.php and update it with your keys to run the examples
+if(is_readable(__DIR__ . '/config.php')) {
+    $config = include __DIR__ . '/config.php';
+    $siteKey = $config['v3']['site'];
+    $secret = $config['v3']['secret'];
+}
+
 // reCAPTCHA supports 40+ languages listed here: https://developers.google.com/recaptcha/docs/language
 $lang = 'en';
 
@@ -38,7 +45,7 @@ $lang = 'en';
 <!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,height=device-height,minimum-scale=1">
-<link rel="shortcut icon" href="//www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="https://www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
 <link rel="canonical" href="https://recaptcha-demo.appspot.com/recaptcha-v2-request-scores.php">
 
 <script type="application/ld+json">
@@ -55,17 +62,14 @@ $lang = 'en';
 <meta property="og:type" content="website" />
 <meta property="og:title" content="reCAPTCHA demo - Request scores" />
 <meta property="og:description" content="reCAPTCHA demo - Request scores" />
-
-<style>
-  body {
-    font-family: sans-serif;
-    margin: 2rem;
-  }
-</style>
+<link rel="stylesheet" type="text/css" href="/examples.css">
 
 <title>reCAPTCHA demo - Request scores</title>
-<h1>reCAPTCHA demo</h1><h2>Request scores</h2>
-<p><a href="/">↤ Home</a></p>
+<header>
+    <h1>reCAPTCHA demo</h1><h2>Request scores</h2>
+    <p><a href="/">↤ Home</a></p>
+</header>
+<main>
 <?php
 if ($siteKey === '' || $secret === ''):
 ?>
@@ -106,3 +110,14 @@ else:
 </script>
     <?php
 endif;?>
+</main>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-123057962-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-123057962-1');
+</script>
