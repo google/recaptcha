@@ -1,13 +1,15 @@
 # Architecture
 
-The general pattern of usage is to instantiate the
-[`ReCaptcha`](./src/ReCaptcha/ReCaptcha.php) client with your secret key and
-then call `verify()` using the response from the JavaScript reCAPTCHA client.
+The general pattern of usage is to instantiate the `ReCaptcha` class with your
+secret key, specify any additional validation rules, and then call
+`verifyAndValidate()` with the reCAPTCHA response and user's IP address. For
+example:
 
 ```php
 <?php
 $recaptcha = new \ReCaptcha\ReCaptcha($secret);
-$resp = $recaptcha->verify($gRecaptchaResponse, $remoteIp);
+$resp = $recaptcha->setExpectedHostname('recaptcha-demo.appspot.com')
+                  ->verifyAndValidate($gRecaptchaResponse, $remoteIp);
 if ($resp->isSuccess()) {
     // Verified!
 } else {

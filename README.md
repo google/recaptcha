@@ -63,13 +63,15 @@ functionality into your frontend.
 
 This library comes in when you need to verify the user's response. On the PHP
 side you need the response from the reCAPTCHA service and secret key from your
-credentials. Instantiate the `ReCaptcha` class with your secret key and then
-pass the response to the `verify()` method.
+credentials. Instantiate the `ReCaptcha` class with your secret key, specify any
+additional validation rules, and then call `verifyAndValidate()` with the
+reCAPTCHA response and user's IP address. For example:
 
 ```php
 <?php
 $recaptcha = new \ReCaptcha\ReCaptcha($secret);
-$resp = $recaptcha->verify($gRecaptchaResponse, $remoteIp);
+$resp = $recaptcha->setExpectedHostname('recaptcha-demo.appspot.com')
+                  ->verifyAndValidate($gRecaptchaResponse, $remoteIp);
 if ($resp->isSuccess()) {
     // Verified!
 } else {
@@ -77,7 +79,42 @@ if ($resp->isSuccess()) {
 }
 ```
 
-For more usage details, see [ARCHITECTURE](ARCHITECTURE.md).
+The following methods are available:
+
+- `setExpectedHostname($hostname)`: ensures the hostname matches. You must do
+  this if you have disabled "Domain/Package Name Validation" for your
+  credentials.
+- `setExpectedApkPackageName($apkPackageName)`: if you're verifying a response
+  from an Android app. Again, you must do this if you have disabled
+  "Domain/Package Name Validation" for your credentials.
+- `setExpectedAction($action)`: ensures the action matches for the v3 API.
+- `setScoreThreshold($threshold)`: set a score theshold for responses from the
+  v3 API
+- `setChallengeTimeout($timeoutSeconds)`: set a timeout between the user passing
+  the reCAPTCHA and your server processing it.
+
+Each of the `set`\*`()` methods return the `ReCaptcha` instance so you can chain them
+together. For example:
+
+```php
+<?php
+$recaptcha = new \ReCaptcha\ReCaptcha($secret);
+$resp = $recaptcha->setExpectedHostname('recaptcha-demo.appspot.com')
+                  ->setExpectedAction('homepage')
+                  ->setScoreThreshold(0.5)
+                  ->verifyAndValidate($gRecaptchaResponse, $remoteIp);
+
+if ($resp->isSuccess()) {
+    // Verified!
+} else {
+    $errors = $resp->getErrorCodes();
+}
+```
+
+You can find the constants for the libraries error codes in the `ReCaptcha`
+class constants, e.g. `ReCaptcha::E_HOSTNAME_MISMATCH`
+
+For more details on usage and structure, see [ARCHITECTURE](ARCHITECTURE.md).
 
 ### Examples
 
