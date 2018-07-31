@@ -32,13 +32,13 @@ namespace ReCaptcha;
 class RequestParameters
 {
     /**
-     * Site secret.
+     * The shared key between your site and reCAPTCHA.
      * @var string
      */
     private $secret;
 
     /**
-     * Form response.
+     * The user response token provided by reCAPTCHA, verifying the user on your site.
      * @var string
      */
     private $response;
