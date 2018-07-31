@@ -81,7 +81,10 @@ else:
     ?>
     <p>reCAPTCHA will provide a score for this request.</p>
     <ol id="recaptcha-steps">
-        <li>reCAPTCHA script it loading.</li>
+        <li class="step0">reCAPTCHA script loading</li>
+        <li style="display:none" class="step1"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo $siteKey; ?>', {action: 'homepage'})'</pre></li>
+        <li style="display:none" class="step2">Received token from reCAPTCHA service, sending to our backend with <kbd>fetch('/recaptcha-v3-verify.php?token='+<span class="token">123</span>)</kbd></li>
+        <li style="display:none" class="step3">Received response from our backend: <pre class="response">response</pre></li>
     </ol>
     <p><a href="/recaptcha-v3-request-scores.php">⟳ Try again</a></p>
 
@@ -89,21 +92,16 @@ else:
     <script>
     const steps = document.getElementById('recaptcha-steps');
     grecaptcha.ready(function() {
-
-        const showSending = document.createElement('li');
-        showSending.appendChild(document.createTextNode('Calling grecaptcha.execute(\'*siteKey*\', {action: \'homepage\'})'));
-        steps.appendChild(showSending);
-
+        document.querySelector('.step1').style.display = 'list-item';
         grecaptcha.execute('<?php echo $siteKey; ?>', {action: 'homepage'}).then(function(token) {
-            
-            const showSending = document.createElement('li');
-            showSending.appendChild(document.createTextNode('Sending token to our backend to verify'));
-            steps.appendChild(showSending);
+            document.querySelector('.token').innerHTML = token;
+            document.querySelector('.step2').style.display = 'list-item';
 
             fetch('/recaptcha-v3-verify.php?token='+token).then(function(response) {
-                const showSending = document.createElement('li');
-                showSending.appendChild(document.createTextNode('Received verification from our backend'));
-                steps.appendChild(showSending);
+                response.json().then(function(data) {
+                    document.querySelector('.response').innerHTML = JSON.stringify(data);
+                    document.querySelector('.step3').style.display = 'list-item';
+                });
             });
         });
     });

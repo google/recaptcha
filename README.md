@@ -64,14 +64,14 @@ functionality into your frontend.
 This library comes in when you need to verify the user's response. On the PHP
 side you need the response from the reCAPTCHA service and secret key from your
 credentials. Instantiate the `ReCaptcha` class with your secret key, specify any
-additional validation rules, and then call `verifyAndValidate()` with the
-reCAPTCHA response and user's IP address. For example:
+additional validation rules, and then call `verify()` with the reCAPTCHA
+response and user's IP address. For example:
 
 ```php
 <?php
 $recaptcha = new \ReCaptcha\ReCaptcha($secret);
 $resp = $recaptcha->setExpectedHostname('recaptcha-demo.appspot.com')
-                  ->verifyAndValidate($gRecaptchaResponse, $remoteIp);
+                  ->verify($gRecaptchaResponse, $remoteIp);
 if ($resp->isSuccess()) {
     // Verified!
 } else {
@@ -93,8 +93,8 @@ The following methods are available:
 - `setChallengeTimeout($timeoutSeconds)`: set a timeout between the user passing
   the reCAPTCHA and your server processing it.
 
-Each of the `set`\*`()` methods return the `ReCaptcha` instance so you can chain them
-together. For example:
+Each of the `set`\*`()` methods return the `ReCaptcha` instance so you can chain
+them together. For example:
 
 ```php
 <?php
@@ -102,7 +102,7 @@ $recaptcha = new \ReCaptcha\ReCaptcha($secret);
 $resp = $recaptcha->setExpectedHostname('recaptcha-demo.appspot.com')
                   ->setExpectedAction('homepage')
                   ->setScoreThreshold(0.5)
-                  ->verifyAndValidate($gRecaptchaResponse, $remoteIp);
+                  ->verify($gRecaptchaResponse, $remoteIp);
 
 if ($resp->isSuccess()) {
     // Verified!

@@ -125,7 +125,7 @@ class ReCaptcha
 
     /**
      * Calls the reCAPTCHA siteverify API to verify whether the user passes
-     * CAPTCHA test.
+     * CAPTCHA test and additionally runs any specified additional checks
      *
      * @param string $response The user response token provided by reCAPTCHA, verifying the user on your site.
      * @param string $remoteIp The end user's IP address.
@@ -141,83 +141,7 @@ class ReCaptcha
 
         $params = new RequestParameters($this->secret, $response, $remoteIp, self::VERSION);
         $rawResponse = $this->requestMethod->submit($params);
-        return Response::fromJson($rawResponse);
-    }
-
-    /**
-     * Provide a hostname to match against in verifyAndValidate()
-     * This should be without a protocol or trailing slash, e.g. www.google.com
-     *
-     * @param string $hostname Expected hostname
-     * @return ReCaptcha Current instance for fluent interface
-     */
-    public function setExpectedHostname($hostname)
-    {
-        $this->hostname = $hostname;
-        return $this;
-    }
-
-    /**
-     * Provide an APK package name to match against in verifyAndValidate()
-     *
-     * @param string $apkPackageName Expected APK package name
-     * @return ReCaptcha Current instance for fluent interface
-     */
-    public function setExpectedApkPackageName($apkPackageName)
-    {
-        $this->apkPackageName = $apkPackageName;
-        return $this;
-    }
-
-    /**
-     * Provide an action to match against in verifyAndValidate()
-     * This should be set per page.
-     *
-     * @param string $action Expected action
-     * @return ReCaptcha Current instance for fluent interface
-     */
-    public function setExpectedAction($action)
-    {
-        $this->action = $action;
-        return $this;
-    }
-
-    /**
-     * Provide a threshold to meet or exceed in verifyAndValidate()
-     * Threshold should be a float between 0 and 1 which will be tested as response >= threshold.
-     *
-     * @param float $threshold Expected threshold
-     * @return ReCaptcha Current instance for fluent interface
-     */
-    public function setScoreThreshold($threshold)
-    {
-        $this->threshold = floatval($threshold);
-        return $this;
-    }
-
-    /**
-     * Provide a timeout in seconds to test against the challenge timestamp in verifyAndValidate()
-     *
-     * @param int $timeoutSeconds Expected hostname
-     * @return ReCaptcha Current instance for fluent interface
-     */
-    public function setChallengeTimeout($timeoutSeconds)
-    {
-        $this->timeoutSeconds = $timeoutSeconds;
-        return $this;
-    }
-
-    /**
-     * Calls the reCAPTCHA siteverify API to verify whether the user passes
-     * CAPTCHA test and additionally runs any specified additional checks
-     *
-     * @param string $response The user response token provided by reCAPTCHA, verifying the user on your site.
-     * @param string $remoteIp The end user's IP address.
-     * @return Response Response from the service.
-     */
-    public function verifyAndValidate($response, $remoteIp = null)
-    {
-        $initialResponse = $this->verify($response, $remoteIp);
+        $initialResponse = Response::fromJson($rawResponse);
         $validationErrors = array();
 
         if (isset($this->hostname) && strcasecmp($this->hostname, $initialResponse->getHostname()) !== 0) {
@@ -257,5 +181,68 @@ class ReCaptcha
             $initialResponse->getScore(),
             $initialResponse->getAction()
         );
+    }
+
+    /**
+     * Provide a hostname to match against in verify()
+     * This should be without a protocol or trailing slash, e.g. www.google.com
+     *
+     * @param string $hostname Expected hostname
+     * @return ReCaptcha Current instance for fluent interface
+     */
+    public function setExpectedHostname($hostname)
+    {
+        $this->hostname = $hostname;
+        return $this;
+    }
+
+    /**
+     * Provide an APK package name to match against in verify()
+     *
+     * @param string $apkPackageName Expected APK package name
+     * @return ReCaptcha Current instance for fluent interface
+     */
+    public function setExpectedApkPackageName($apkPackageName)
+    {
+        $this->apkPackageName = $apkPackageName;
+        return $this;
+    }
+
+    /**
+     * Provide an action to match against in verify()
+     * This should be set per page.
+     *
+     * @param string $action Expected action
+     * @return ReCaptcha Current instance for fluent interface
+     */
+    public function setExpectedAction($action)
+    {
+        $this->action = $action;
+        return $this;
+    }
+
+    /**
+     * Provide a threshold to meet or exceed in verify()
+     * Threshold should be a float between 0 and 1 which will be tested as response >= threshold.
+     *
+     * @param float $threshold Expected threshold
+     * @return ReCaptcha Current instance for fluent interface
+     */
+    public function setScoreThreshold($threshold)
+    {
+        $this->threshold = floatval($threshold);
+        return $this;
+    }
+
+    /**
+     * Provide a timeout in seconds to test against the challenge timestamp in verify()
+     *
+     * @param int $timeoutSeconds Expected hostname
+     * @return ReCaptcha Current instance for fluent interface
+     */
+    public function setChallengeTimeout($timeoutSeconds)
+    {
+        $this->timeoutSeconds = $timeoutSeconds;
+        return $this;
     }
 }

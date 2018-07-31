@@ -91,8 +91,8 @@ elseif (isset($_POST['g-recaptcha-response'])):
     //  $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\SocketPost());
 
     // Make the call to verify the response and also pass the user's IP address
-    $resp = $recaptcha->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
-
+    $resp = $recaptcha->setExpectedHostname($_SERVER['SERVER_NAME'])
+                      ->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
     if ($resp->isSuccess()):
         // If the response is a success, that's it!
         ?>

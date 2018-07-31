@@ -1,15 +1,14 @@
 # Architecture
 
 The general pattern of usage is to instantiate the `ReCaptcha` class with your
-secret key, specify any additional validation rules, and then call
-`verifyAndValidate()` with the reCAPTCHA response and user's IP address. For
-example:
+secret key, specify any additional validation rules, and then call `verify()`
+with the reCAPTCHA response and user's IP address. For example:
 
 ```php
 <?php
 $recaptcha = new \ReCaptcha\ReCaptcha($secret);
 $resp = $recaptcha->setExpectedHostname('recaptcha-demo.appspot.com')
-                  ->verifyAndValidate($gRecaptchaResponse, $remoteIp);
+                  ->verify($gRecaptchaResponse, $remoteIp);
 if ($resp->isSuccess()) {
     // Verified!
 } else {
