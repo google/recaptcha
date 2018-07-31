@@ -17,7 +17,7 @@ and v3.
 
 ## Installation
 
-### Composer
+### Composer (recommended)
 
 Use [Composer](https://getcomposer.org) to install this library from Packagist:
 [`google/recaptcha`](https://packagist.org/packages/google/recaptcha)
@@ -43,7 +43,7 @@ and extract into your project. An autoloader script is provided in
 `src/autoload.php` which you can require into your script. For example:
 
 ```php
-require('/path/to/recaptcha/src/autoload.php');
+require_once '/path/to/recaptcha/src/autoload.php';
 $recaptcha = new \ReCaptcha\ReCaptcha($secret);
 ```
 
@@ -77,9 +77,26 @@ if ($resp->isSuccess()) {
 }
 ```
 
-You can see and run examples in [examples/](examples/) and running at
-https://recaptcha-demo.appspot.com/
+For more usage details, see [ARCHITECTURE](ARCHITECTURE.md).
+
+### Examples
+
+You can see examples of each reCAPTCHA type in [examples/](examples/). You can
+run the examples locally by using the Composer script:
+
+```sh
+composer run-script serve-examples
+```
+
+This makes use of the in-built PHP dev server to host the examples at
+http://localhost:8080/
+
+These are also hosted on Google AppEngine Flexible environment at
+https://recaptcha-demo.appspot.com/. This is configured by
+[`app.yaml`](./app.yaml) which you can also use to [deploy to your own AppEngine
+project](https://cloud.google.com/appengine/docs/flexible/php/download).
 
 ## Contributing
 
-We accept contributions via Pull Requests, see [CONTRIBUTING](CONTRIBUTING.md)
+No one ever has enough engineers, so we're very happy to accept contributions
+via Pull Requests. For details, see [CONTRIBUTING](CONTRIBUTING.md)
