@@ -41,6 +41,7 @@ if ($siteKey == '' && is_readable(__DIR__ . '/config.php')) {
 $lang = 'en';
 ?>
 <!DOCTYPE html>
+<html lang="en">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,height=device-height,minimum-scale=1">
 <link rel="shortcut icon" href="https://www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
