@@ -55,6 +55,7 @@
     <li><h2>reCAPTCHA v2</h2>
     <ul>
       <li><a href="/recaptcha-v2-checkbox.php">"I'm not a robot" checkbox</a></li>
+      <li><a href="/recaptcha-v2-checkbox-explicit.php">"I'm not a robot" checkbox - Explicit render</a></li>
       <li><a href="/recaptcha-v2-invisible.php">Invisible</a></li>
     </ul>
     </li>
@@ -66,12 +67,11 @@
   </ul>
 </main>
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
+<!-- Google Analytics - just ignore this -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123057962-1"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'UA-123057962-1');
 </script>

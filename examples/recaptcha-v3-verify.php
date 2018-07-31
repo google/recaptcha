@@ -37,6 +37,7 @@ if ($siteKey == '' && is_readable(__DIR__ . '/config.php')) {
     $secret = $config['v3']['secret'];
 }
 
+// Effectively we're providing an API endpoint here that will accept the token, verify it, and return the action / score to the page
 $recaptcha = new \ReCaptcha\ReCaptcha($secret);
 $resp = $recaptcha->verify($_GET['token'], $_SERVER['REMOTE_ADDR']);
 header('Content-type:application/json');
