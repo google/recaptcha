@@ -31,7 +31,7 @@ $siteKey = '';
 $secret = '';
 
 // Copy the config.php.dist file to config.php and update it with your keys to run the examples
-if (is_readable(__DIR__ . '/config.php')) {
+if ($siteKey == '' && is_readable(__DIR__ . '/config.php')) {
     $config = include __DIR__ . '/config.php';
     $siteKey = $config['v2-standard']['site'];
     $secret = $config['v2-standard']['secret'];
