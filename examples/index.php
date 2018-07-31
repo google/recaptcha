@@ -28,24 +28,15 @@
 <meta name="viewport" content="width=device-width,height=device-height,minimum-scale=1">
 <link rel="shortcut icon" href="https://www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
 <link rel="canonical" href="https://recaptcha-demo.appspot.com/">
-
-<script type="application/ld+json">
-  {
-    "@context": "http://schema.org",
-    "@type": "WebSite",
-    "name": "reCAPTCHA demo",
-    "url": "http://recaptcha-demo.appspot.com/"
-  }
-</script>
-
+<script type="application/ld+json">{ "@context": "http://schema.org", "@type": "WebSite", "name": "reCAPTCHA demo", "url": "http://recaptcha-demo.appspot.com/" }</script>
 <meta name="description" content="reCAPTCHA demo" />
 <meta property="og:url" content="https://recaptcha-demo.appspot.com/" />
 <meta property="og:type" content="website" />
 <meta property="og:title" content="reCAPTCHA demo" />
 <meta property="og:description" content="Examples of the reCAPTCHA client." />
 <link rel="stylesheet" type="text/css" href="/examples.css">
-
 <title>reCAPTCHA demo</title>
+
 <header>
   <h1>reCAPTCHA demo</h1>
 </header>
@@ -70,9 +61,4 @@
 
 <!-- Google Analytics - just ignore this -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123057962-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'UA-123057962-1');
-</script>
+<script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-123057962-1');</script>

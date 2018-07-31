@@ -46,24 +46,15 @@ $lang = 'en';
 <meta name="viewport" content="width=device-width,height=device-height,minimum-scale=1">
 <link rel="shortcut icon" href="https://www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
 <link rel="canonical" href="https://recaptcha-demo.appspot.com/recaptcha-v2-checkbox-explicit.php">
-
-<script type="application/ld+json">
-  {
-    "@context": "http://schema.org",
-    "@type": "WebSite",
-    "name": "reCAPTCHA demo - \"I'm not a robot\" checkbox - Explicit render",
-    "url": "https://recaptcha-demo.appspot.com/recaptcha-v2-checkbox-explicit.php"
-  }
-</script>
-
+<script type="application/ld+json">{ "@context": "http://schema.org", "@type": "WebSite", "name": "reCAPTCHA demo - \"I'm not a robot\" checkbox - Explicit render", "url": "https://recaptcha-demo.appspot.com/recaptcha-v2-checkbox-explicit.php" }</script>
 <meta name="description" content="reCAPTCHA demo - &quot;I'm not a robot&quot; checkbox - Explicit render" />
 <meta property="og:url" content="https://recaptcha-demo.appspot.com/recaptcha-v2-checkbox-explicit.php" />
 <meta property="og:type" content="website" />
 <meta property="og:title" content="reCAPTCHA demo - &quot;I'm not a robot&quot; checkbox - Explicit render" />
 <meta property="og:description" content="reCAPTCHA demo - &quot;I'm not a robot&quot; checkbox - Explicit render" />
 <link rel="stylesheet" type="text/css" href="/examples.css">
-
 <title>reCAPTCHA demo - "I'm not a robot" checkbox - Explicit render</title>
+
 <header>
     <h1>reCAPTCHA demo</h1><h2>"I'm not a robot" checkbox - Explicit render</h2>
     <p><a href="/">↤ Home</a></p>
@@ -148,9 +139,4 @@ endif;?>
 
 <!-- Google Analytics - just ignore this -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123057962-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'UA-123057962-1');
-</script>
+<script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-123057962-1');</script>
