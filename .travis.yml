@@ -17,8 +17,8 @@ before_script:
 
 script:
   - mkdir -p build/logs
-  - composer run lint
-  - composer run test
+  - composer run-script lint
+  - composer run-script test
 
 after_success:
   - travis_retry php vendor/bin/php-coveralls
