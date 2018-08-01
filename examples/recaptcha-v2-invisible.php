@@ -99,12 +99,7 @@ elseif (isset($_POST['g-recaptcha-response'])):
         // If it's not successful, then one or more error codes will be returned.
         ?>
         <h2>Something went wrong</h2>
-        <p>The following error was returned:
-        <?php
-        foreach ($resp->getErrorCodes() as $code) {
-            echo '<kbd>', $code, '</kbd> ';
-        }
-        ?></p>
+        <kbd><pre><?php var_export($resp);?></pre></kbd>
         <p>Check the error code reference at <kbd><a href="https://developers.google.com/recaptcha/docs/verify#error-code-reference">https://developers.google.com/recaptcha/docs/verify#error-code-reference</a></kbd>.
         <p><strong>Note:</strong> Error code <kbd>missing-input-response</kbd> may mean the user just didn't complete the reCAPTCHA.</p>
         <p><a href="/recaptcha-v2-invisible.php">⟳ Try again</a></p>
