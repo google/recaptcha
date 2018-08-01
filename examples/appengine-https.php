@@ -1,7 +1,5 @@
 <?php
 /**
- * This is a PHP library that handles calling reCAPTCHA.
- *
  * @copyright Copyright (c) 2015, Google Inc.
  * @link      https://www.google.com/recaptcha
  *
@@ -23,20 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-namespace ReCaptcha;
-
-/**
- * Method used to send the request to the service.
- */
-interface RequestMethod
-{
-
-    /**
-     * Submit the request with the specified parameters.
-     *
-     * @param RequestParameters $params Request parameters
-     * @return string Body of the reCAPTCHA response
-     */
-    public function submit(RequestParameters $params);
+// Redirect to HTTPS by default (for AppEngine)
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+    if ($_SERVER['HTTP_X_FORWARDED_PROTO'] === 'http') {
+        header('HTTP/1.1 301 Moved Permanently');
+        header('Location: https://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']);
+        exit(0);
+    } else {
+        header('Strict-Transport-Security: max-age=63072000; includeSubDomains; preload');
+    }
 }

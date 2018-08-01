@@ -3,7 +3,7 @@
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * @copyright Copyright (c) 2015, Google Inc.
- * @link      http://www.google.com/recaptcha
+ * @link      https://www.google.com/recaptcha
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@
 
 namespace ReCaptcha\RequestMethod;
 
+use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestMethod;
 use ReCaptcha\RequestParameters;
 
@@ -35,10 +36,20 @@ use ReCaptcha\RequestParameters;
 class Post implements RequestMethod
 {
     /**
-     * URL to which requests are POSTed.
-     * @const string
+     * URL for reCAPTCHA sitevrerify API
+     * @var string
      */
-    const SITE_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
+    private $siteVerifyUrl;
+
+    /**
+     * Only needed if you want to override the defaults
+     *
+     * @param string $siteVerifyUrl URL for reCAPTCHA sitevrerify API
+     */
+    public function __construct($siteVerifyUrl = null)
+    {
+        $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
+    }
 
     /**
      * Submit the POST request with the specified parameters.
@@ -48,11 +59,6 @@ class Post implements RequestMethod
      */
     public function submit(RequestParameters $params)
     {
-        /**
-         * PHP 5.6.0 changed the way you specify the peer name for SSL context options.
-         * Using "CN_name" will still work, but it will raise deprecated errors.
-         */
-        $peer_key = version_compare(PHP_VERSION, '5.6.0', '<') ? 'CN_name' : 'peer_name';
         $options = array(
             'http' => array(
                 'header' => "Content-type: application/x-www-form-urlencoded\r\n",
@@ -60,11 +66,9 @@ class Post implements RequestMethod
                 'content' => $params->toQueryString(),
                 // Force the peer to validate (not needed in 5.6.0+, but still works)
                 'verify_peer' => true,
-                // Force the peer validation to use www.google.com
-                $peer_key => 'www.google.com',
             ),
         );
         $context = stream_context_create($options);
-        return file_get_contents(self::SITE_VERIFY_URL, false, $context);
+        return file_get_contents($this->siteVerifyUrl, false, $context);
     }
 }

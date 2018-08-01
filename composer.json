@@ -3,7 +3,7 @@
     "description": "Client library for reCAPTCHA, a free service that protects websites from spam and abuse.",
     "type": "library",
     "keywords": ["recaptcha", "captcha", "spam", "abuse"],
-    "homepage": "http://www.google.com/recaptcha/",
+    "homepage": "https://www.google.com/recaptcha/",
     "license": "BSD-3-Clause",
     "support": {
         "forum": "https://groups.google.com/forum/#!forum/recaptcha",
@@ -13,7 +13,9 @@
         "php": ">=5.5"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8.35|^5.7|^6.0"
+        "phpunit/phpunit": "^4.8.36|^5.7.27|^6.59|^7",
+        "friendsofphp/php-cs-fixer": "^2.2.20|^2.12",
+        "php-coveralls/php-coveralls": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -22,10 +24,15 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.1.x-dev"
+            "dev-master": "1.2.x-dev"
         }
     },
     "scripts": {
-        "test": "@php vendor/bin/phpunit --colors=always"
+        "lint": "vendor/bin/php-cs-fixer -vvv fix --using-cache=no --dry-run .",
+        "test": "vendor/bin/phpunit --colors=always",
+        "serve-examples": "@php -S localhost:8080 -t examples"
+    },
+    "config": {
+        "process-timeout": 0
     }
 }
