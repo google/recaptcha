@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+require __DIR__ . '/appengine-https.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
