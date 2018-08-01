@@ -26,6 +26,7 @@
 
 namespace ReCaptcha\RequestMethod;
 
+use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestParameters;
 use PHPUnit\Framework\TestCase;
 
@@ -108,7 +109,7 @@ class SocketPostTest extends TestCase
 
         $ps = new SocketPost($socket);
         $response = $ps->submit(new RequestParameters("secret", "response", "remoteip", "version"));
-        $this->assertEquals(SocketPost::BAD_RESPONSE, $response);
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
     }
 
     public function testSubmitBadRequest()
@@ -122,6 +123,6 @@ class SocketPostTest extends TestCase
                 ->willReturn(false);
         $ps = new SocketPost($socket);
         $response = $ps->submit(new RequestParameters("secret", "response", "remoteip", "version"));
-        $this->assertEquals(SocketPost::BAD_CONNECTION, $response);
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_CONNECTION.'"]}', $response);
     }
 }

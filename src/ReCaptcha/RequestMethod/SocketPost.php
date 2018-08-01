@@ -38,16 +38,6 @@ use ReCaptcha\RequestParameters;
 class SocketPost implements RequestMethod
 {
     /**
-     * @const string Bad request error
-     */
-    const BAD_CONNECTION = '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_CONNECTION.'"]}';
-
-    /**
-     * @const string Bad response error
-     */
-    const BAD_RESPONSE = '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
-
-    /**
      * Socket to the reCAPTCHA service
      * @var Socket
      */
@@ -78,7 +68,7 @@ class SocketPost implements RequestMethod
         $urlParsed = parse_url($this->siteVerifyUrl);
 
         if (false === $this->socket->fsockopen('ssl://' . $urlParsed['host'], 443, $errno, $errstr, 30)) {
-            return self::BAD_CONNECTION;
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_CONNECTION.'"]}';
         }
 
         $content = $params->toQueryString();
@@ -100,7 +90,7 @@ class SocketPost implements RequestMethod
         $this->socket->fclose();
 
         if (0 !== strpos($response, 'HTTP/1.1 200 OK')) {
-            return self::BAD_RESPONSE;
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
         }
 
         $parts = preg_split("#\n\s*\n#Uis", $response);
