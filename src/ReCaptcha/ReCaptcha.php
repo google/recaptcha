@@ -38,10 +38,28 @@ class ReCaptcha
     const VERSION = 'php_1.2';
 
     /**
+     * URL for reCAPTCHA sitevrerify API
+     * @const string
+     */
+    const SITE_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
+
+    /**
      * Invalid JSON received
      * @const string
      */
     const E_INVALID_JSON = 'invalid-json';
+
+    /**
+     * Could not connect to service
+     * @const string
+     */
+    const E_BAD_CONNECTION = 'bad-connection';
+
+    /**
+     * Did not receive a 200 from the service
+     * @const string
+     */
+    const E_BAD_RESPONSE = 'bad-response';
 
     /**
      * Not a success, but no error codes received!
@@ -115,12 +133,7 @@ class ReCaptcha
         }
 
         $this->secret = $secret;
-
-        if (!is_null($requestMethod)) {
-            $this->requestMethod = $requestMethod;
-        } else {
-            $this->requestMethod = new RequestMethod\Post();
-        }
+        $this->requestMethod = (is_null($requestMethod)) ? new RequestMethod\Post() : $requestMethod;
     }
 
     /**

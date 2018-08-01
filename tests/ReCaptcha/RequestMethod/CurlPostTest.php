@@ -62,4 +62,30 @@ class CurlPostTest extends TestCase
         $response = $pc->submit(new RequestParameters("secret", "response"));
         $this->assertEquals('RESPONSEBODY', $response);
     }
+
+    public function testOverrideSiteVerifyUrl()
+    {
+        $url = 'OVERRIDE';
+
+        $curl = $this->getMockBuilder(\ReCaptcha\RequestMethod\Curl::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('init', 'setoptArray', 'exec', 'close'))
+            ->getMock();
+        $curl->expects($this->once())
+                ->method('init')
+                ->with($url)
+                ->willReturn(new \stdClass);
+        $curl->expects($this->once())
+                ->method('setoptArray')
+                ->willReturn(true);
+        $curl->expects($this->once())
+                ->method('exec')
+                ->willReturn('RESPONSEBODY');
+        $curl->expects($this->once())
+                ->method('close');
+
+        $pc = new CurlPost($curl, $url);
+        $response = $pc->submit(new RequestParameters("secret", "response"));
+        $this->assertEquals('RESPONSEBODY', $response);
+    }
 }

@@ -61,6 +61,20 @@ class PostTest extends TestCase
         $this->assertEquals(1, $this->runcount, "The assertion was ran");
     }
 
+    public function testOverrideVerifyUrl()
+    {
+        $req = new Post('https://over.ride/some/path');
+        self::$assert = array($this, 'overrideUrlOptions');
+        $req->submit($this->parameters);
+        $this->assertEquals(1, $this->runcount, "The assertion was ran");
+    }
+
+    public function overrideUrlOptions(array $args)
+    {
+        $this->runcount++;
+        $this->assertEquals('https://over.ride/some/path', $args[0]);
+    }
+
     public function httpContextOptionsCallback(array $args)
     {
         $this->runcount++;
@@ -93,11 +107,6 @@ class PostTest extends TestCase
         $this->assertArrayHasKey('http', $options);
         $this->assertArrayHasKey('verify_peer', $options['http']);
         $this->assertTrue($options['http']['verify_peer']);
-
-        $key = version_compare(PHP_VERSION, "5.6.0", "<") ? "CN_name" : "peer_name";
-
-        $this->assertArrayHasKey($key, $options['http']);
-        $this->assertEquals("www.google.com", $options['http'][$key]);
     }
 
     protected function assertCommonOptions(array $args)

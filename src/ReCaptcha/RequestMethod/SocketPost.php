@@ -26,6 +26,7 @@
 
 namespace ReCaptcha\RequestMethod;
 
+use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestMethod;
 use ReCaptcha\RequestParameters;
 
@@ -37,25 +38,14 @@ use ReCaptcha\RequestParameters;
 class SocketPost implements RequestMethod
 {
     /**
-     * reCAPTCHA service host.
-     * @const string
-     */
-    const RECAPTCHA_HOST = 'www.google.com';
-
-    /**
-     * @const string reCAPTCHA service path
-     */
-    const SITE_VERIFY_PATH = '/recaptcha/api/siteverify';
-
-    /**
      * @const string Bad request error
      */
-    const BAD_REQUEST = '{"success": false, "error-codes": ["invalid-request"]}';
+    const BAD_CONNECTION = '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_CONNECTION.'"]}';
 
     /**
      * @const string Bad response error
      */
-    const BAD_RESPONSE = '{"success": false, "error-codes": ["invalid-response"]}';
+    const BAD_RESPONSE = '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
 
     /**
      * Socket to the reCAPTCHA service
@@ -64,17 +54,15 @@ class SocketPost implements RequestMethod
     private $socket;
 
     /**
-     * Constructor
+     * Only needed if you want to override the defaults
      *
      * @param \ReCaptcha\RequestMethod\Socket $socket optional socket, injectable for testing
+     * @param string $siteVerifyUrl URL for reCAPTCHA sitevrerify API
      */
-    public function __construct(Socket $socket = null)
+    public function __construct(Socket $socket = null, $siteVerifyUrl = null)
     {
-        if (!is_null($socket)) {
-            $this->socket = $socket;
-        } else {
-            $this->socket = new Socket();
-        }
+        $this->socket = (is_null($socket)) ? new Socket() : $socket;
+        $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
     }
 
     /**
@@ -87,15 +75,16 @@ class SocketPost implements RequestMethod
     {
         $errno = 0;
         $errstr = '';
+        $urlParsed = parse_url($this->siteVerifyUrl);
 
-        if (false === $this->socket->fsockopen('ssl://' . self::RECAPTCHA_HOST, 443, $errno, $errstr, 30)) {
-            return self::BAD_REQUEST;
+        if (false === $this->socket->fsockopen('ssl://' . $urlParsed['host'], 443, $errno, $errstr, 30)) {
+            return self::BAD_CONNECTION;
         }
 
         $content = $params->toQueryString();
 
-        $request = "POST " . self::SITE_VERIFY_PATH . " HTTP/1.1\r\n";
-        $request .= "Host: " . self::RECAPTCHA_HOST . "\r\n";
+        $request = "POST " . $urlParsed['path'] . " HTTP/1.1\r\n";
+        $request .= "Host: " . $urlParsed['host'] . "\r\n";
         $request .= "Content-Type: application/x-www-form-urlencoded\r\n";
         $request .= "Content-length: " . strlen($content) . "\r\n";
         $request .= "Connection: close\r\n\r\n";

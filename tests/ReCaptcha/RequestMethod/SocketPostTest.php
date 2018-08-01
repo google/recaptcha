@@ -57,6 +57,34 @@ class SocketPostTest extends TestCase
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
+    public function testOverrideSiteVerifyUrl()
+    {
+        $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('fsockopen', 'fwrite', 'fgets', 'feof', 'fclose'))
+            ->getMock();
+        $socket->expects($this->once())
+                ->method('fsockopen')
+                ->with('ssl://over.ride', 443, 0, '', 30)
+                ->willReturn(true);
+        $socket->expects($this->once())
+                ->method('fwrite')
+                ->with($this->matchesRegularExpression('/^POST \/some\/path.*Host: over\.ride/s'));
+        $socket->expects($this->once())
+                ->method('fgets')
+                ->willReturn("HTTP/1.1 200 OK\n\nRESPONSEBODY");
+        $socket->expects($this->exactly(2))
+                ->method('feof')
+                ->will($this->onConsecutiveCalls(false, true));
+        $socket->expects($this->once())
+                ->method('fclose')
+                ->willReturn(true);
+
+        $ps = new SocketPost($socket, 'https://over.ride/some/path');
+        $response = $ps->submit(new RequestParameters("secret", "response", "remoteip", "version"));
+        $this->assertEquals('RESPONSEBODY', $response);
+    }
+
     public function testSubmitBadResponse()
     {
         $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
@@ -94,6 +122,6 @@ class SocketPostTest extends TestCase
                 ->willReturn(false);
         $ps = new SocketPost($socket);
         $response = $ps->submit(new RequestParameters("secret", "response", "remoteip", "version"));
-        $this->assertEquals(SocketPost::BAD_REQUEST, $response);
+        $this->assertEquals(SocketPost::BAD_CONNECTION, $response);
     }
 }
