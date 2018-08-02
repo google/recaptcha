@@ -87,6 +87,10 @@ class CurlPost implements RequestMethod
         $response = $this->curl->exec($handle);
         $this->curl->close($handle);
 
-        return $response;
+        if ($response !== false) {
+            return $response;
+        }
+
+        return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
     }
 }

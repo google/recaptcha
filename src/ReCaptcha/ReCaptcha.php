@@ -53,7 +53,7 @@ class ReCaptcha
      * Could not connect to service
      * @const string
      */
-    const E_BAD_CONNECTION = 'bad-connection';
+    const E_CONNECTION_FAILED = 'connection-failed';
 
     /**
      * Did not receive a 200 from the service

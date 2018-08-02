@@ -69,6 +69,12 @@ class Post implements RequestMethod
             ),
         );
         $context = stream_context_create($options);
-        return file_get_contents($this->siteVerifyUrl, false, $context);
+        $response = file_get_contents($this->siteVerifyUrl, false, $context);
+
+        if ($response !== false) {
+            return $response;
+        }
+
+        return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
     }
 }

@@ -123,6 +123,6 @@ class SocketPostTest extends TestCase
                 ->willReturn(false);
         $ps = new SocketPost($socket);
         $response = $ps->submit(new RequestParameters("secret", "response", "remoteip", "version"));
-        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_CONNECTION.'"]}', $response);
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
 }
