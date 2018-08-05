@@ -12,7 +12,7 @@ and v3.
 
 - reCAPTCHA: https://www.google.com/recaptcha
 - This repo: https://github.com/google/recaptcha
-- Version: 1.2
+- Version: 1.2.1
 - License: BSD, see [LICENSE](LICENSE)
 
 ## Installation
