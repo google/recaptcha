@@ -68,7 +68,7 @@ class SocketPost implements RequestMethod
         $urlParsed = parse_url($this->siteVerifyUrl);
 
         if (false === $this->socket->fsockopen('ssl://' . $urlParsed['host'], 443, $errno, $errstr, 30)) {
-            return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_CONNECTION.'"]}';
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
         }
 
         $content = $params->toQueryString();

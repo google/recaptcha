@@ -112,7 +112,7 @@ class SocketPostTest extends TestCase
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
     }
 
-    public function testSubmitBadRequest()
+    public function testConnectionFailureReturnsError()
     {
         $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
             ->disableOriginalConstructor()
@@ -123,6 +123,6 @@ class SocketPostTest extends TestCase
                 ->willReturn(false);
         $ps = new SocketPost($socket);
         $response = $ps->submit(new RequestParameters("secret", "response", "remoteip", "version"));
-        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_CONNECTION.'"]}', $response);
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
 }
