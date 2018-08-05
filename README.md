@@ -12,6 +12,7 @@ and v3.
 
 - reCAPTCHA: https://www.google.com/recaptcha
 - This repo: https://github.com/google/recaptcha
+- Hosted demo: https://recaptcha-demo.appspot.com/
 - Version: 1.2.1
 - License: BSD, see [LICENSE](LICENSE)
 
