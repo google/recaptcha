@@ -80,7 +80,7 @@ class PostTest extends TestCase
 
     public function connectionFailureResponse()
     {
-        return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+        return false;
     }
     public function overrideUrlOptions(array $args)
     {
