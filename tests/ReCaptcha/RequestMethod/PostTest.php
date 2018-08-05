@@ -78,7 +78,8 @@ class PostTest extends TestCase
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
 
-    public function connectionFailureResponse() {
+    public function connectionFailureResponse()
+    {
         return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
     }
     public function overrideUrlOptions(array $args)
