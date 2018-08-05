@@ -26,6 +26,7 @@
 
 namespace ReCaptcha\RequestMethod;
 
+use \ReCaptcha\ReCaptcha;
 use \ReCaptcha\RequestParameters;
 use PHPUnit\Framework\TestCase;
 
@@ -87,5 +88,28 @@ class CurlPostTest extends TestCase
         $pc = new CurlPost($curl, $url);
         $response = $pc->submit(new RequestParameters("secret", "response"));
         $this->assertEquals('RESPONSEBODY', $response);
+    }
+
+    public function testConnectionFailureReturnsError()
+    {
+        $curl = $this->getMockBuilder(\ReCaptcha\RequestMethod\Curl::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('init', 'setoptArray', 'exec', 'close'))
+            ->getMock();
+        $curl->expects($this->once())
+                ->method('init')
+                ->willReturn(new \stdClass);
+        $curl->expects($this->once())
+                ->method('setoptArray')
+                ->willReturn(true);
+        $curl->expects($this->once())
+                ->method('exec')
+                ->willReturn(false);
+        $curl->expects($this->once())
+                ->method('close');
+
+        $pc = new CurlPost($curl);
+        $response = $pc->submit(new RequestParameters("secret", "response"));
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
 }

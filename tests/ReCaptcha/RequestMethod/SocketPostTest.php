@@ -112,7 +112,7 @@ class SocketPostTest extends TestCase
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
     }
 
-    public function testSubmitBadRequest()
+    public function testConnectionFailureReturnsError()
     {
         $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
             ->disableOriginalConstructor()

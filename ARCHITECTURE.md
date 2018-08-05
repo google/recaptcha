@@ -54,3 +54,11 @@ unit tested by passing in a mock. Take a look at
 [`RequestMethod\Curl`](./src/ReCaptcha/RequestMethod/Curl.php) with the matching
 [`RequestMethod/CurlPostTest`](./tests/ReCaptcha/RequestMethod/CurlPostTest.php)
 to see this pattern in action.
+
+### Error conventions
+
+The client returns the response as provided by the reCAPTCHA services augmented
+with additional error codes based on the client's checks. When adding a new
+[`RequestMethod`](./src/ReCaptcha/RequestMethod.php) ensure that it returns the
+`ReCaptcha::E_CONNECTION_FAILED` and `ReCaptcha::E_BAD_RESPONSE` where
+appropriate.
