@@ -35,3 +35,7 @@ main {
   display: block;
   margin: 1rem;
 }
+
+.hidden {
+  display: none;
+}
