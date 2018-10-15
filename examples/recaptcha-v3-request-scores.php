@@ -58,7 +58,6 @@ $lang = 'en';
 <meta property="og:description" content="reCAPTCHA demo - Request scores" />
 <link rel="stylesheet" type="text/css" href="/examples.css">
 <title>reCAPTCHA demo - Request scores</title>
-
 <header>
     <h1>reCAPTCHA demo</h1><h2>Request scores</h2>
     <p><a href="/">↤ Home</a></p>
@@ -73,12 +72,14 @@ if ($siteKey === '' || $secret === ''):
 else:
     // Add the g-recaptcha tag to the form you want to include the reCAPTCHA element
     ?>
-    <p>reCAPTCHA will provide a score for this request.</p>
+    <p>The reCAPTCHA v3 API provides a confidence score for each request.</p>
+    <p><strong>NOTE:</strong>This is a sample implementation, the score returned here is not a reflection on your Google account or type of traffic. In production, refer to the distribution of scores shown in <a href="https://www.google.com/recaptcha/admin" target="_blank">your admin interface</a> and adjust your own threshold accordingly. <strong>Do not raise issues regarding the score you see here.</strong></p>
     <ol id="recaptcha-steps">
         <li class="step0">reCAPTCHA script loading</li>
-        <li style="display:none" class="step1"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo $siteKey; ?>', {action: 'homepage'})'</pre></li>
-        <li style="display:none" class="step2">Received token from reCAPTCHA service, sending to our backend with <kbd>fetch('/recaptcha-v3-verify.php?token='+<span class="token">123</span>)</kbd></li>
-        <li style="display:none" class="step3">Received response from our backend: <pre class="response">response</pre></li>
+        <li class="step1 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo $siteKey; ?>', {action: 'examples/v3scores'})'</pre></li>
+        <li class="step2 hidden">Received token from reCAPTCHA service, sending to our backend with:
+        <pre class="token">fetch('/recaptcha-v3-verify.php?token=abc123</pre></li>
+        <li class="step3 hidden">Received response from our backend: <pre class="response">{"json": "from-backend"}</pre></li>
     </ol>
     <p><a href="/recaptcha-v3-request-scores.php">⟳ Try again</a></p>
 
@@ -86,15 +87,15 @@ else:
     <script>
     const steps = document.getElementById('recaptcha-steps');
     grecaptcha.ready(function() {
-        document.querySelector('.step1').style.display = 'list-item';
-        grecaptcha.execute('<?php echo $siteKey; ?>', {action: 'homepage'}).then(function(token) {
-            document.querySelector('.token').innerHTML = token;
-            document.querySelector('.step2').style.display = 'list-item';
+        document.querySelector('.step1').classList.remove('hidden');
+        grecaptcha.execute('<?php echo $siteKey; ?>', {action: 'examples/v3scores'}).then(function(token) {
+            document.querySelector('.token').innerHTML = 'fetch(\'/recaptcha-v3-verify.php?token=\'' + token;
+            document.querySelector('.step2').classList.remove('hidden');
 
             fetch('/recaptcha-v3-verify.php?token='+token).then(function(response) {
                 response.json().then(function(data) {
                     document.querySelector('.response').innerHTML = JSON.stringify(data, null, 2);
-                    document.querySelector('.step3').style.display = 'list-item';
+                    document.querySelector('.step3').classList.remove('hidden');
                 });
             });
         });
