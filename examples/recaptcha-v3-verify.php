@@ -40,9 +40,10 @@ if ($siteKey == '' && is_readable(__DIR__ . '/config.php')) {
 }
 
 // Effectively we're providing an API endpoint here that will accept the token, verify it, and return the action / score to the page
+// In production, always sanitize and validate the input you retrieve from the request.
 $recaptcha = new \ReCaptcha\ReCaptcha($secret);
 $resp = $recaptcha->setExpectedHostname($_SERVER['SERVER_NAME'])
-                  ->setExpectedAction('examples/v3scores')
+                  ->setExpectedAction($_GET['action'])
                   ->setScoreThreshold(0.5)
                   ->verify($_GET['token'], $_SERVER['REMOTE_ADDR']);
 header('Content-type:application/json');

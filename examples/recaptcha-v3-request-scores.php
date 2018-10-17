@@ -88,10 +88,10 @@ else:
         grecaptcha.ready(function() {
             document.querySelector('.step1').classList.remove('hidden');
             grecaptcha.execute('<?php echo $siteKey; ?>', {action: 'examples/v3scores'}).then(function(token) {
-                document.querySelector('.token').innerHTML = 'fetch(\'/recaptcha-v3-verify.php?token=\'' + token;
+                document.querySelector('.token').innerHTML = 'fetch(\'/recaptcha-v3-verify.php?action=examples/v3scores&token=\'' + token;
                 document.querySelector('.step2').classList.remove('hidden');
 
-                fetch('/recaptcha-v3-verify.php?token='+token).then(function(response) {
+                fetch('/recaptcha-v3-verify.php?action=examples/v3scores&token='+token).then(function(response) {
                     response.json().then(function(data) {
                         document.querySelector('.response').innerHTML = JSON.stringify(data, null, 2);
                         document.querySelector('.step3').classList.remove('hidden');
