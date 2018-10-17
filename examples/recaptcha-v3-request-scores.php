@@ -49,10 +49,10 @@ $lang = 'en';
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,height=device-height,minimum-scale=1">
 <link rel="shortcut icon" href="https://www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
-<link rel="canonical" href="https://recaptcha-demo.appspot.com/recaptcha-v2-request-scores.php">
-<script type="application/ld+json">{ "@context": "http://schema.org", "@type": "WebSite", "name": "reCAPTCHA demo - Request scores", "url": "https://recaptcha-demo.appspot.com/recaptcha-v2-request-scores.php" }</script>
+<link rel="canonical" href="https://recaptcha-demo.appspot.com/recaptcha-v3-request-scores.php">
+<script type="application/ld+json">{ "@context": "http://schema.org", "@type": "WebSite", "name": "reCAPTCHA demo - Request scores", "url": "https://recaptcha-demo.appspot.com/recaptcha-v3-request-scores.php" }</script>
 <meta name="description" content="reCAPTCHA demo - Request scores" />
-<meta property="og:url" content="https://recaptcha-demo.appspot.com/recaptcha-v2-request-scores.php" />
+<meta property="og:url" content="https://recaptcha-demo.appspot.com/recaptcha-v3-request-scores.php" />
 <meta property="og:type" content="website" />
 <meta property="og:title" content="reCAPTCHA demo - Request scores" />
 <meta property="og:description" content="reCAPTCHA demo - Request scores" />
@@ -82,29 +82,27 @@ else:
         <li class="step3 hidden">Received response from our backend: <pre class="response">{"json": "from-backend"}</pre></li>
     </ol>
     <p><a href="/recaptcha-v3-request-scores.php">⟳ Try again</a></p>
-
     <script src="https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>"></script>
     <script>
-    const steps = document.getElementById('recaptcha-steps');
-    grecaptcha.ready(function() {
-        document.querySelector('.step1').classList.remove('hidden');
-        grecaptcha.execute('<?php echo $siteKey; ?>', {action: 'examples/v3scores'}).then(function(token) {
-            document.querySelector('.token').innerHTML = 'fetch(\'/recaptcha-v3-verify.php?token=\'' + token;
-            document.querySelector('.step2').classList.remove('hidden');
+        const steps = document.getElementById('recaptcha-steps');
+        grecaptcha.ready(function() {
+            document.querySelector('.step1').classList.remove('hidden');
+            grecaptcha.execute('<?php echo $siteKey; ?>', {action: 'examples/v3scores'}).then(function(token) {
+                document.querySelector('.token').innerHTML = 'fetch(\'/recaptcha-v3-verify.php?token=\'' + token;
+                document.querySelector('.step2').classList.remove('hidden');
 
-            fetch('/recaptcha-v3-verify.php?token='+token).then(function(response) {
-                response.json().then(function(data) {
-                    document.querySelector('.response').innerHTML = JSON.stringify(data, null, 2);
-                    document.querySelector('.step3').classList.remove('hidden');
+                fetch('/recaptcha-v3-verify.php?token='+token).then(function(response) {
+                    response.json().then(function(data) {
+                        document.querySelector('.response').innerHTML = JSON.stringify(data, null, 2);
+                        document.querySelector('.step3').classList.remove('hidden');
+                    });
                 });
             });
         });
-    });
-</script>
+    </script>
     <?php
 endif;?>
 </main>
-
 <!-- Google Analytics - just ignore this -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123057962-1"></script>
 <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-123057962-1');</script>
