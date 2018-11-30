@@ -112,7 +112,7 @@ class Response
      * @param string $challengeTs
      * @param string $apkPackageName
      * @param float $score
-     * @param strong $action
+     * @param string $action
      * @param array $errorCodes
      */
     public function __construct($success, array $errorCodes = array(), $hostname = null, $challengeTs = null, $apkPackageName = null, $score = null, $action = null)
