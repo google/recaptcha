@@ -104,6 +104,12 @@ class ReCaptcha
     const E_CHALLENGE_TIMEOUT = 'challenge-timeout';
 
     /**
+     * The response is no longer valid: either is too old or has been used previously.
+     * @const string
+     */
+    const E_TIMEOUT_OR_DUPLICATE = 'timeout-or-duplicate';
+
+    /**
      * Shared secret for the site.
      * @var string
      */
