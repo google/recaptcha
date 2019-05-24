@@ -36,7 +36,7 @@ class CurlPostTest extends TestCase
     {
         if (!extension_loaded('curl')) {
             $this->markTestSkipped(
-                    'The cURL extension is not available.'
+                'The cURL extension is not available.'
             );
         }
     }
