@@ -32,18 +32,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 // https://developers.google.com/web/fundamentals/security/csp/
 
 // First we generate a pseudorandom nonce for each included or inline script
-// Nonce for including the reCAPTCHA library
-$recaptchaNonce = base64_encode(openssl_random_pseudo_bytes(16));
-// Nonce for our inline code
-$inlineNonce = base64_encode(openssl_random_pseudo_bytes(16));
-
-// Note: this is not related to reCAPTCHA, but if you enable a CSP like this
-// you either need to include either a nonce or appropriate domain for any
-// scripts on the page.
-// Nonce for including Google Analytics library.
-$gaIncNonce = base64_encode(openssl_random_pseudo_bytes(16));
-// Nonce for firing the Google Analytics call
-$gaCfgNonce = base64_encode(openssl_random_pseudo_bytes(16));
+$nonce = base64_encode(openssl_random_pseudo_bytes(16));
 
 // Send the CSP header
 // Try commenting out the various lines to see what effect it has
@@ -56,10 +45,7 @@ header(
     "Content-Security-Policy: "
     ."default-src 'none'; " // By default we will deny everything
 
-    ."script-src "
-    ." 'nonce-".$recaptchaNonce."' " // nonce allowing the reCAPTCHA library to be included
-    ." 'nonce-".$inlineNonce."' " // nonce for inline page code
-    ." 'nonce-".$gaIncNonce."' 'nonce-".$gaCfgNonce."'; " // nonces for other scripts
+    ."script-src 'nonce-".$nonce."'; " // nonce allowing the reCAPTCHA library and other third-party scripts to be included
 
     ."img-src https://www.gstatic.com/recaptcha/ https://www.google-analytics.com; " // allow images from these URLS
     ."frame-src https://www.google.com/; " // allow frames from this URL
@@ -82,6 +68,10 @@ if ($siteKey == '' && is_readable(__DIR__ . '/config.php')) {
 // reCAPTCHA supports 40+ languages listed here: https://developers.google.com/recaptcha/docs/language
 $lang = 'en';
 
+// The v3 API lets you provide some context for the check by specifying an action.
+// See: https://developers.google.com/recaptcha/docs/v3
+$pageAction = 'examples/csp';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -99,7 +89,7 @@ $lang = 'en';
 <title>reCAPTCHA demo - Content Security Policy</title>
 <header>
     <h1>reCAPTCHA demo</h1><h2>Content Security Policy</h2>
-    <p><a href="/">↤ Home</a></p>
+    <p><a href="/">↩️ Home</a></p>
 </header>
 <main>
 <?php
@@ -114,24 +104,24 @@ else:
     <p><strong>NOTE:</strong>This is a sample implementation, the score returned here is not a reflection on your Google account or type of traffic. In production, refer to the distribution of scores shown in <a href="https://www.google.com/recaptcha/admin" target="_blank">your admin interface</a> and adjust your own threshold accordingly. <strong>Do not raise issues regarding the score you see here.</strong></p>
     <ol id="recaptcha-steps">
         <li class="step0">reCAPTCHA script loading</li>
-        <li class="step1 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo $siteKey; ?>', {action: 'examples/csp'})'</pre></li>
+        <li class="step1 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo $siteKey; ?>', {action: '<?php echo $pageAction; ?>'})'</pre></li>
         <li class="step2 hidden">Received token from reCAPTCHA service, sending to our backend with:
         <pre class="token">fetch('/recaptcha-v3-verify.php?token=abc123</pre></li>
         <li class="step3 hidden">Received response from our backend: <pre class="response">{"json": "from-backend"}</pre></li>
     </ol>
-    <p><a href="/recaptcha-content-security-policy.php">⟳ Try again</a></p>
+    <p><a href="/recaptcha-content-security-policy.php">⤴️ Try again</a></p>
 
     <!-- Add the nonce for our inline script to this tag -->
-    <script nonce="<?php echo $inlineNonce; ?>">
+    <script nonce="<?php echo $nonce; ?>">
     var onloadCallback = function() {
         const steps = document.getElementById('recaptcha-steps');
         grecaptcha.ready(function() {
             document.querySelector('.step1').classList.remove('hidden');
-            grecaptcha.execute('<?php echo $siteKey; ?>', {action: 'examples/csp'}).then(function(token) {
-                document.querySelector('.token').innerHTML = 'fetch(\'/recaptcha-v3-verify.php?action=examples/csp&token=\'' + token;
+            grecaptcha.execute('<?php echo $siteKey; ?>', {action: '<?php echo $pageAction; ?>'}).then(function(token) {
+                document.querySelector('.token').innerHTML = 'fetch(\'/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token=\'' + token;
                 document.querySelector('.step2').classList.remove('hidden');
 
-                fetch('/recaptcha-v3-verify.php?action=examples/csp&token='+token).then(function(response) {
+                fetch('/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token='+token).then(function(response) {
                     response.json().then(function(data) {
                         document.querySelector('.response').innerHTML = JSON.stringify(data, null, 2);
                         document.querySelector('.step3').classList.remove('hidden');
@@ -142,12 +132,12 @@ else:
     };
     </script>
     <!-- Add the nonce value for the reCAPTCHA library to its script tag -->
-    <script async defer src="https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>&onload=onloadCallback" nonce="<?php echo $recaptchaNonce; ?>"></script>
+    <script async defer src="https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>&onload=onloadCallback" nonce="<?php echo $nonce; ?>"></script>
 
 <?php
 endif;?>
 </main>
 
-<!-- Google Analytics - adding both nonces here for the library and the inline code -->
-<script async defer src="https://www.googletagmanager.com/gtag/js?id=UA-123057962-1" nonce="<?php echo $gaIncNonce; ?>"></script>
-<script async nonce="<?php echo $gaCfgNonce; ?>">window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-123057962-1');</script>
+<!-- Google Analytics - adding nonces here for the library and the inline code -->
+<script async defer src="https://www.googletagmanager.com/gtag/js?id=UA-123057962-1" nonce="<?php echo $nonce; ?>"></script>
+<script async nonce="<?php echo $nonce; ?>">window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-123057962-1');</script>
