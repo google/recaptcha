@@ -44,7 +44,7 @@ class CurlPost implements RequestMethod
     private $curl;
 
     /**
-     * URL for reCAPTCHA sitevrerify API
+     * URL for reCAPTCHA siteverify API
      * @var string
      */
     private $siteVerifyUrl;
@@ -53,7 +53,7 @@ class CurlPost implements RequestMethod
      * Only needed if you want to override the defaults
      *
      * @param Curl $curl Curl resource
-     * @param string $siteVerifyUrl URL for reCAPTCHA sitevrerify API
+     * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
     public function __construct(Curl $curl = null, $siteVerifyUrl = null)
     {

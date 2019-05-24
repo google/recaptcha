@@ -36,7 +36,7 @@ use ReCaptcha\RequestParameters;
 class Post implements RequestMethod
 {
     /**
-     * URL for reCAPTCHA sitevrerify API
+     * URL for reCAPTCHA siteverify API
      * @var string
      */
     private $siteVerifyUrl;
@@ -44,7 +44,7 @@ class Post implements RequestMethod
     /**
      * Only needed if you want to override the defaults
      *
-     * @param string $siteVerifyUrl URL for reCAPTCHA sitevrerify API
+     * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
     public function __construct($siteVerifyUrl = null)
     {

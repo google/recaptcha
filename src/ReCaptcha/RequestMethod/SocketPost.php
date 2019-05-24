@@ -47,7 +47,7 @@ class SocketPost implements RequestMethod
      * Only needed if you want to override the defaults
      *
      * @param \ReCaptcha\RequestMethod\Socket $socket optional socket, injectable for testing
-     * @param string $siteVerifyUrl URL for reCAPTCHA sitevrerify API
+     * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
     public function __construct(Socket $socket = null, $siteVerifyUrl = null)
     {
