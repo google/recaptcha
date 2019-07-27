@@ -45,7 +45,7 @@ header(
     "Content-Security-Policy: "
     ."default-src 'none'; " // By default we will deny everything
 
-    ."script-src 'nonce-".$nonce."'; " // nonce allowing the reCAPTCHA library and other third-party scripts to be included
+    ."script-src 'nonce-".$nonce."' 'strict-dynamic'; " // nonce allowing the reCAPTCHA library and other third-party scripts to be included
 
     ."img-src https://www.gstatic.com/recaptcha/ https://www.google-analytics.com; " // allow images from these URLS
     ."frame-src https://www.google.com/; " // allow frames from this URL
