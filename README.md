@@ -89,7 +89,7 @@ The following methods are available:
   from an Android app. Again, you must do this if you have disabled
   "Domain/Package Name Validation" for your credentials.
 - `setExpectedAction($action)`: ensures the action matches for the v3 API.
-- `setScoreThreshold($threshold)`: set a score theshold for responses from the
+- `setScoreThreshold($threshold)`: set a score threshold for responses from the
   v3 API
 - `setChallengeTimeout($timeoutSeconds)`: set a timeout between the user passing
   the reCAPTCHA and your server processing it.
