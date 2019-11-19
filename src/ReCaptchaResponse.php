@@ -3,6 +3,7 @@
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * BSD 3-Clause License
+ *
  * @copyright (c) 2019, Google Inc.
  * @link https://www.google.com/recaptcha
  * All rights reserved.
@@ -34,6 +35,9 @@
 
 namespace Google\ReCaptcha;
 
+use Serializable;
+use JsonSerializable;
+
 /**
  * Class ReCaptchaResponse
  *
@@ -46,7 +50,7 @@ namespace Google\ReCaptcha;
  * @property-read null|string $action
  * @property-read bool $success
  */
-class ReCaptchaResponse
+class ReCaptchaResponse implements JsonSerializable, Serializable
 {
     /**
      * ReCaptchaResponse attributes.
@@ -132,7 +136,7 @@ class ReCaptchaResponse
         }
 
         foreach ($errors as $error) {
-            if (!in_array($error, $this->errors, true)) {
+            if (! in_array($error, $this->errors, true)) {
                 return false;
             }
         }
@@ -209,5 +213,68 @@ class ReCaptchaResponse
             'error-codes' => $this->errors,
             'constraints' => $this->constraints,
         ]);
+    }
+
+    /**
+     * Returns a string representation of the object
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toJson();
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @see https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * Returns a JSON representation of the object
+     *
+     * @return string
+     */
+    public function toJson()
+    {
+        return json_encode($this->toArray());
+    }
+
+    /**
+     * String representation of object
+     *
+     * @see https://php.net/manual/en/serializable.serialize.php
+     * @return string
+     */
+    public function serialize()
+    {
+        return $this->toJson();
+    }
+
+    /**
+     * Constructs the object
+     *
+     * @see https://php.net/manual/en/serializable.unserialize.php
+     * @param  string $serialized
+     * @return void
+     */
+    public function unserialize($serialized)
+    {
+        if (! $array = json_decode($serialized, true)) {
+           return;
+        }
+
+        $this->errors = $array['error-codes'];
+        $this->constraints = $array['constraints'];
+
+        unset($array['error-codes'], $array['constraints']);
+
+        $this->attributes = $array;
     }
 }
