@@ -66,21 +66,12 @@ class ReCaptcha
     protected $client;
 
     /**
-     * Shared secret for the site.
-     *
-     * @var string
-     */
-    protected $secret;
-
-    /**
      * ReCaptcha constructor.
      *
-     * @param  string $secret
      * @param  \Google\ReCaptcha\Clients\ClientInterface $client
      */
-    public function __construct(string $secret, ClientInterface $client)
+    public function __construct(ClientInterface $client)
     {
-        $this->secret = $secret;
         $this->client = $client;
     }
 
@@ -219,6 +210,6 @@ class ReCaptcha
             $client = new $client($secret, static::SITE_VERIFY_URL);
         }
 
-        return new static($secret, $client);
+        return new static($client);
     }
 }
