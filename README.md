@@ -107,7 +107,7 @@ use Google\ReCaptcha\ReCaptcha;
 
 $response =  ReCaptcha::make($secret)
                       ->verifyOr($recaptchaToken, $userIp, function ($response) {
-                          Logger::debug(json_encode($response->toArray()));
+                          Logger::debug($response);
                           
                           return $response;
                       });
