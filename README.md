@@ -35,7 +35,7 @@ The classes in the project are structured according to the [PSR-4 standard](http
 
 ## Usage
 
-This package works out-of-the-box: after you integrate reCAPTCHA in your frontend, include your reCAPTCHA keys in this package and you're ready to start verifying the challenges from your server.
+This package works out-of-the-box: after you integrate reCAPTCHA in your web frontend or Android app, include your reCAPTCHA keys in this package and you're ready to start verifying the challenges from your server.
 
 ```php
 <?php
