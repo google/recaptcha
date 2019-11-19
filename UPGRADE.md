@@ -54,6 +54,7 @@ Methods to check the Response status have changed for.
 | `isSuccess()` | `success()`  |
 | `! isSuccess()` | `failed()` |
 | `getErrorCodes()` | `errorCodes()` \| `errors()` |
+| `getErrorCodes()[$code]` | `hasErrors($code)` |
 
 #### Verification Fluent Methods
 
@@ -71,7 +72,7 @@ Constraint methods for after the challenge has been made have changed to shorter
 
 #### Easy instantiation
 
-No longer is needed to instantiate manually the `ReCaptcha` class. The `make()` static method is preferred, while leaving manual instantiation for fine control on the HTTP Client to use.
+No longer is needed to instantiate manually the `ReCaptcha` class. The `make()` static method is preferred, while leaving manual instantiation for fine control on the HTTP Client to use or Service Containers.
 
 #### Constraints
 
