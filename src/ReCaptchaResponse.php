@@ -40,8 +40,8 @@ namespace Google\ReCaptcha;
  * @package Google\ReCaptcha\Http
  *
  * @property-read null|string $hostname
- * @property-read null|string $timeout
- * @property-read null|string $apk
+ * @property-read null|string $challenge_ts
+ * @property-read null|string $apk_package_name
  * @property-read null|float $score
  * @property-read null|string $action
  * @property-read bool $success

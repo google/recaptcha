@@ -59,8 +59,8 @@ The `make()` static method conveniently creates a new `ReCaptcha` instance using
 Sometimes it may be not enough to just verify if the reCAPTCHA challenge was completed. You can use these fluent methods to add constraints to the verification procedure and check if the challenge was faithfully completed:
 
 * `hostname()`: Ensures the hostname from the challenge matches. Use this method if you disabled _Domain/Package Name Validation_ for your credentials.
-* `apk()`: Ensures the APK Package Name from the challenge matches. Use this method if you disabled _Domain/Package Name Validation_ for your credentials.
-* `window()`: Ensures the seconds elapsed between the reCAPTCHA challenge completion and your server retrieving the result from the reCAPTCHA servers is **below** the one set here. 
+* `apkackageName()`: Ensures the APK Package Name from the challenge matches. Use this method if you disabled _Domain/Package Name Validation_ for your credentials.
+* `challengeTs()`: Ensures the seconds elapsed between the reCAPTCHA challenge completion and your server retrieving the result from the reCAPTCHA servers is **below** the one set here. 
  
 For reCAPTCHA v3, there are two methods to further constrain the verification.
 
@@ -74,7 +74,7 @@ ReCaptcha::make($secret)
          ->hostname('recaptcha-demo.appspot.com')
          ->action('homepage')
          ->threshold(0.5)
-         ->window(10)
+         ->challengeTs(10)
          ->verify($recaptchaToken, $userIp);
 ```
 
@@ -163,7 +163,7 @@ $response = ReCaptcha::make($secret)
                      ->verify($recaptchaToken, $userIp);
 
 echo $response->constraint('threshold'); // "0.7"
-echo $response->constraint('window'); // null
+echo $response->constraint('challenge_ts'); // null
 ```
 
 ## HTTP Clients

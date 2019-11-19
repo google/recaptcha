@@ -1,24 +1,28 @@
 # Upgrading
 
-Since version 1.2.3 a lot of changes has been made to keep the library modular on the edge of the possibilities of latest PHP versions.
+## 1.x.x to 2.x.x
 
-## Version 2.0
+The library has received a full reworking. You will have to change instancing procedures and all methods, hence the change in the major version. 
 
-### Removed
+### Removed 
 
-#### Curl and Socket HTTP Clients
+#### `RequestParameters`
 
-All HTTP Clients have been removed and only the `StreamClient` is available. Developers can use their own HTTP Client like cURL or Socket, or full libraries like Guzzle or Symfony HTTP Client, or even HTTP Plug.
+The class is not needed now since the construction of the request happens dynamically once the verification is fired.
 
 ### Changed 
 
-#### HTTP Client interface
+#### Namespace
 
-Any HTTP Client now must follow the `Http/Client` interface. It receives the site token, URL to verify, and a way to set the underlying HTTP Client if necessary.
+Prior v1 versions used the `\ReCaptcha` namespace. To better reflect the code hierarchy and avoid conflicts, the v2 uses the `\Google\ReCaptcha` namespace. 
 
-### Response
+#### `RequestMethod` to `ClientInterface`
 
-The Response from reCAPTCHA servers is now immutable.
+Any HTTP Client now must follow the `Http/ClientInterface` interface. It receives the site secret token, URL to verify, and a way to set the underlying HTTP Client if necessary after instantiation.
+
+#### Response
+
+The Response from reCAPTCHA servers has become simplier to use thanks to dynamic `__get` calls.
 
 #### Response methods
 
@@ -37,10 +41,10 @@ Constraint methods for after the challenge has been made have changed to shorter
 | Original | New |
 |---|---|
 | setExpectedHostname() | hostname()  |
-| setExpectedApkPackageName() | apk()  |
+| setExpectedApkPackageName() | apkPackageName()  |
 | setExpectedAction() | action()  |
 | setScoreThreshold() | threshold()  |
-| setChallengeTimeout() | timeout()  |
+| setChallengeTimeout() | challengeTs()  |
 
 ### Added
 

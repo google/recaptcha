@@ -55,8 +55,8 @@ trait ParsesResponse
             $errors[] = ReCaptchaErrors::E_HOSTNAME_MISMATCH;
         }
 
-        if ($constraints['apk']
-            && strcasecmp($constraints['apk'], $response->apk) !== 0) {
+        if ($constraints['apk_package_name']
+            && strcasecmp($constraints['apk_package_name'], $response->apk_package_name) !== 0) {
             $errors[] = ReCaptchaErrors::E_APK_PACKAGE_NAME_MISMATCH;
         }
 
@@ -70,10 +70,10 @@ trait ParsesResponse
             $errors[] = ReCaptchaErrors::E_SCORE_THRESHOLD_NOT_MET;
         }
 
-        if ($constraints['timeout']) {
-            $timeout = strtotime($response->timeout);
+        if ($constraints['challenge_ts']) {
+            $timeout = strtotime($response->challenge_ts);
 
-            if ($timeout > 0 && time() - $timeout > $constraints['timeout']) {
+            if ($timeout > 0 && time() - $timeout > $constraints['challenge_ts']) {
                 $errors[] = ReCaptchaErrors::E_CHALLENGE_TIMEOUT;
             }
         }

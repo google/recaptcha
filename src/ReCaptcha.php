@@ -38,7 +38,6 @@ namespace Google\ReCaptcha;
 use Closure;
 use Google\ReCaptcha\Clients\CurlClient;
 use Google\ReCaptcha\Clients\ClientInterface;
-use Google\ReCaptcha\ReCaptchaException;
 
 class ReCaptcha
 {
@@ -194,12 +193,12 @@ class ReCaptcha
     protected function buildArray(array $response)
     {
         return [
-            'hostname' => $response['hostname'] ?? null,
-            'timeout'  => $response['challenge_ts'] ?? null,
-            'apk'      => $response['apk_package_name'] ?? null,
-            'score'    => $response['score'] ?? null,
-            'action'   => $response['action'] ?? null,
-            'success'  => $response['success'] ?? false,
+            'hostname'         => $response['hostname'] ?? null,
+            'challenge_ts'     => $response['challenge_ts'] ?? null,
+            'apk_package_name' => $response['apk_package_name'] ?? null,
+            'score'            => $response['score'] ?? null,
+            'action'           => $response['action'] ?? null,
+            'success'          => $response['success'] ?? false,
         ];
     }
 

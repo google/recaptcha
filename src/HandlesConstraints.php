@@ -43,10 +43,10 @@ trait HandlesConstraints
      */
     protected $constraints = [
         'hostname' => null,
-        'apk' => null,
+        'apk_package_name' => null,
         'action' => null,
         'threshold' => null,
-        'timeout' => null,
+        'challenge_ts' => null,
     ];
 
     /**
@@ -65,12 +65,12 @@ trait HandlesConstraints
     /**
      * Verify if the challenge APK Package Name is equal to the one set.
      *
-     * @param  string $apk
+     * @param  string $apkPackageName
      * @return \Google\ReCaptcha\ReCaptcha
      */
-    public function apk(string $apk)
+    public function apkPackageName(string $apkPackageName)
     {
-        $this->constraints['apk'] = $apk;
+        $this->constraints['apk_package_name'] = $apkPackageName;
 
         return $this;
     }
@@ -118,9 +118,9 @@ trait HandlesConstraints
      * @param  int $seconds
      * @return \Google\ReCaptcha\ReCaptcha
      */
-    public function timeout(int $seconds)
+    public function challengeTs(int $seconds)
     {
-        $this->constraints['timeout'] = $seconds;
+        $this->constraints['challenge_ts'] = $seconds;
 
         return $this;
     }
@@ -134,10 +134,10 @@ trait HandlesConstraints
     {
         $this->constraints = [
             'hostname' => null,
-            'apk' => null,
+            'apk_package_name' => null,
             'action' => null,
             'threshold' => null,
-            'timeout' => null,
+            'challenge_ts' => null,
         ];
 
         return $this;
