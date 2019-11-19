@@ -59,7 +59,7 @@ The `make()` static method conveniently creates a new `ReCaptcha` instance using
 Sometimes it may be not enough to just verify if the reCAPTCHA challenge was completed. You can use these fluent methods to verify further the response from reCAPTCHA servers and check if the challenge is faithfully valid:
 
 * `hostname()`: Ensures the hostname from the challenge matches. Use this method if you disabled _Domain/Package Name Validation_ for your credentials.
-* `apkackageName()`: Ensures the APK Package Name from the challenge matches. Use this method if you disabled _Domain/Package Name Validation_ for your credentials.
+* `apkPackageName()`: Ensures the APK Package Name from the challenge matches. Use this method if you disabled _Domain/Package Name Validation_ for your credentials.
 * `challengeTs()`: Ensures the seconds elapsed between the reCAPTCHA challenge completion and your server retrieving the result from the reCAPTCHA servers is **below** the one set here. 
  
 For reCAPTCHA v3, there are two methods to further constrain the verification.
