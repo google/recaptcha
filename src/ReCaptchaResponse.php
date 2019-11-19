@@ -120,6 +120,27 @@ class ReCaptchaResponse
     }
 
     /**
+     * Return if the response has a particular error
+     *
+     * @param  mixed ...$errors
+     * @return bool
+     */
+    public function hasError(...$errors)
+    {
+        if (empty($errors)) {
+            return false;
+        }
+
+        foreach ($errors as $error) {
+            if (!in_array($error, $this->errors, true)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Set the array of errors.
      *
      * @param  array $errors

@@ -56,7 +56,7 @@ The `make()` static method conveniently creates a new `ReCaptcha` instance using
 
 ### Constraints
 
-Sometimes it may be not enough to just verify if the reCAPTCHA challenge was completed. You can use these fluent methods to add constraints to the verification procedure and check if the challenge was faithfully completed:
+Sometimes it may be not enough to just verify if the reCAPTCHA challenge was completed. You can use these fluent methods to add constraints to the verification procedure and check if the challenge is faithfully valid:
 
 * `hostname()`: Ensures the hostname from the challenge matches. Use this method if you disabled _Domain/Package Name Validation_ for your credentials.
 * `apkackageName()`: Ensures the APK Package Name from the challenge matches. Use this method if you disabled _Domain/Package Name Validation_ for your credentials.
@@ -70,12 +70,12 @@ For reCAPTCHA v3, there are two methods to further constrain the verification.
 ```php
 <?php
 
-ReCaptcha::make($secret)
-         ->hostname('recaptcha-demo.appspot.com')
-         ->action('homepage')
-         ->threshold(0.5)
-         ->challengeTs(10)
-         ->verify($recaptchaToken, $userIp);
+$response = ReCaptcha::make($secret)
+                     ->hostname('recaptcha-demo.appspot.com')
+                     ->action('homepage')
+                     ->threshold(0.5)
+                     ->challengeTs(10)
+                     ->verify($recaptchaToken, $userIp);
 ```
 
 ## Verification
@@ -97,7 +97,7 @@ return 'Success!';
 
 ### On Failure Exception
 
-You can use the `verifyOrThrow()` method to conveniently throw a `ReCaptchaException` when this is invalid, allowing your application to identify the error and proceed accordingly, like redirecting the user back with a visual alert to retry.
+You can use the `verifyOrThrow()` method to conveniently throw a `ReCaptchaException` when the challenge is invalid, allowing your application to identify the error and proceed accordingly, like logging the event or pass the exception to a handler.
 
 ```php
 <?php
@@ -128,6 +128,8 @@ To access the array you can use `errors()`.
 ```php
 <?php
 
+use Google\ReCaptcha\ReCaptcha;
+
 $response =  ReCaptcha::make($secret)->verify($recaptchaToken, $userIp);
 
 if ($response->invalid()) {
@@ -136,6 +138,22 @@ if ($response->invalid()) {
 ```
 
 Each error present in the array is a string declared as constant in the `ReCaptchaError` class, like `ReCaptchaError::E_CONNECTION_FAILED`.
+
+You can use `hasError()` to identify if a particular error was thrown in the response for further processing.
+
+```php
+<?php
+
+use Google\ReCaptcha\ReCaptchaErrors;
+use Google\ReCaptcha\ReCaptcha;
+
+$response =  ReCaptcha::make($secret)
+                      ->verify($recaptchaToken, $userIp);
+
+if ($response->hasErrors(ReCaptchaErrors::E_CONNECTION_FAILED)) {
+    return 'We cannot connect to the reCAPTCHA servers!';
+}
+```
 
 ### Constraints array
 
