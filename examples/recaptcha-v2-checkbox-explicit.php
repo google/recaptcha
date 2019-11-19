@@ -93,10 +93,10 @@ elseif (isset($_POST['g-recaptcha-response'])):
     // This makes use of fsockopen() instead.
     //  $recaptcha = new \Google\ReCaptcha\ReCaptcha($secret, \Google\ReCaptcha\Clients\SocketClient::class);
     // Make the call to verify the response and also pass the user's IP address
-    $resp = $recaptcha->setExpectedHostname($_SERVER['SERVER_NAME'])
+    $resp = $recaptcha->hostname($_SERVER['SERVER_NAME'])
                       ->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
 
-    if ($resp->isSuccess()):
+    if ($resp->success()):
         // If the response is a success, that's it!
         ?>
         <h2>Success!</h2>
