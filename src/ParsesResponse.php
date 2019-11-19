@@ -34,8 +34,6 @@
 
 namespace Google\ReCaptcha;
 
-use Google\ReCaptcha\ReCaptchaResponse;
-
 trait ParsesResponse
 {
     /**
