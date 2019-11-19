@@ -56,7 +56,7 @@ The `make()` static method conveniently creates a new `ReCaptcha` instance using
 
 ### Constraints
 
-Sometimes it may be not enough to just verify if the reCAPTCHA challenge was completed. You can use these fluent methods to add constraints to the verification procedure and check if the challenge is faithfully valid:
+Sometimes it may be not enough to just verify if the reCAPTCHA challenge was completed. You can use these fluent methods to verify further the response from reCAPTCHA servers and check if the challenge is faithfully valid:
 
 * `hostname()`: Ensures the hostname from the challenge matches. Use this method if you disabled _Domain/Package Name Validation_ for your credentials.
 * `apkackageName()`: Ensures the APK Package Name from the challenge matches. Use this method if you disabled _Domain/Package Name Validation_ for your credentials.
