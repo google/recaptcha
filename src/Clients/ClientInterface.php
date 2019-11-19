@@ -3,6 +3,7 @@
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * BSD 3-Clause License
+ *
  * @copyright (c) 2019, Google Inc.
  * @link https://www.google.com/recaptcha
  * All rights reserved.
@@ -39,25 +40,26 @@ interface ClientInterface
     /**
      * Client constructor.
      *
-     * @param  string $secret
-     * @param  string $url
+     * @param  string $secret The shared secret for the reCAPTCHA service.
+     * @param  string $url The endpoint verify the reCAPTCHA challenge.
+     * @return void
      */
     public function __construct(string $secret, string $url);
 
     /**
      * Receives a request and returns a response from reCAPTCHA servers.
      *
-     * @param  string $token
-     * @param  string|null $ip
-     * @return array
+     * @param  string $token The token that identifies the reCAPTCHA challenge.
+     * @param  string|null $ip The optional IP of the user challenged.
+     * @return array The response from reCAPTCHA servers as an array, which is later parsed.
      */
     public function send(string $token, string $ip = null) : array;
 
     /**
      * Sets the HTTP Client to use with this.
      *
-     * @param $client
-     * @return \Google\ReCaptcha\Clients\ClientInterface
+     * @param mixed $client The object that this client will use for
+     * @return \Google\ReCaptcha\Clients\ClientInterface Ensure you return this client instance
      */
     public function setClient($client) : ClientInterface;
 }

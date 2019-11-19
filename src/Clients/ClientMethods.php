@@ -64,8 +64,9 @@ trait ClientMethods
     /**
      * Client constructor.
      *
-     * @param  string $secret
-     * @param  string $url
+     * @param  string $secret The shared secret for the reCAPTCHA service.
+     * @param  string $url The endpoint verify the reCAPTCHA challenge.
+     * @return void
      */
     public function __construct(string $secret, string $url = null)
     {
@@ -90,8 +91,8 @@ trait ClientMethods
     /**
      * Sets the underlying HTTP Client to use.
      *
-     * @param $client
-     * @return \Google\ReCaptcha\Clients\ClientInterface
+     * @param mixed $client The object that this client will use for
+     * @return \Google\ReCaptcha\Clients\ClientInterface Ensure you return this client instance
      */
     public function setClient($client) : ClientInterface
     {

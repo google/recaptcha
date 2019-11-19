@@ -55,9 +55,9 @@ class SocketClient implements ClientInterface
     /**
      * Receives a request and returns a response from reCAPTCHA servers.
      *
-     * @param  string $token
-     * @param  string|null $ip
-     * @return array
+     * @param  string $token The token that identifies the reCAPTCHA challenge.
+     * @param  string|null $ip The optional IP of the user challenged.
+     * @return array The response from reCAPTCHA servers as an array, which is later parsed.
      */
     public function send(string $token, string $ip = null) : array
     {
