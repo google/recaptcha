@@ -78,16 +78,18 @@ $response = ReCaptcha::make($secret)
                      ->verify($recaptchaToken, $userIp);
 ```
 
-You can use the `saneAction()` to automatically replace invalid characters from the `action` parameter, which is useful when you want to automatically put your URL path in your application:
+You can use the `saneAction()` to automatically replace invalid characters from the `action` parameter, which is useful when you want to automatically put your URL path in your application as the action name, instead of doing manually for each page.
 
 ```php
 <?php
 
-echo Request::urlPath(); // "/example
+echo Request::path(); // "/example/action-for-this-page?foo=bar&done=yes"
 
 $response = ReCaptcha::make($secret)
-                     ->action('homepage')
+                     ->action(Request::urlPath())
                      ->verify($recaptchaToken, $userIp);
+
+echo $response->constraint('action'); // "/example/action_for_this_page"
 ```
 
 ## Verification
