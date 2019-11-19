@@ -106,6 +106,16 @@ class ReCaptchaResponse
      */
     public function errors()
     {
+        return $this->errorCodes();
+    }
+
+    /**
+     * Returns the array of errors.
+     *
+     * @return array
+     */
+    public function errorCodes()
+    {
         return $this->errors;
     }
 
@@ -175,7 +185,7 @@ class ReCaptchaResponse
     public function toArray()
     {
         return array_merge($this->attributes, [
-            'errors' => $this->errors,
+            'error-codes' => $this->errors,
             'constraints' => $this->constraints,
         ]);
     }
