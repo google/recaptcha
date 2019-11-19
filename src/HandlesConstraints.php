@@ -90,7 +90,7 @@ trait HandlesConstraints
      */
     public function saneAction(string $action)
     {
-        return $this->action(preg_replace('/[^a-zA-Z0-9-]/', '', $action));
+        return $this->action(preg_replace('/[^a-zA-Z0-9-\/]/', '', $action));
     }
 
     /**
