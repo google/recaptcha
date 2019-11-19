@@ -84,7 +84,7 @@ class ReCaptchaResponse
      *
      * @return bool
      */
-    public function valid()
+    public function success()
     {
         return ($this->attributes['success'] ?? false) && $this->errors === [];
     }
@@ -94,9 +94,9 @@ class ReCaptchaResponse
      *
      * @return bool
      */
-    public function invalid()
+    public function failed()
     {
-        return ! $this->valid();
+        return ! $this->success();
     }
 
     /**
