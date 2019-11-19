@@ -59,6 +59,19 @@ class ReCaptcha
     public const SITE_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
 
     /**
+     * Default state of the constraints array
+     *
+     * @var array
+     */
+    public const CONSTRAINTS_ARRAY = [
+        'hostname' => null,
+        'apk_package_name' => null,
+        'action' => null,
+        'threshold' => null,
+        'challenge_ts' => null,
+    ];
+
+    /**
      * The HTTP client to verify the challenge.
      *
      * @var \Google\ReCaptcha\Clients\ClientInterface
@@ -162,7 +175,7 @@ class ReCaptcha
         }
 
         // The response is malformed, this may mean an unknown error
-        if (! isset($response['success'], $response['error-codes'])) {
+        if (! isset($response['success'])) {
             return (new ReCaptchaResponse)->setErrors([ReCaptchaErrors::E_UNKNOWN_ERROR]);
         }
 

@@ -71,7 +71,7 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
      *
      * @var array
      */
-    protected $constraints = [];
+    protected $constraints = ReCaptcha::CONSTRAINTS_ARRAY;
 
     /**
      * ReCaptchaResponse constructor.

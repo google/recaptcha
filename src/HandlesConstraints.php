@@ -41,13 +41,7 @@ trait HandlesConstraints
      *
      * @var array
      */
-    protected $constraints = [
-        'hostname' => null,
-        'apk_package_name' => null,
-        'action' => null,
-        'threshold' => null,
-        'challenge_ts' => null,
-    ];
+    protected $constraints = ReCaptcha::CONSTRAINTS_ARRAY;
 
     /**
      * Verify if the challenge hostname is equal to the one set.
@@ -132,13 +126,7 @@ trait HandlesConstraints
      */
     public function flushConstraints()
     {
-        $this->constraints = [
-            'hostname' => null,
-            'apk_package_name' => null,
-            'action' => null,
-            'threshold' => null,
-            'challenge_ts' => null,
-        ];
+        $this->constraints = ReCaptcha::CONSTRAINTS_ARRAY;
 
         return $this;
     }
