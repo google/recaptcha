@@ -210,19 +210,11 @@ class ReCaptcha
      * Creates a new ReCaptcha challenge verification instance.
      *
      * @param  string $secret
-     * @param  null|string|\Google\ReCaptcha\Clients\ClientInterface $client
+     * @param  null|string $client
      * @return \Google\ReCaptcha\ReCaptcha
      */
-    public static function make(string $secret, $client = null)
+    public static function make(string $secret, string $client = null)
     {
-        if (! $client) {
-            $client = CurlClient::class;
-        }
-
-        if (is_string($client) && is_subclass_of($client, ClientInterface::class)) {
-            $client = new $client($secret, static::SITE_VERIFY_URL);
-        }
-
-        return new static($client);
+        return new static(new $client($secret, static::SITE_VERIFY_URL));
     }
 }
