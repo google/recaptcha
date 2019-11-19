@@ -45,7 +45,7 @@ use Google\ReCaptcha\ReCaptcha;
 $response = ReCaptcha::make($secret)
                      ->verify($recaptchaToken, $userIp);
 
-if ($response->success()) {
+if ($response->valid()) {
     echo 'You are a human!';
 } else {
     echo 'You are a robot!';
@@ -94,7 +94,7 @@ echo $response->constraint('action'); // "/example/action_for_this_page"
 
 ## Verification
 
-By default, reCAPTCHA verification returns a immutable response from reCAPTCHA servers. You can use the `success()` method to check if the challenge is valid or not, while the `failed()` method will check if it has failed.
+By default, reCAPTCHA verification returns a immutable response from reCAPTCHA servers. You can use the `valid()` method to check if the challenge is valid or not, while the `invalid()` method will check if it has failed.
 
 ```php
 <?php
@@ -111,7 +111,7 @@ return 'Success!';
 
 ### On Failure Exception
 
-You can use the `verifyOrThrow()` method to conveniently throw a `ReCaptchaException` when the challenge is invalid, allowing your application to identify the error and proceed accordingly, like logging the event or pass the exception to a handler.
+You can use the `verifyOrThrow()` method to conveniently throw a `FailedReCaptchaException` when the challenge is invalid, allowing your application to identify the error and proceed accordingly, like logging the event or pass the exception to a handler.
 
 ```php
 <?php
@@ -119,12 +119,12 @@ You can use the `verifyOrThrow()` method to conveniently throw a `ReCaptchaExcep
 use App\Logger;
 use App\Redirect;
 use Google\ReCaptcha\ReCaptcha;
-use Google\ReCaptcha\ReCaptchaException;
+use Google\ReCaptcha\FailedReCaptchaException;
 
 try {
     $response = ReCaptcha::make($secret)
                          ->verifyOrThrow($recaptchaToken, $ip);
-} catch (ReCaptchaException $exception) {
+} catch (FailedReCaptchaException $exception) {
     Logger::info("The $ip has failed the reCAPTCHA challenge");
     
     return Redirect::previous()->withErrors([
@@ -146,7 +146,7 @@ use Google\ReCaptcha\ReCaptcha;
 
 $response =  ReCaptcha::make($secret)->verify($recaptchaToken, $userIp);
 
-if ($response->failed()) {
+if ($response->invalid()) {
     return var_dump($response->errors());
 }
 ```

@@ -96,7 +96,7 @@ elseif (isset($_POST['g-recaptcha-response'])):
     $resp = $recaptcha->hostname($_SERVER['SERVER_NAME'])
                       ->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
 
-    if ($resp->success()):
+    if ($resp->valid()):
         // If the response is a success, that's it!
         ?>
         <h2>Success!</h2>

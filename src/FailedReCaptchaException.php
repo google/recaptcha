@@ -39,7 +39,7 @@ use Exception;
 use Throwable;
 use Google\ReCaptcha\ReCaptchaResponse;
 
-class ReCaptchaException extends Exception
+class FailedReCaptchaException extends Exception
 {
     /**
      * The ReCaptchaResponse that failed.

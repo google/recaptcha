@@ -133,15 +133,17 @@ class ReCaptcha
      * @param  string $token
      * @param  string|null $ip
      * @return \Google\ReCaptcha\ReCaptchaResponse
-     * @throws \Google\ReCaptcha\ReCaptchaException
+     * @throws \Google\ReCaptcha\FailedReCaptchaException
      */
     public function verifyOrThrow(string $token, string $ip = null)
     {
-        if ($response =$this->verify($token, $ip)) {
+        $response = $this->verify($token, $ip);
+
+        if ($response->valid()) {
             return $response;
         }
 
-        throw new ReCaptchaException($response);
+        throw new FailedReCaptchaException($response);
     }
 
     /**

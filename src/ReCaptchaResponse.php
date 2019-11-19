@@ -88,7 +88,7 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
      *
      * @return bool
      */
-    public function success()
+    public function valid()
     {
         return ($this->attributes['success'] ?? false) && $this->errors === [];
     }
@@ -98,9 +98,9 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
      *
      * @return bool
      */
-    public function failed()
+    public function invalid()
     {
-        return ! $this->success();
+        return ! $this->valid();
     }
 
     /**

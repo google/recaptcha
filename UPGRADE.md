@@ -51,10 +51,12 @@ Methods to check the Response status have changed for.
 
 | Original | New |
 |---|---|
-| `isSuccess()` | `success()`  |
-| `! isSuccess()` | `failed()` |
+| `isSuccess()` | `valid()`  |
+| `! isSuccess()` | `invalid()` |
 | `getErrorCodes()` | `errorCodes()` \| `errors()` |
 | `getErrorCodes()[$code]` | `hasErrors($code)` |
+
+To check if the challenge was completed successfully, you will need to ask directly using `$response->success`.
 
 #### Verification Fluent Methods
 
