@@ -86,17 +86,17 @@ elseif (isset($_POST['g-recaptcha-response'])):
         <?php
     // If the form submission includes the "g-captcha-response" field
     // Create an instance of the service using your secret
-    $recaptcha = new \ReCaptcha\ReCaptcha($secret);
+    $recaptcha = \Google\ReCaptcha\ReCaptcha::make($secret);
 
     // If file_get_contents() is locked down on your PHP installation to disallow
     // its use with URLs, then you can use the alternative request method instead.
     // This makes use of fsockopen() instead.
-    //  $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\SocketPost());
+    //  $recaptcha = new \Google\ReCaptcha\ReCaptcha($secret, \Google\ReCaptcha\Clients\SocketClient::class);
 
     // Make the call to verify the response and also pass the user's IP address
-    $resp = $recaptcha->setExpectedHostname($_SERVER['SERVER_NAME'])
+    $resp = $recaptcha->hostname($_SERVER['SERVER_NAME'])
                       ->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
-    if ($resp->isSuccess()):
+    if ($resp->valid()):
         // If the response is a success, that's it!
         ?>
         <h2>Success!</h2>

@@ -32,19 +32,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace ReCaptcha;
+namespace Google\ReCaptcha\Clients;
 
-/**
- * Method used to send the request to the service.
- */
-interface RequestMethod
+use Google\ReCaptcha\ReCaptchaErrors;
+use ReCaptcha\ReCaptcha\Clients\StreamHandler;
+
+class StreamClient implements ClientInterface
 {
+    use ClientMethods;
 
     /**
-     * Submit the request with the specified parameters.
+     * Boot this class if needed.
      *
-     * @param RequestParameters $params Request parameters
-     * @return string Body of the reCAPTCHA response
+     * @return void
      */
-    public function submit(RequestParameters $params);
+    protected function boot()
+    {
+        $this->client = new StreamHandler;
+    }
+
+    /**
+     * Receives a request and returns a response from reCAPTCHA servers.
+     *
+     * @param  string $token
+     * @param  string|null $ip
+     * @return array
+     */
+    public function send(string $token, string $ip = null) : array
+    {
+        $response = $this->client->fileGetContents($this->url, false, $this->client->streamContextCreate([
+            'http' => [
+                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method' => 'POST',
+                'content' => $this->prepareContent($token, $ip),
+                'verify_peer' => true,
+            ],
+        ]));
+
+        if ($response !== false) {
+            return json_decode($response, true) ?? [];
+        }
+
+        return $this->error(ReCaptchaErrors::E_CONNECTION_FAILED);
+    }
 }

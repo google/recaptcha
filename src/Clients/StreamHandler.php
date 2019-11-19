@@ -3,6 +3,7 @@
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * BSD 3-Clause License
+ *
  * @copyright (c) 2019, Google Inc.
  * @link https://www.google.com/recaptcha
  * All rights reserved.
@@ -32,51 +33,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace ReCaptcha\RequestMethod;
+namespace ReCaptcha\ReCaptcha\Clients;
 
 /**
- * Convenience wrapper around the cURL functions to allow mocking.
+ * Class StreamHandler
+ * ---
+ * Convenience wrapper around the native Stream functions to allow mocking
+ *
+ * @package ReCaptcha\RequestMethod
  */
-class Curl
+class StreamHandler
 {
-
     /**
-     * @see http://php.net/curl_init
-     * @param string $url
-     * @return resource cURL handle
+     * @see https://www.php.net/file_get_contents
+     * @param $filename
+     * @param  bool $use_include_path
+     * @param  null $context
+     * @param  int $offset
+     * @param  null $maxlen
+     * @return false|string
      */
-    public function init($url = null)
+    public function fileGetContents($filename, $use_include_path = false, $context = null, $offset = 0, $maxlen = null)
     {
-        return curl_init($url);
+        return file_get_contents($filename, $use_include_path, $context, $offset, $maxlen);
     }
 
     /**
-     * @see http://php.net/curl_setopt_array
-     * @param resource $ch
-     * @param array $options
-     * @return bool
+     * @see https://www.php.net/stream_context_create
+     * @param  array|null $options
+     * @param  array|null $params
+     * @return resource
      */
-    public function setoptArray($ch, array $options)
+    public function streamContextCreate(array $options = null, array $params = null)
     {
-        return curl_setopt_array($ch, $options);
-    }
-
-    /**
-     * @see http://php.net/curl_exec
-     * @param resource $ch
-     * @return mixed
-     */
-    public function exec($ch)
-    {
-        return curl_exec($ch);
-    }
-
-    /**
-     * @see http://php.net/curl_close
-     * @param resource $ch
-     */
-    public function close($ch)
-    {
-        curl_close($ch);
+        return stream_context_create($options, $params);
     }
 }

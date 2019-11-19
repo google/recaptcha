@@ -32,57 +32,69 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace ReCaptcha\RequestMethod;
+namespace Google\ReCaptcha\Clients;
 
-use ReCaptcha\ReCaptcha;
-use ReCaptcha\RequestMethod;
-use ReCaptcha\RequestParameters;
+use RuntimeException;
+use Google\ReCaptcha\ReCaptchaErrors;
 
-/**
- * Sends POST requests to the reCAPTCHA service.
- */
-class Post implements RequestMethod
+class CurlClient implements ClientInterface
 {
-    /**
-     * URL for reCAPTCHA siteverify API
-     * @var string
-     */
-    private $siteVerifyUrl;
+    use ClientMethods;
 
     /**
-     * Only needed if you want to override the defaults
+     * Boot the Client if needed.
      *
-     * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @return void
+     * @throws \RuntimeException
      */
-    public function __construct($siteVerifyUrl = null)
+    protected function boot()
     {
-        $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
+        // We will throw a descriptive exception if the curl extension is not loaded
+        if (!extension_loaded('curl')) {
+            throw new RuntimeException('The [curl] extension is not loaded.');
+        }
+
+        $this->client = new CurlHandler;
     }
 
     /**
-     * Submit the POST request with the specified parameters.
+     * Receives a request and returns a response from reCAPTCHA servers.
      *
-     * @param RequestParameters $params Request parameters
-     * @return string Body of the reCAPTCHA response
+     * @param  string $token
+     * @param  string|null $ip
+     * @return array
      */
-    public function submit(RequestParameters $params)
+    public function send(string $token, string $ip = null) : array
     {
-        $options = array(
-            'http' => array(
-                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method' => 'POST',
-                'content' => $params->toQueryString(),
-                // Force the peer to validate (not needed in 5.6.0+, but still works)
-                'verify_peer' => true,
-            ),
+        $this->client->setoptArray(
+            $resource = $this->client->init($this->url),
+            [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => $this->prepareContent($token, $ip),
+                CURLOPT_HTTPHEADER => [
+                    'Content-Type: application/x-www-form-urlencoded'
+                ],
+                CURLINFO_HEADER_OUT => false,
+                CURLOPT_HEADER => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => true,
+                CURLOPT_HTTP_VERSION => defined(CURL_HTTP_VERSION_2TLS)
+                    ? CURL_HTTP_VERSION_2TLS
+                    : CURL_HTTP_VERSION_1_1
+            ]
         );
-        $context = stream_context_create($options);
-        $response = file_get_contents($this->siteVerifyUrl, false, $context);
 
-        if ($response !== false) {
-            return $response;
+        // Safely close curl if something happens when executing the request.
+        try {
+            $response = $this->client->exec($resource);
+        } finally {
+            $this->client->close($resource);
         }
 
-        return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+        if ($response !== false) {
+            return json_decode($response, true) ?? [];
+        }
+
+        return $this->error(ReCaptchaErrors::E_CONNECTION_FAILED);
     }
 }

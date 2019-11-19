@@ -6,12 +6,12 @@
          bootstrap="src/autoload.php">
     <testsuites>
         <testsuite name="reCAPTCHA Test Suite">
-            <directory>tests/ReCaptcha/</directory>
+            <directory>tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
-            <directory suffix=".php">src/ReCaptcha/</directory>
+            <directory suffix=".php">src/</directory>
         </whitelist>
     </filter>
     <logging>

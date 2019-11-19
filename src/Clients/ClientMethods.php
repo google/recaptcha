@@ -3,6 +3,7 @@
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * BSD 3-Clause License
+ *
  * @copyright (c) 2019, Google Inc.
  * @link https://www.google.com/recaptcha
  * All rights reserved.
@@ -32,81 +33,101 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace ReCaptcha\RequestMethod;
+namespace Google\ReCaptcha\Clients;
 
-/**
- * Convenience wrapper around native socket and file functions to allow for
- * mocking.
- */
-class Socket
+use Google\ReCaptcha\ReCaptcha;
+use Google\ReCaptcha\ReCaptchaErrors;
+
+trait ClientMethods
 {
-    private $handle = null;
+    /**
+     * Shared secret for the site.
+     *
+     * @var string
+     */
+    protected $secret;
 
     /**
-     * fsockopen
+     * The Site Verify URL.
      *
-     * @see http://php.net/fsockopen
-     * @param string $hostname
-     * @param int $port
-     * @param int $errno
-     * @param string $errstr
-     * @param float $timeout
-     * @return resource
+     * @var string
      */
-    public function fsockopen($hostname, $port = -1, &$errno = 0, &$errstr = '', $timeout = null)
-    {
-        $this->handle = fsockopen($hostname, $port, $errno, $errstr, (is_null($timeout) ? ini_get("default_socket_timeout") : $timeout));
+    protected $url;
 
-        if ($this->handle != false && $errno === 0 && $errstr === '') {
-            return $this->handle;
-        }
-        return false;
+    /**
+     * Underlying HTTP Client instance to use.
+     *
+     * @var object
+     */
+    protected $client;
+
+    /**
+     * Client constructor.
+     *
+     * @param  string $secret
+     * @param  string $url
+     */
+    public function __construct(string $secret, string $url = null)
+    {
+        $this->secret = $secret;
+        $this->url = $url ?? ReCaptcha::SITE_VERIFY_URL;
+
+        // Let the developer execute additional logic when the Client is instanced,
+        // like adding the underlying HTTP Client instance or anything else.
+        $this->boot();
     }
 
     /**
-     * fwrite
+     * Boot this class if needed.
      *
-     * @see http://php.net/fwrite
-     * @param string $string
-     * @param int $length
-     * @return int | bool
+     * @return void
      */
-    public function fwrite($string, $length = null)
+    protected function boot()
     {
-        return fwrite($this->handle, $string, (is_null($length) ? strlen($string) : $length));
+        //
     }
 
     /**
-     * fgets
+     * Sets the underlying HTTP Client to use.
      *
-     * @see http://php.net/fgets
-     * @param int $length
+     * @param $client
+     * @return \Google\ReCaptcha\Clients\ClientInterface
+     */
+    public function setClient($client) : ClientInterface
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * Prepares the Query String to send to reCAPTCHA servers.
+     *
+     * @param  string $token
+     * @param  null $ip
      * @return string
      */
-    public function fgets($length = null)
+    protected function prepareContent(string $token, $ip = null)
     {
-        return fgets($this->handle, $length);
+        return http_build_query(array_filter([
+            'secret' => $this->secret,
+            'response' => $token,
+            'remoteip' => $ip,
+            'version' => ReCaptcha::VERSION
+        ]));
     }
 
     /**
-     * feof
+     * Returns an array with an error as response.
      *
-     * @see http://php.net/feof
-     * @return bool
+     * @param  string $error
+     * @return array
      */
-    public function feof()
+    protected function error(string $error = ReCaptchaErrors::E_UNKNOWN_ERROR)
     {
-        return feof($this->handle);
-    }
-
-    /**
-     * fclose
-     *
-     * @see http://php.net/fclose
-     * @return bool
-     */
-    public function fclose()
-    {
-        return fclose($this->handle);
+        return [
+            'success' => false,
+            'error-codes' => [$error]
+        ];
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 /* An autoloader for ReCaptcha\Foo classes. This should be required()
  * by the user before attempting to instantiate any of the ReCaptcha
  * classes.
@@ -35,34 +34,31 @@
  */
 
 spl_autoload_register(function ($class) {
-    if (substr($class, 0, 10) !== 'ReCaptcha\\') {
-        /* If the class does not lie under the "ReCaptcha" namespace,
-         * then we can exit immediately.
-         */
+
+    // Exit immediately if the class does not lie under this package namespace.
+    if (strpos($class, 'Google\\ReCaptcha\\') !== 0) {
         return;
     }
 
-    /* All of the classes have names like "ReCaptcha\Foo", so we need
-     * to replace the backslashes with frontslashes if we want the
-     * name to map directly to a location in the filesystem.
-     */
+    // All of the classes have full qualified names like "Google\ReCaptcha\Foo",
+    // so we need to replace the backslashes with frontslashes if we want the
+    // name to map directly to a location inside the application filesystem.
     $class = str_replace('\\', '/', $class);
 
-    /* First, check under the current directory. It is important that
-     * we look here first, so that we don't waste time searching for
-     * test classes in the common case.
-     */
-    $path = dirname(__FILE__).'/'.$class.'.php';
+    // First, check under the current directory. It is important that we look
+    // here first, so that we don't waste time searching for test classes in
+    // the common case.
+    $path = __DIR__ . '/' . $class . '.php';
+
     if (is_readable($path)) {
         require_once $path;
 
         return;
     }
 
-    /* If we didn't find what we're looking for already, maybe it's
-     * a test class?
-     */
-    $path = dirname(__FILE__).'/../tests/'.$class.'.php';
+    // If we didn't find what we're looking for already, maybe it's a test class?
+    $path = __DIR__ . '/../tests/' . $class . '.php';
+
     if (is_readable($path)) {
         require_once $path;
     }

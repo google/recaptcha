@@ -3,6 +3,7 @@
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * BSD 3-Clause License
+ *
  * @copyright (c) 2019, Google Inc.
  * @link https://www.google.com/recaptcha
  * All rights reserved.
@@ -32,39 +33,54 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace ReCaptcha;
+namespace Google\ReCaptcha\Clients;
 
-use PHPUnit\Framework\TestCase;
-
-class RequestParametersTest extends Testcase
+/**
+ * Class CurlHandler
+ * ---
+ * Convenience wrapper around the cURL functions to allow mocking
+ *
+ * @package ReCaptcha\RequestMethod
+ */
+class CurlHandler
 {
-    public function provideValidData()
+    /**
+     * @see http://php.net/curl_init
+     * @param  string $url
+     * @return resource cURL handle
+     */
+    public function init($url = null)
     {
-        return array(
-            array('SECRET', 'RESPONSE', 'REMOTEIP', 'VERSION',
-                array('secret' => 'SECRET', 'response' => 'RESPONSE', 'remoteip' => 'REMOTEIP', 'version' => 'VERSION'),
-                'secret=SECRET&response=RESPONSE&remoteip=REMOTEIP&version=VERSION'),
-            array('SECRET', 'RESPONSE', null, null,
-                array('secret' => 'SECRET', 'response' => 'RESPONSE'),
-                'secret=SECRET&response=RESPONSE'),
-        );
+        return curl_init($url);
     }
 
     /**
-     * @dataProvider provideValidData
+     * @see http://php.net/curl_setopt_array
+     * @param  resource $resource
+     * @param  array $options
+     * @return bool
      */
-    public function testToArray($secret, $response, $remoteIp, $version, $expectedArray, $expectedQuery)
+    public function setoptArray($resource, array $options)
     {
-        $params = new RequestParameters($secret, $response, $remoteIp, $version);
-        $this->assertEquals($params->toArray(), $expectedArray);
+        return curl_setopt_array($resource, $options);
     }
 
     /**
-     * @dataProvider provideValidData
+     * @see http://php.net/curl_exec
+     * @param  resource $resource
+     * @return mixed
      */
-    public function testToQueryString($secret, $response, $remoteIp, $version, $expectedArray, $expectedQuery)
+    public function exec($resource)
     {
-        $params = new RequestParameters($secret, $response, $remoteIp, $version);
-        $this->assertEquals($params->toQueryString(), $expectedQuery);
+        return curl_exec($resource);
+    }
+
+    /**
+     * @see http://php.net/curl_close
+     * @param  resource $resource
+     */
+    public function close($resource)
+    {
+        curl_close($resource);
     }
 }

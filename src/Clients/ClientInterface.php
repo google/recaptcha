@@ -32,80 +32,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace ReCaptcha;
+namespace Google\ReCaptcha\Clients;
 
-/**
- * Stores and formats the parameters for the request to the reCAPTCHA service.
- */
-class RequestParameters
+interface ClientInterface
 {
     /**
-     * The shared key between your site and reCAPTCHA.
-     * @var string
-     */
-    private $secret;
-
-    /**
-     * The user response token provided by reCAPTCHA, verifying the user on your site.
-     * @var string
-     */
-    private $response;
-
-    /**
-     * Remote user's IP address.
-     * @var string
-     */
-    private $remoteIp;
-
-    /**
-     * Client version.
-     * @var string
-     */
-    private $version;
-
-    /**
-     * Initialise parameters.
+     * Client constructor.
      *
-     * @param string $secret Site secret.
-     * @param string $response Value from g-captcha-response form field.
-     * @param string $remoteIp User's IP address.
-     * @param string $version Version of this client library.
+     * @param  string $secret
+     * @param  string $url
      */
-    public function __construct($secret, $response, $remoteIp = null, $version = null)
-    {
-        $this->secret = $secret;
-        $this->response = $response;
-        $this->remoteIp = $remoteIp;
-        $this->version = $version;
-    }
+    public function __construct(string $secret, string $url);
 
     /**
-     * Array representation.
+     * Receives a request and returns a response from reCAPTCHA servers.
      *
-     * @return array Array formatted parameters.
+     * @param  string $token
+     * @param  string|null $ip
+     * @return array
      */
-    public function toArray()
-    {
-        $params = array('secret' => $this->secret, 'response' => $this->response);
-
-        if (!is_null($this->remoteIp)) {
-            $params['remoteip'] = $this->remoteIp;
-        }
-
-        if (!is_null($this->version)) {
-            $params['version'] = $this->version;
-        }
-
-        return $params;
-    }
+    public function send(string $token, string $ip = null) : array;
 
     /**
-     * Query string representation for HTTP request.
+     * Sets the HTTP Client to use with this.
      *
-     * @return string Query string formatted parameters.
+     * @param $client
+     * @return \Google\ReCaptcha\Clients\ClientInterface
      */
-    public function toQueryString()
-    {
-        return http_build_query($this->toArray(), '', '&');
-    }
+    public function setClient($client) : ClientInterface;
 }
