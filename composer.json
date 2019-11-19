@@ -25,7 +25,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ReCaptcha\\ReCaptcha\\": "src"
+            "Google\\ReCaptcha\\": "src"
         }
     },
     "autoload-dev": {
