@@ -95,7 +95,7 @@ trait HandlesConstraints
             $action = substr($action, 0, $position);
         }
 
-        return $this->action(preg_replace('/[^a-zA-Z0-9-\/]/', '', $action));
+        return $this->action(preg_replace('/[^a-zA-Z0-9-\/]/', '', preg_replace('/[-]/', '_', $action)));
     }
 
     /**
