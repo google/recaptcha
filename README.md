@@ -109,31 +109,6 @@ if ($response->failed()) {
 return 'Success!';
 ```
 
-### On Failure Callback
-
-To execute a callback when the response from reCAPTCHA is deemed invalid, use the `verifyOr` which accepts a `\Closure` as third parameter.
-
-```php
-<?php
-
-use App\Logger;
-use Google\ReCaptcha\ReCaptcha;
-
-$response =  ReCaptcha::make($secret)
-                      ->verifyOr($recaptchaToken, $userIp, function ($response) {
-                          Logger::debug($response);
-                          
-                          return $response;
-                      });
-
-if ($response->failed()) {
-    return 'The challenge failed';
-}
-
-return 'Success!';
-```
-
-
 ### On Failure Exception
 
 You can use the `verifyOrThrow()` method to conveniently throw a `ReCaptchaException` when the challenge is invalid, allowing your application to identify the error and proceed accordingly, like logging the event or pass the exception to a handler.
@@ -301,7 +276,7 @@ class SymfonyAdapter implements ClientInterface
 }
 ```
 
-Once your class is ready, pass the class instance as the second argument to the `make()` static method. 
+Once your class is ready, pass the class name as the second argument to the `make()` static method, or use manual instancing to pass the client instance.
 
 ```php
 <?php
@@ -309,8 +284,10 @@ Once your class is ready, pass the class instance as the second argument to the 
 use Google\ReCaptcha\ReCaptcha;
 use App\ReCaptcha\SymfonyAdapter;
 
-$response = ReCaptcha::make($secret, SymfonyAdapter::class)
-                ->verify($recaptchaToken, $userIp);
+$assisted = ReCaptcha::make($secret, SymfonyAdapter::class);
+
+$manual = new ReCaptcha(new SymfonyAdapter($secret));
+
 ``` 
 
 ## Using reCAPTCHA V2 and V3

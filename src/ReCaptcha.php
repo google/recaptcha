@@ -128,37 +128,20 @@ class ReCaptcha
     }
 
     /**
-     * Verifies the challenge, and executes a callback when its invalid.
-     *
-     * @param  string $token
-     * @param  string|\Closure $ip
-     * @param  null|\Closure $callback
-     * @return mixed|\Google\ReCaptcha\ReCaptchaResponse
-     */
-    public function verifyOr(string $token, $ip, Closure $callback = null)
-    {
-        if (! $callback && $ip instanceof Closure) {
-            $callback = $ip;
-            $ip = null;
-        }
-
-        $response = $this->verify($token, $ip);
-
-        return $response->valid() ?: $callback($response);
-    }
-
-    /**
      * Verifies the challenge or throws an exception if its invalid.
      *
      * @param  string $token
      * @param  string|null $ip
      * @return \Google\ReCaptcha\ReCaptchaResponse
+     * @throws \Google\ReCaptcha\ReCaptchaException
      */
     public function verifyOrThrow(string $token, string $ip = null)
     {
-        return $this->verifyOr($token, $ip, function ($response) {
-            throw new ReCaptchaException($response);
-        });
+        if ($response =$this->verify($token, $ip)) {
+            return $response;
+        }
+
+        throw new ReCaptchaException($response);
     }
 
     /**
@@ -215,6 +198,8 @@ class ReCaptcha
      */
     public static function make(string $secret, string $client = null)
     {
-        return new static(new $client($secret, static::SITE_VERIFY_URL));
+        $client = $client ?? CurlClient::class;
+
+        return new static(new $client($secret));
     }
 }
