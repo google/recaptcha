@@ -45,7 +45,7 @@ use Google\ReCaptcha\ReCaptcha;
 $response = ReCaptcha::make($secret)
                      ->verify($recaptchaToken, $userIp);
 
-if ($response->valid()) {
+if ($response->success()) {
     echo 'You are a human!';
 } else {
     echo 'You are a robot!';
@@ -80,7 +80,7 @@ $response = ReCaptcha::make($secret)
 
 ## Verification
 
-By default, reCAPTCHA verification returns a immutable response from reCAPTCHA servers. You can use the `valid()` method to check if the challenge is valid or not, while the `invalid()` method will check if it has failed.
+By default, reCAPTCHA verification returns a immutable response from reCAPTCHA servers. You can use the `success()` method to check if the challenge is valid or not, while the `failed()` method will check if it has failed.
 
 ```php
 <?php
@@ -88,12 +88,37 @@ By default, reCAPTCHA verification returns a immutable response from reCAPTCHA s
 $response =  ReCaptcha::make($secret)
                       ->verify($recaptchaToken, $userIp);
 
-if ($response->invalid()) {
+if ($response->failed()) {
     return 'The challenge failed';
 }
 
 return 'Success!';
 ```
+
+### On Failure Callback
+
+To execute a callback when the response from reCAPTCHA is deemed invalid, use the `verifyOr` which accepts a `\Closure` as third parameter.
+
+```php
+<?php
+
+use App\Logger;
+use Google\ReCaptcha\ReCaptcha;
+
+$response =  ReCaptcha::make($secret)
+                      ->verifyOr($recaptchaToken, $userIp, function ($response) {
+                          Logger::debug(json_encode($response->toArray()));
+                          
+                          return $response;
+                      });
+
+if ($response->failed()) {
+    return 'The challenge failed';
+}
+
+return 'Success!';
+```
+
 
 ### On Failure Exception
 
@@ -132,7 +157,7 @@ use Google\ReCaptcha\ReCaptcha;
 
 $response =  ReCaptcha::make($secret)->verify($recaptchaToken, $userIp);
 
-if ($response->invalid()) {
+if ($response->failed()) {
     return var_dump($response->errors());
 }
 ```
@@ -166,7 +191,7 @@ $response = ReCaptcha::make($secret)
                      ->threshold(0.7)
                      ->verify($recaptchaToken, $userIp);
 
-if ($response->invalid()) {
+if ($response->failed()) {
     var_dump($response->constraints());
 }
 ```
