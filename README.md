@@ -78,6 +78,18 @@ $response = ReCaptcha::make($secret)
                      ->verify($recaptchaToken, $userIp);
 ```
 
+You can use the `saneAction()` to automatically replace invalid characters from the `action` parameter, which is useful when you want to automatically put your URL path in your application:
+
+```php
+<?php
+
+echo Request::urlPath(); // "/example
+
+$response = ReCaptcha::make($secret)
+                     ->action('homepage')
+                     ->verify($recaptchaToken, $userIp);
+```
+
 ## Verification
 
 By default, reCAPTCHA verification returns a immutable response from reCAPTCHA servers. You can use the `success()` method to check if the challenge is valid or not, while the `failed()` method will check if it has failed.

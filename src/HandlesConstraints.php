@@ -90,6 +90,11 @@ trait HandlesConstraints
      */
     public function saneAction(string $action)
     {
+        // Remove any HTTP Query string from the action.
+        if ($position = strpos($action, '?')) {
+            $action = substr($action, 0, $position);
+        }
+
         return $this->action(preg_replace('/[^a-zA-Z0-9-\/]/', '', $action));
     }
 
