@@ -193,12 +193,12 @@ class ReCaptcha
     protected function buildArray(array $response)
     {
         return [
+            'success'          => $response['success'] ?? false,
             'hostname'         => $response['hostname'] ?? null,
-            'challenge_ts'     => $response['challenge_ts'] ?? null,
             'apk_package_name' => $response['apk_package_name'] ?? null,
+            'challenge_ts'     => $response['challenge_ts'] ?? null,
             'score'            => $response['score'] ?? null,
             'action'           => $response['action'] ?? null,
-            'success'          => $response['success'] ?? false,
         ];
     }
 
