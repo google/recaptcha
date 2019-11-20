@@ -12,6 +12,12 @@
     <filter>
         <whitelist>
             <directory suffix=".php">src/</directory>
+            <exclude>
+                <file>src/autoload.php</file>
+                <file>src/Clients/CurlHandler.php</file>
+                <file>src/Clients/SocketHandler.php</file>
+                <file>src/Clients/StreamHandler.php</file>
+            </exclude>
         </whitelist>
     </filter>
     <logging>

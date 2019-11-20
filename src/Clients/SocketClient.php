@@ -73,7 +73,7 @@ class SocketClient implements ClientInterface
             return $this->error(ReCaptchaErrors::E_BAD_RESPONSE);
         }
 
-        return preg_split("#\n\s*\n#Uis", $response, 2)[1];
+        return json_decode(preg_split("#\n\s*\n#Uis", $response, 2)[1], true);
     }
 
     /**
@@ -101,12 +101,12 @@ class SocketClient implements ClientInterface
     {
         $content = $this->prepareContent($token, $ip);
 
-        return implode('\\r\\n', [
-            'POST ' . $url['path'] . 'HTTP/1.1',
+        return implode("\r\n", [
+            'POST ' . $url['path'] . ' HTTP/1.1',
             'Host: ' . $url['host'],
             'Content-Type: application/x-www-form-urlencoded',
             'Content-length: ' . strlen($content),
-            'Connection: close\\r\\n',
+            "Connection: close\r\n",
             "$content\r\n",
         ]);
     }
@@ -127,6 +127,7 @@ class SocketClient implements ClientInterface
             while (! $this->client->feof()) {
                 $response .= $this->client->fgets(4096);
             }
+
         } finally {
             $this->client->fclose();
         }

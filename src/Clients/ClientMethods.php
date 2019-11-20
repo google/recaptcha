@@ -68,9 +68,10 @@ trait ClientMethods
      * @param  string $url The endpoint verify the reCAPTCHA challenge.
      * @return void
      */
-    public function __construct(string $secret,
-                                string $url = ReCaptcha::SITE_VERIFY_URL)
-    {
+    public function __construct(
+        string $secret,
+        string $url = ReCaptcha::SITE_VERIFY_URL
+    ) {
         $this->secret = $secret;
         $this->url = $url;
 
@@ -82,6 +83,7 @@ trait ClientMethods
     /**
      * Boot this class if needed.
      *
+     * @codeCoverageIgnore This depends on the Client itself
      * @return void
      */
     protected function boot()

@@ -155,7 +155,6 @@ class ReCaptchaTest extends TestCase
 
             throw $exception;
         }
-
     }
 
     public function testVerifiesReCaptchaDoesntThrowsException()
@@ -306,7 +305,13 @@ class ReCaptchaTest extends TestCase
 
 class TestHttpClient implements ClientInterface
 {
-    public function __construct(string $secret, string $url = ReCaptcha::SITE_VERIFY_URL) { }
-    public function send(string $token, string $ip = null) : array { }
-    public function setClient($client) : ClientInterface { }
+    public function __construct(string $secret, string $url = ReCaptcha::SITE_VERIFY_URL)
+    {
+    }
+    public function send(string $token, string $ip = null) : array
+    {
+    }
+    public function setClient($client) : ClientInterface
+    {
+    }
 }

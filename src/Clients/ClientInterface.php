@@ -46,8 +46,10 @@ interface ClientInterface
      * @param  string $url The endpoint verify the reCAPTCHA challenge.
      * @return void
      */
-    public function __construct(string $secret,
-                                string $url = ReCaptcha::SITE_VERIFY_URL);
+    public function __construct(
+        string $secret,
+        string $url = ReCaptcha::SITE_VERIFY_URL
+    );
 
     /**
      * Receives a request and returns a response from reCAPTCHA servers.

@@ -35,7 +35,6 @@
 namespace Google\ReCaptcha\Clients;
 
 use Google\ReCaptcha\ReCaptchaErrors;
-use ReCaptcha\ReCaptcha\Clients\StreamHandler;
 
 class StreamClient implements ClientInterface
 {
@@ -60,7 +59,9 @@ class StreamClient implements ClientInterface
      */
     public function send(string $token, string $ip = null) : array
     {
-        $response = $this->client->fileGetContents($this->url, false,
+        $response = $this->client->fileGetContents(
+            $this->url,
+            false,
             $this->client->streamContextCreate([
                 'http' => [
                     'header' => "Content-type: application/x-www-form-urlencoded\r\n",

@@ -33,7 +33,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace ReCaptcha\ReCaptcha\Clients;
+namespace Google\ReCaptcha\Clients;
 
 /**
  * Class StreamHandler
