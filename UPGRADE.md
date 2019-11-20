@@ -53,10 +53,12 @@ Methods to check the Response status have changed for.
 |---|---|
 | `isSuccess()` | `valid()`  |
 | `! isSuccess()` | `invalid()` |
-| `getErrorCodes()` | `errorCodes()` \| `errors()` |
+| `getErrorCodes()` | `$response->error_codes` |
 | `getErrorCodes()[$code]` | `hasErrors($code)` |
 
 To check if the challenge was completed successfully, you will need to ask directly using `$response->success`.
+
+Additionally, constraint errors are stored separately and retrieved using `$response->errors()`.
 
 #### Verification Fluent Methods
 
