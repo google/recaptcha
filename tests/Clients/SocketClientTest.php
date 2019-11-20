@@ -29,7 +29,8 @@ class SocketClientTest extends TestCase
 
         $handler->method('fgets')
             ->with(4096)
-            ->willReturn(<<<EOF
+            ->willReturn(
+                <<<EOF
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 Date: Thu, 1 Jan 1970 00:00:00 GMT
@@ -106,7 +107,8 @@ EOF
 
         $handler->method('fgets')
             ->with(4096)
-            ->willReturn(<<<EOF
+            ->willReturn(
+                <<<EOF
 HTTP/1.1 500 NOPE
 Content-Type: application/json; charset=utf-8
 Date: Thu, 1 Jan 1970 00:00:00 GMT

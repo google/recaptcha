@@ -127,7 +127,6 @@ class SocketClient implements ClientInterface
             while (! $this->client->feof()) {
                 $response .= $this->client->fgets(4096);
             }
-
         } finally {
             $this->client->fclose();
         }
