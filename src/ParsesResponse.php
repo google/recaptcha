@@ -42,11 +42,15 @@ trait ParsesResponse
      * @param  \Google\ReCaptcha\ReCaptchaResponse $response
      * @return \Google\ReCaptcha\ReCaptchaResponse
      */
-    public function checkErrors(ReCaptchaResponse $response)
+    protected function checkErrors(ReCaptchaResponse $response)
     {
         $errors = [];
 
         $constraints = $response->constraints();
+
+        if (empty($response->getAttributes())) {
+            return $response;
+        }
 
         if ($constraints['hostname']
             && strcasecmp($constraints['hostname'], $response->hostname) !== 0) {
@@ -64,7 +68,7 @@ trait ParsesResponse
         }
 
         if ($constraints['threshold']
-            && $this->constraints['threshold'] > $response->score) {
+            && $constraints['threshold'] > $response->score) {
             $errors[] = ReCaptchaErrors::E_SCORE_THRESHOLD_NOT_MET;
         }
 
@@ -76,8 +80,9 @@ trait ParsesResponse
             }
         }
 
+        // Add the errors to the existing array errors of the response
         return $response->setErrors(
-            array_merge($response->errors(), $errors)
+            array_merge($response->error_codes, $errors)
         );
     }
 }

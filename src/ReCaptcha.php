@@ -170,7 +170,7 @@ class ReCaptcha
 
         $this->flushConstraints();
 
-        return $instance->setErrors($response['error-codes'] ?? []);
+        return $instance;
     }
 
     /**
@@ -183,6 +183,7 @@ class ReCaptcha
     {
         return [
             'success'          => $response['success'] ?? false,
+            'error-codes'      => $response['error-codes'] ?? [],
             'hostname'         => $response['hostname'] ?? null,
             'apk_package_name' => $response['apk_package_name'] ?? null,
             'challenge_ts'     => $response['challenge_ts'] ?? null,

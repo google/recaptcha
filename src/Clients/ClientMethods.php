@@ -68,10 +68,11 @@ trait ClientMethods
      * @param  string $url The endpoint verify the reCAPTCHA challenge.
      * @return void
      */
-    public function __construct(string $secret, string $url = null)
+    public function __construct(string $secret,
+                                string $url = ReCaptcha::SITE_VERIFY_URL)
     {
         $this->secret = $secret;
-        $this->url = $url ?? ReCaptcha::SITE_VERIFY_URL;
+        $this->url = $url;
 
         // Let the developer execute additional logic when the Client is instanced,
         // like adding the underlying HTTP Client instance or anything else.

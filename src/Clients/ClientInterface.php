@@ -35,6 +35,8 @@
 
 namespace Google\ReCaptcha\Clients;
 
+use Google\ReCaptcha\ReCaptcha;
+
 interface ClientInterface
 {
     /**
@@ -44,7 +46,8 @@ interface ClientInterface
      * @param  string $url The endpoint verify the reCAPTCHA challenge.
      * @return void
      */
-    public function __construct(string $secret, string $url);
+    public function __construct(string $secret,
+                                string $url = ReCaptcha::SITE_VERIFY_URL);
 
     /**
      * Receives a request and returns a response from reCAPTCHA servers.

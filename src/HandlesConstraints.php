@@ -95,7 +95,9 @@ trait HandlesConstraints
             $action = substr($action, 0, $position);
         }
 
-        return $this->action(preg_replace('/[^a-zA-Z0-9-\/]/', '', preg_replace('/[-]/', '_', $action)));
+        $action = str_replace('-', '_', $action);
+
+        return $this->action(preg_replace('/[^a-zA-Z0-9_\/]/', '', $action));
     }
 
     /**
@@ -122,6 +124,16 @@ trait HandlesConstraints
         $this->constraints['challenge_ts'] = $seconds;
 
         return $this;
+    }
+
+    /**
+     * Returns the active constraints for the next verification request
+     *
+     * @return array
+     */
+    public function getConstraints()
+    {
+        return $this->constraints;
     }
 
     /**

@@ -45,6 +45,16 @@ namespace Google\ReCaptcha\Clients;
 class CurlHandler
 {
     /**
+     * Returns if the current PHP environment has cURL enabled
+     *
+     * @return bool
+     */
+    public function hasExtension()
+    {
+        return extension_loaded('curl');
+    }
+
+    /**
      * @see http://php.net/curl_init
      * @param  string $url
      * @return resource cURL handle

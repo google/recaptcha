@@ -48,6 +48,7 @@ use JsonSerializable;
  * @property-read null|string $apk_package_name
  * @property-read null|float $score
  * @property-read null|string $action
+ * @property-read array $error_codes
  * @property-read bool $success
  */
 class ReCaptchaResponse implements JsonSerializable, Serializable
@@ -84,6 +85,16 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
     }
 
     /**
+     * Returns all the response attributes as an array
+     *
+     * @return array
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
      * Returns if the challenge is valid.
      *
      * @return bool
@@ -109,16 +120,6 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
      * @return array
      */
     public function errors()
-    {
-        return $this->errorCodes();
-    }
-
-    /**
-     * Returns the array of errors.
-     *
-     * @return array
-     */
-    public function errorCodes()
     {
         return $this->errors;
     }
@@ -199,6 +200,10 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
      */
     public function __get($name)
     {
+        // Minor fix for getting the error codes
+        if ($name === 'error_codes') {
+            return $this->attributes['error-codes'];
+        }
         return $this->attributes[$name];
     }
 
@@ -210,7 +215,7 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
     public function toArray()
     {
         return array_merge($this->attributes, [
-            'error-codes' => $this->errors,
+            'errors' => $this->errors,
             'constraints' => $this->constraints,
         ]);
     }
@@ -266,14 +271,16 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
      */
     public function unserialize($serialized)
     {
-        if (! $array = json_decode($serialized, true)) {
-           return;
-        }
+        $array = json_decode($serialized, true);
 
-        $this->errors = $array['error-codes'];
+        $this->errors = $array['errors'];
         $this->constraints = $array['constraints'];
 
-        unset($array['error-codes'], $array['constraints']);
+        if (isset($array['score'])) {
+            $array['score'] = (float)$array['score'];
+        }
+
+        unset($array['constraints'], $array['errors']);
 
         $this->attributes = $array;
     }

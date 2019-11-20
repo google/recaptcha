@@ -49,11 +49,6 @@ class CurlClient implements ClientInterface
      */
     protected function boot()
     {
-        // We will throw a descriptive exception if the curl extension is not loaded
-        if (!extension_loaded('curl')) {
-            throw new RuntimeException('The [curl] extension is not loaded.');
-        }
-
         $this->client = new CurlHandler;
     }
 

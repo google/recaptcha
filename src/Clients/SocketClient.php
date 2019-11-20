@@ -84,7 +84,9 @@ class SocketClient implements ClientInterface
      */
     protected function openConnection(string $host)
     {
-        return $this->client->fsockopen('ssl://' . $host, 443, 0, '', 30);
+        $errno = 0;
+        $errstr = '';
+        return $this->client->fsockopen('ssl://' . $host, 443, $errno, $errstr, 30);
     }
 
     /**
