@@ -73,7 +73,7 @@ class CurlClient implements ClientInterface
                 CURLOPT_HEADER => false,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_SSL_VERIFYPEER => true,
-                CURLOPT_HTTP_VERSION => defined(CURL_HTTP_VERSION_2TLS)
+                CURLOPT_HTTP_VERSION => defined('CURL_HTTP_VERSION_2TLS')
                     ? CURL_HTTP_VERSION_2TLS
                     : CURL_HTTP_VERSION_1_1
             ]
