@@ -22,6 +22,8 @@ class ReCaptchaResponseTest extends TestCase
         $response = new ReCaptchaResponse($this->success);
 
         $this->assertContains($this->success, $response->toArray());
+
+        $this->assertEquals($this->success, $response->getAttributes());
     }
 
     public function testResponseValid()
@@ -48,15 +50,16 @@ class ReCaptchaResponseTest extends TestCase
             'success' => false,
         ]));
 
-        $response->setErrors([ 'foo', 'bar' ]);
+        $response->addErrors([ 'foo', 'bar' ]);
 
         $this->assertTrue($response->hasError('foo'));
         $this->assertTrue($response->hasError('foo', 'bar'));
         $this->assertFalse($response->hasError('invalid'));
         $this->assertFalse($response->hasError());
 
-
-        $response->setErrors([]);
+        $response = new ReCaptchaResponse(array_merge($this->success, [
+            'success' => false,
+        ]));
 
         $this->assertFalse($response->hasError('foo'));
         $this->assertFalse($response->hasError('foo', 'bar'));

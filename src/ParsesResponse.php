@@ -48,10 +48,6 @@ trait ParsesResponse
 
         $constraints = $response->constraints();
 
-        if (empty($response->getAttributes())) {
-            return $response;
-        }
-
         if ($constraints['hostname']
             && strcasecmp($constraints['hostname'], $response->hostname) !== 0) {
             $errors[] = ReCaptchaErrors::E_HOSTNAME_MISMATCH;
@@ -81,8 +77,6 @@ trait ParsesResponse
         }
 
         // Add the errors to the existing array errors of the response
-        return $response->setErrors(
-            array_merge($response->error_codes, $errors)
-        );
+        return $response->addErrors($errors);
     }
 }

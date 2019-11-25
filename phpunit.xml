@@ -3,7 +3,7 @@
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.4/phpunit.xsd"
          colors="true"
          verbose="true"
-         bootstrap="src/autoload.php">
+         bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="reCAPTCHA Test Suite">
             <directory>tests/</directory>
@@ -12,12 +12,6 @@
     <filter>
         <whitelist>
             <directory suffix=".php">src/</directory>
-            <exclude>
-                <file>src/autoload.php</file>
-                <file>src/Clients/CurlHandler.php</file>
-                <file>src/Clients/SocketHandler.php</file>
-                <file>src/Clients/StreamHandler.php</file>
-            </exclude>
         </whitelist>
     </filter>
     <logging>

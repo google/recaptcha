@@ -16,12 +16,20 @@
     },
     "require": {
         "php": "^7.2",
-        "ext-json": "*"
+        "ext-json": "*",
+        "psr/http-client": "1.*",
+        "psr/http-factory": "1.*"
     },
     "require-dev": {
+        "nyholm/psr7" : "1.*",
+        "symfony/http-client": "5.*",
         "phpunit/phpunit": "^8.0",
         "friendsofphp/php-cs-fixer": "^2.0",
         "php-coveralls/php-coveralls": "^2.1"
+    },
+    "suggest": {
+        "symfony/http-client": "Efficient PSR-18 HTTP Client to do request with reCAPTCHA servers and more.",
+        "nyholm/psr7" : "PSR-17 Factories for PSR-7 Message Interfaces, like Requests and Responses."
     },
     "autoload": {
         "psr-4": {

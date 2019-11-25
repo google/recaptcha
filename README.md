@@ -7,7 +7,7 @@
 [![Latest Stable Version](https://poser.pugx.org/google/recaptcha/v/stable.svg)](https://packagist.org/packages/google/recaptcha)
 [![Total Downloads](https://poser.pugx.org/google/recaptcha/downloads.svg)](https://packagist.org/packages/google/recaptcha)
 
-reCAPTCHA is a free CAPTCHA service that protects websites from spam and abuse. 
+reCAPTCHA is a free CAPTCHA service that protects websites from spam and abuse.
 
 This is a PHP library that wraps up the server-side verification step required to process responses from the reCAPTCHA service. This client supports both v2 (Android, checkbox, invisible) and v3 (score).
 
@@ -19,19 +19,17 @@ This is a PHP library that wraps up the server-side verification step required t
 
 ## Installation
 
-Preferably, use [Composer](https://getcomposer.org/) to install this package [from Packagist](https://packagist.org/packages/google/recaptcha) into your project:
+Use [Composer](https://getcomposer.org/) to install this package [from Packagist](https://packagist.org/packages/google/recaptcha) into your project:
 
 ```bash
-composer require google/recaptcha "^2.0"
+composer require google/recaptcha
 ```
 
-If you don't have access to Composer, or require manual installation, [download the ZIP file](https://github.com/google/recaptcha/archive/master.zip) into your project and require the PSR-4 autoloader included: 
+If your project doesn't have any HTTP Client or a Message Factory, which you probably don't, it's suggested to also install the Symfony HTTP Client along with Nyholm PSR-17 factories.
 
-```php
-require_once '/path/to/recaptcha/src/autoload.php';
+```bash
+composer require symfony/http-client nyholm/psr7
 ```
-
-The classes in the project are structured according to the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/), so you can also use your own autoloader or require the needed files directly in your code.
 
 ## Usage
 
@@ -52,7 +50,9 @@ if ($response->valid()) {
 }
 ```
 
-The `make()` static method conveniently creates a new `ReCaptcha` instance using just your secret key.
+The `make()` static method conveniently creates a new `ReCaptcha` instance using just your secret key, and wires an HTTP Client automatically.
+
+> To use `make()`, ensure you have [installed the suggested HTTP Client and Message Factories](#installation).
 
 ### Constraints
 
@@ -78,7 +78,7 @@ $response = ReCaptcha::make($secret)
                      ->verify($recaptchaToken, $userIp);
 ```
 
-You can use the `saneAction()` to automatically replace invalid characters from the `action` parameter, which is useful when you want to automatically put your URL path in your application as the action name, instead of doing manually for each page.
+You can use the `saneAction()` to automatically replace invalid characters from the `action` parameter, which is useful when you want to automatically put your URL path in your application as the action name, instead of doing manually for each page, which can be cumbersome on large applications.
 
 ```php
 <?php
@@ -86,7 +86,7 @@ You can use the `saneAction()` to automatically replace invalid characters from 
 echo Request::path(); // "/example/action-for-this-page?foo=bar&done=yes"
 
 $response = ReCaptcha::make($secret)
-                     ->action(Request::urlPath())
+                     ->saneAction(Request::urlPath())
                      ->verify($recaptchaToken, $userIp);
 
 echo $response->constraint('action'); // "/example/action_for_this_page"
@@ -94,7 +94,7 @@ echo $response->constraint('action'); // "/example/action_for_this_page"
 
 ## Verification
 
-By default, reCAPTCHA verification returns a immutable response from reCAPTCHA servers. You can use the `valid()` method to check if the challenge is valid or not, while the `invalid()` method will check if it has failed.
+By default, reCAPTCHA verification returns response from reCAPTCHA servers. You can use the `valid()` method to check if the challenge is valid and has no errors, while the `invalid()` method will check if it has failed or contains errors from the server or constraints set by you.
 
 ```php
 <?php
@@ -102,7 +102,7 @@ By default, reCAPTCHA verification returns a immutable response from reCAPTCHA s
 $response =  ReCaptcha::make($secret)
                       ->verify($recaptchaToken, $userIp);
 
-if ($response->failed()) {
+if ($response->invalid()) {
     return 'The challenge failed';
 }
 
@@ -111,7 +111,7 @@ return 'Success!';
 
 ### On Failure Exception
 
-You can use the `verifyOrThrow()` method to conveniently throw a `FailedReCaptchaException` when the challenge is invalid, allowing your application to identify the error and proceed accordingly, like logging the event or pass the exception to a handler.
+You can use the `verifyOrThrow()` method to conveniently throw a `FailedReCaptchaException` when the challenge is invalid, allowing your application to identify the error and proceed accordingly, like logging the event or pass the exception to an exception handler.
 
 ```php
 <?php
@@ -135,7 +135,7 @@ try {
 
 ## Error handling
 
-When a verification fails, you will have available an array of errors consisting in the parts that failed the challenge verification or constraints.
+When a verification fails, you will have available an array of errors consisting in the parts that failed the challenge verification from the server and constraints set previously.
 
 To access the array you can use `errors()`.
 
@@ -200,99 +200,30 @@ echo $response->constraint('challenge_ts'); // null
 
 ## HTTP Clients
 
-By default, this package uses [cURL](https://curl.haxx.se/) to make a POST request to the reCAPTCHA service. This is handled by the `Clients\CurlClient` class, and allows this package to use [HTTP/2](https://developers.google.com/web/fundamentals/performance/http2) when possible.
+When using [Symfony HTTP Client](https://symfony.com/doc/current/components/http_client.html), this package uses [cURL](https://curl.haxx.se/) to make a POST request to the reCAPTCHA service using [HTTP/2](https://developers.google.com/web/fundamentals/performance/http2), fallback to native PHP stream.
 
-If cURL is not installed, or PHP doesn't have the [`curl` extension enabled](https://www.php.net/manual/en/curl.requirements.php), you may try with the stream client and socket client. The `Clients/StreamClient` uses `file_get_contents()`, but, if this is locked down to disallow its use with URLs, you can use the `Clients/SocketClient` which will use a socket connection.
+To use another HTTP Client, instance the class using any PSR-18 HTTP Client along the PSR-17 Message Factories required.
 
-To use another HTTP Client, pass the class name as a second parameter to the `make()` static method. ReCaptcha will automatically instance the class.
+You must set the secret separately.
 
 ```php
 <?php
 
 use Google\ReCaptcha\ReCaptcha;
-use Google\ReCaptcha\Clients\StreamClient;
-use Google\ReCaptcha\Clients\SocketClient;
+use App\SocketHttpClient;
+use App\RequestFactory;
+use App\StreamFactory;
 
-// Use the File Stream Client
-$response = ReCaptcha::make($secret, StreamClient::class)
-                     ->verify($recaptchaToken, $userIp);
+$recaptcha = new ReCaptcha(new SocketHttpClient,
+                           new RequestFactory,
+                           new StreamFactory);
 
-// Use the Socket Client
-$response = ReCaptcha::make($secret, SocketClient::class)
-                     ->verify($recaptchaToken, $userIp);
-``` 
-
-### Custom HTTP Client
-
-You can also use a custom HTTP Client. It must implement the `Clients/ClientInterface`, like in this example which uses [Symfony HTTP Client](https://symfony.com/doc/current/components/http_client.html#basic-usage) and a helper trait to handle some other tasks.
-
-```php
-<?php
-
-namespace App\ReCaptcha;
-
-use Google\ReCaptcha\Clients\ClientInterface;
-use Google\ReCaptcha\Clients\ClientMethods;
-use Symfony\Component\HttpClient\HttpClient;
-
-class SymfonyAdapter implements ClientInterface
-{
-    use ClientMethods;
-    
-    /**
-     * Boot this class if needed.
-     *
-     * @return void
-     */
-    protected function boot()
-    {
-        $this->client = HttpClient::create();
-    }
-    
-    /**
-     * Receives a request and returns a response from reCAPTCHA servers
-     *
-     * @param string $token
-     * @param string|null $ip
-     * @return array
-     */
-    public function send(string $token, string $ip = null) : array
-    {
-        $response = $this->client->request('POST', $this->url, [
-            'headers' => [
-                'content-type' => 'application/x-www-form-urlencoded',
-                'accept' => 'application/json'
-            ],
-            'body' => [
-                'secret' => $this->secret,
-                'response' => $token,
-                'remoteip' => $ip,
-                'version' => ReCaptcha::VERSION,
-            ],
-        ]);
-        
-        return $response->getContent()->toArray();
-    }
-}
+$recaptcha->setSecret($secret);
 ```
-
-Once your class is ready, pass the class name as the second argument to the `make()` static method, or use manual instancing to pass the client instance.
-
-```php
-<?php
-
-use Google\ReCaptcha\ReCaptcha;
-use App\ReCaptcha\SymfonyAdapter;
-
-$assisted = ReCaptcha::make($secret, SymfonyAdapter::class);
-
-$manual = new ReCaptcha(new SymfonyAdapter($secret));
-
-``` 
 
 ## Using reCAPTCHA V2 and V3
 
-There may be some edge cases where you need to use reCAPTCHA v2 and v3 at the same time. You can safely create a `ReCaptcha` instance using each secret key. Nothing more is needed since the secret dictates which version to use.
+There may be some edge cases where you need to use reCAPTCHA v2 and v3 at the same time - consider using [Invisible reCAPTCHA](https://developers.google.com/recaptcha/docs/invisible) invoked automatically.  You can safely create a `ReCaptcha` instance using each secret key. Nothing more is needed since the secret dictates which version to use.
 
 ```php
 <?php
@@ -304,7 +235,7 @@ $version2 = ReCaptcha::make($secretV2);
 $version3 = ReCaptcha::make($secretV3);
 ``` 
 
-If your application implements [PSR-11 Container interface](https://www.php-fig.org/psr/psr-11/), it can be useful to save these instances separately.
+If your application implements [PSR-11 Container interface](https://www.php-fig.org/psr/psr-11/), it can be useful to save these instances separately with different names.
 
 ## Examples
 
@@ -315,7 +246,7 @@ composer run-script serve-examples
 ```
 
 Alternatively, you can check the hosted Google AppEngine Flexible environment at [`https://recaptcha-demo.appspot.com`](https://recaptcha-demo.appspot.com). This is configured by [`app.yaml`](app.yaml) which you can also use to [deploy to your own AppEngine project](https://cloud.google.com/appengine/docs/flexible/php/download).
-
+ 
 ## Contributing
 
 No one ever has enough engineers, so we're very happy to accept contributions via Pull Requests. For details, see [CONTRIBUTING](CONTRIBUTING.md).

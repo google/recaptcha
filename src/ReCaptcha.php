@@ -35,9 +35,11 @@
 
 namespace Google\ReCaptcha;
 
-use Closure;
-use Google\ReCaptcha\Clients\CurlClient;
-use Google\ReCaptcha\Clients\ClientInterface;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Symfony\Component\HttpClient\Psr18Client;
+use Psr\Http\Client\ClientInterface as PsrClient;
+use Psr\Http\Message\StreamFactoryInterface as StreamFactory;
+use Psr\Http\Message\RequestFactoryInterface as RequestFactory;
 
 class ReCaptcha
 {
@@ -72,26 +74,51 @@ class ReCaptcha
     ];
 
     /**
-     * The HTTP client to verify the challenge.
+     * The PSR18 Client
      *
-     * @var \Google\ReCaptcha\Clients\ClientInterface
+     * @var \Psr\Http\Client\ClientInterface
      */
     protected $client;
 
     /**
+     * Request Factory
+     *
+     * @var \Psr\Http\Message\RequestFactoryInterface
+     */
+    protected $request;
+
+    /**
+     * Stream Factory
+     *
+     * @var \Psr\Http\Message\StreamFactoryInterface
+     */
+    protected $stream;
+
+    /**
+     * Secret to authenticate the account with the reCAPTCHA servers
+     *
+     * @var string
+     */
+    protected $secret;
+
+    /**
      * ReCaptcha constructor.
      *
-     * @param  \Google\ReCaptcha\Clients\ClientInterface $client
+     * @param  \Psr\Http\Client\ClientInterface $client
+     * @param  \Psr\Http\Message\RequestFactoryInterface $request
+     * @param  \Psr\Http\Message\StreamFactoryInterface $stream
      */
-    public function __construct(ClientInterface $client)
+    public function __construct(PsrClient $client, RequestFactory $request, StreamFactory $stream)
     {
         $this->client = $client;
+        $this->request = $request;
+        $this->stream = $stream;
     }
 
     /**
      * Returns the HTTP Client to use against the reCAPTCHA servers.
      *
-     * @return \Google\ReCaptcha\Clients\ClientInterface
+     * @return \Psr\Http\Client\ClientInterface
      */
     public function getClient()
     {
@@ -99,14 +126,53 @@ class ReCaptcha
     }
 
     /**
-     * Sets the HTTP Client to use against the reCAPTCHA servers.
+     * Sets the HTTP Client to use with this.
      *
-     * @param  \Google\ReCaptcha\Clients\ClientInterface $client
+     * @param  mixed $client The object that this client will use for
      * @return \Google\ReCaptcha\ReCaptcha
      */
-    public function setClient(ClientInterface $client)
+    public function setClient($client)
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * Sets the Request Factory
+     *
+     * @param  \Psr\Http\Message\RequestFactoryInterface $request
+     * @return \Google\ReCaptcha\ReCaptcha
+     */
+    public function setRequest(RequestFactory $request)
+    {
+        $this->request = $request;
+
+        return $this;
+    }
+
+    /**
+     * Sets the Stream Factory
+     *
+     * @param  \Psr\Http\Message\StreamFactoryInterface $stream
+     * @return \Google\ReCaptcha\ReCaptcha
+     */
+    public function setStream(StreamFactory $stream)
+    {
+        $this->stream = $stream;
+
+        return $this;
+    }
+
+    /**
+     * Sets the secret to use against the reCAPTCHA service.
+     *
+     * @param  string $secret
+     * @return \Google\ReCaptcha\ReCaptcha
+     */
+    public function setSecret(string $secret)
+    {
+        $this->secret = $secret;
 
         return $this;
     }
@@ -117,14 +183,64 @@ class ReCaptcha
      * @param  string $token
      * @param  string|null $ip
      * @return \Google\ReCaptcha\ReCaptchaResponse
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function verify(string $token, string $ip = null)
     {
-        $array = $this->client->send($token, $ip);
+        $array = $this->send($token, $ip);
 
         $response = $this->parseResponse($array);
 
         return $this->checkErrors($response);
+    }
+
+    /**
+     * Receives a request and returns a response from reCAPTCHA servers.
+     *
+     * @param  string $token The token that identifies the reCAPTCHA challenge.
+     * @param  string|null $ip The optional IP of the user challenged.
+     * @return array The response from reCAPTCHA servers as an array, which is later parsed.
+     * @throws \Psr\Http\Client\ClientExceptionInterface
+     */
+    public function send(string $token, string $ip = null)
+    {
+        $response = $this->client->sendRequest($this->makeRequest($token, $ip));
+
+        return json_decode($response->getBody()->getContents(), true);
+    }
+
+    /**
+     * Creates a Request Interface to be consumed by the HTTP Client
+     *
+     * @param  string $token
+     * @param  string|null $ip
+     * @return \Psr\Http\Message\RequestInterface
+     */
+    protected function makeRequest(string $token, string $ip = null)
+    {
+        return $this->request->createRequest('POST', static::SITE_VERIFY_URL)
+            ->withBody($this->prepareBody($token, $ip))
+            ->withProtocolVersion('2.0')
+            ->withHeader('Content-Type', 'application/x-www-form-urlencoded');
+    }
+
+    /**
+     * Create a Stream to send with the Request
+     *
+     * @param  string $token
+     * @param  string|null $ip
+     * @return \Psr\Http\Message\StreamInterface
+     */
+    protected function prepareBody(string $token, string $ip = null)
+    {
+        return $this->stream->createStream(
+            http_build_query(array_filter([
+                'secret' => $this->secret,
+                'response' => $token,
+                'remoteip' => $ip,
+                'version' => static::VERSION
+            ]))
+        );
     }
 
     /**
@@ -134,6 +250,7 @@ class ReCaptcha
      * @param  string|null $ip
      * @return \Google\ReCaptcha\ReCaptchaResponse
      * @throws \Google\ReCaptcha\FailedReCaptchaException
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function verifyOrThrow(string $token, string $ip = null)
     {
@@ -156,12 +273,12 @@ class ReCaptcha
     {
         // If the JSON returned an empty array, then it's invalid
         if (empty($response)) {
-            return (new ReCaptchaResponse)->setErrors([ReCaptchaErrors::E_INVALID_JSON]);
+            return (new ReCaptchaResponse)->addErrors([ReCaptchaErrors::E_INVALID_JSON]);
         }
 
         // The response is malformed, this may mean an unknown error
         if (! isset($response['success'])) {
-            return (new ReCaptchaResponse)->setErrors([ReCaptchaErrors::E_UNKNOWN_ERROR]);
+            return (new ReCaptchaResponse)->addErrors([ReCaptchaErrors::E_UNKNOWN_ERROR]);
         }
 
         $instance = new ReCaptchaResponse($this->buildArray($response));
@@ -174,7 +291,7 @@ class ReCaptcha
     }
 
     /**
-     * Parses the array to be injected into the reCAPTCHA ReCaptchaResponse instance.
+     * Parses the array to be injected into the ReCaptchaResponse instance.
      *
      * @param  array $response
      * @return array
@@ -193,16 +310,20 @@ class ReCaptcha
     }
 
     /**
-     * Creates a new ReCaptcha challenge verification instance.
+     * Creates a new ReCaptcha challenge verification instance with a default HTTP Client.
      *
      * @param  string $secret
-     * @param  null|string $client
      * @return \Google\ReCaptcha\ReCaptcha
      */
-    public static function make(string $secret, string $client = null)
+    public static function make(string $secret)
     {
-        $client = $client ?? CurlClient::class;
+        // This object includes all the necessary PSR-17 factories in a convenient
+        // instance, so there is no need to instance multiple factories: we just
+        // instance this and add the same to all the classes that depend on it.
+        $factory = new Psr17Factory;
 
-        return new static(new $client($secret));
+        $instance = new static(new Psr18Client(null, $factory, $factory), $factory, $factory);
+
+        return $instance->setSecret($secret);
     }
 }

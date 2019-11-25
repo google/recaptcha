@@ -61,13 +61,6 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
     protected $attributes = [];
 
     /**
-     * Hold the error list if the ReCaptchaResponse is invalid.
-     *
-     * @var array
-     */
-    protected $errors = [];
-
-    /**
      * Additional constraints to check after the response is received.
      *
      * @var array
@@ -101,7 +94,7 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
      */
     public function valid()
     {
-        return ($this->attributes['success'] ?? false) && $this->errors === [];
+        return ($this->attributes['success'] ?? false) && $this->error_codes === [];
     }
 
     /**
@@ -112,16 +105,6 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
     public function invalid()
     {
         return ! $this->valid();
-    }
-
-    /**
-     * Returns the array of errors.
-     *
-     * @return array
-     */
-    public function errors()
-    {
-        return $this->errors;
     }
 
     /**
@@ -136,8 +119,10 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
             return false;
         }
 
+        $array = $this->error_codes ?? [];
+
         foreach ($errors as $error) {
-            if (! in_array($error, $this->errors, true)) {
+            if (! in_array($error, $array, true)) {
                 return false;
             }
         }
@@ -146,14 +131,14 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
     }
 
     /**
-     * Set the array of errors.
+     * Add ann array of errors to the existing error codes.
      *
      * @param  array $errors
      * @return \Google\ReCaptcha\ReCaptchaResponse
      */
-    public function setErrors(array $errors = [])
+    public function addErrors(array $errors = [])
     {
-        $this->errors = $errors;
+        $this->attributes['error-codes'] = array_merge($this->attributes['error-codes'] ?? [], $errors);
 
         return $this;
     }
@@ -204,6 +189,7 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
         if ($name === 'error_codes') {
             return $this->attributes['error-codes'];
         }
+
         return $this->attributes[$name];
     }
 
@@ -215,7 +201,6 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
     public function toArray()
     {
         return array_merge($this->attributes, [
-            'errors' => $this->errors,
             'constraints' => $this->constraints,
         ]);
     }
@@ -273,14 +258,13 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
     {
         $array = json_decode($serialized, true);
 
-        $this->errors = $array['errors'];
         $this->constraints = $array['constraints'];
 
         if (isset($array['score'])) {
             $array['score'] = (float)$array['score'];
         }
 
-        unset($array['constraints'], $array['errors']);
+        unset($array['constraints']);
 
         $this->attributes = $array;
     }
