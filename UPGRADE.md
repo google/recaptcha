@@ -8,6 +8,16 @@ This is in exchange of flexibility. This package can work well out-of-the-box, b
 
 ### Removed 
 
+#### Some Errors constants
+
+The following constants for errors has been removed:
+
+* `E_CONNECTION_FAILED` 
+* `E_BAD_RESPONSE` 
+* `E_MISSING_INPUT_RESPONSE`
+
+The first two are superseded by PSR-18 exceptions, while the third is not used since the input response is required at all times.   
+
 #### Autoload
 
 The `autoload.php` has been removed in favor of using Composer autoloader. 
