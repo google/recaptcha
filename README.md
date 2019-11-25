@@ -163,8 +163,8 @@ use Google\ReCaptcha\ReCaptcha;
 $response =  ReCaptcha::make($secret)
                       ->verify($recaptchaToken, $userIp);
 
-if ($response->hasErrors(ReCaptchaErrors::E_CONNECTION_FAILED)) {
-    return 'We cannot connect to the reCAPTCHA servers!';
+if ($response->hasErrors(ReCaptchaErrors::E_UNKNOWN_ERROR)) {
+    return 'The reCAPTCHA servers are unavailable for now.';
 }
 ```
 

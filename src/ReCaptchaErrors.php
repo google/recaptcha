@@ -44,32 +44,11 @@ class ReCaptchaErrors
     public const E_INVALID_JSON = 'invalid-json';
 
     /**
-     * Could not connect to service.
-     *
-     * @const string
-     */
-    public const E_CONNECTION_FAILED = 'connection-failed';
-
-    /**
-     * Did not receive a 200 from the service.
-     *
-     * @const string
-     */
-    public const E_BAD_RESPONSE = 'bad-response';
-
-    /**
      * Not a success, but no error codes received!
      *
      * @const string
      */
     public const E_UNKNOWN_ERROR = 'unknown-error';
-
-    /**
-     * ReCAPTCHA response not provided.
-     *
-     * @const string
-     */
-    public const E_MISSING_INPUT_RESPONSE = 'missing-input-response';
 
     /**
      * Expected hostname did not match.
