@@ -42,7 +42,9 @@ class ReCaptchaTest extends TestCase
         $recaptcha = ReCaptcha::make('bar');
 
         $client = new class implements ClientInterface {
-            public function sendRequest(RequestInterface $request) : ResponseInterface {}
+            public function sendRequest(RequestInterface $request) : ResponseInterface
+            {
+            }
         };
 
         $this->assertInstanceOf(ClientInterface::class, $recaptcha->getclient());
@@ -348,7 +350,6 @@ class ReCaptchaTest extends TestCase
 
     public function testBuildsConstraints()
     {
-
         $recaptcha = ReCaptcha::make('test_secret');
 
         $build = $recaptcha->hostname($hostname = 'test_hostname')
