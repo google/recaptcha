@@ -40,19 +40,18 @@ This package works out-of-the-box: after you integrate reCAPTCHA in your web fro
 
 use Google\ReCaptcha\ReCaptcha;
 
-$response = ReCaptcha::make($secret)
-                     ->verify($recaptchaToken, $userIp);
+$response = ReCaptcha::validate($secret, $recaptchaToken, $userIp);
 
-if ($response->valid()) {
+if ($response) {
     echo 'You are a human!';
 } else {
     echo 'You are a robot!';
 }
 ```
 
-The `make()` static method conveniently creates a new `ReCaptcha` instance using just your secret key, and wires an HTTP Client automatically.
+The `validate()` method conveniently creates a new `ReCaptcha` instance using just your secret key, wires an HTTP Client automatically, and returns the verification response.
 
-> To use `make()`, ensure you have [installed the suggested HTTP Client and Message Factories](#installation).
+> To use `validate()` or `make()`, ensure you have [installed the suggested HTTP Client and Message Factories](#installation).
 
 ### Constraints
 
@@ -133,7 +132,7 @@ try {
 }
 ```
 
-## Error handling
+## Errors
 
 When a verification fails, you will have available an array of errors consisting in the parts that failed the challenge verification from the server and constraints set previously.
 

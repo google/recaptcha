@@ -326,4 +326,19 @@ class ReCaptcha
 
         return $instance->setSecret($secret);
     }
+
+    /**
+     * Quickly validate a reCAPTCHA challenge
+     *
+     * @codeCoverageIgnore
+     * @param  string $secret
+     * @param  string $token
+     * @param  string|null $ip
+     * @return bool
+     * @throws \Psr\Http\Client\ClientExceptionInterface
+     */
+    public static function validate(string $secret, string $token, string $ip = null)
+    {
+        return static::make($secret)->verify($token, $ip)->valid();
+    }
 }
