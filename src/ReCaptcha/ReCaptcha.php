@@ -177,7 +177,7 @@ class ReCaptcha
             $validationErrors[] = self::E_ACTION_MISMATCH;
         }
 
-        if (isset($this->threshold) && $this->threshold > $initialResponse->getScore()) {
+        if (isset($this->threshold) && $this->threshold >= $initialResponse->getScore()) {
             $validationErrors[] = self::E_SCORE_THRESHOLD_NOT_MET;
         }
 
