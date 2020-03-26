@@ -37,7 +37,7 @@ namespace Google\ReCaptcha;
 
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Symfony\Component\HttpClient\Psr18Client;
-use Psr\Http\Client\ClientInterface as PsrClient;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\StreamFactoryInterface as StreamFactory;
 use Psr\Http\Message\RequestFactoryInterface as RequestFactory;
 
@@ -108,7 +108,7 @@ class ReCaptcha
      * @param  \Psr\Http\Message\RequestFactoryInterface $request
      * @param  \Psr\Http\Message\StreamFactoryInterface $stream
      */
-    public function __construct(PsrClient $client, RequestFactory $request, StreamFactory $stream)
+    public function __construct(ClientInterface $client, RequestFactory $request, StreamFactory $stream)
     {
         $this->client = $client;
         $this->request = $request;
@@ -126,12 +126,12 @@ class ReCaptcha
     }
 
     /**
-     * Sets the HTTP Client to use with this.
+     * Sets the HTTP Client to use.
      *
-     * @param  mixed $client The object that this client will use for
+     * @param  \Psr\Http\Client\ClientInterface $client The object that this client will use for
      * @return \Google\ReCaptcha\ReCaptcha
      */
-    public function setClient($client)
+    public function setClient(ClientInterface $client)
     {
         $this->client = $client;
 
@@ -185,7 +185,7 @@ class ReCaptcha
      * @return \Google\ReCaptcha\ReCaptchaResponse
      * @throws \Psr\Http\Client\ClientExceptionInterface
      */
-    public function verify(string $token, string $ip = null)
+    public function verify(string $token, ?string $ip = null)
     {
         $array = $this->send($token, $ip);
 
@@ -202,7 +202,7 @@ class ReCaptcha
      * @return array The response from reCAPTCHA servers as an array, which is later parsed.
      * @throws \Psr\Http\Client\ClientExceptionInterface
      */
-    public function send(string $token, string $ip = null)
+    public function send(string $token, ?string $ip = null)
     {
         $response = $this->client->sendRequest($this->makeRequest($token, $ip));
 
@@ -216,7 +216,7 @@ class ReCaptcha
      * @param  string|null $ip
      * @return \Psr\Http\Message\RequestInterface
      */
-    protected function makeRequest(string $token, string $ip = null)
+    protected function makeRequest(string $token, ?string $ip = null)
     {
         return $this->request->createRequest('POST', static::SITE_VERIFY_URL)
             ->withBody($this->prepareBody($token, $ip))
@@ -231,7 +231,7 @@ class ReCaptcha
      * @param  string|null $ip
      * @return \Psr\Http\Message\StreamInterface
      */
-    protected function prepareBody(string $token, string $ip = null)
+    protected function prepareBody(string $token, ?string $ip = null)
     {
         return $this->stream->createStream(
             http_build_query(array_filter([
@@ -252,7 +252,7 @@ class ReCaptcha
      * @throws \Google\ReCaptcha\FailedReCaptchaException
      * @throws \Psr\Http\Client\ClientExceptionInterface
      */
-    public function verifyOrThrow(string $token, string $ip = null)
+    public function verifyOrThrow(string $token, ?string $ip = null)
     {
         $response = $this->verify($token, $ip);
 
@@ -337,7 +337,7 @@ class ReCaptcha
      * @return bool
      * @throws \Psr\Http\Client\ClientExceptionInterface
      */
-    public static function validate(string $secret, string $token, string $ip = null)
+    public static function validate(string $secret, string $token, ?string $ip = null) : bool
     {
         return static::make($secret)->verify($token, $ip)->valid();
     }

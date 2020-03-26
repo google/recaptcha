@@ -110,7 +110,7 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
     /**
      * Return if the response has a particular error
      *
-     * @param  mixed ...$errors
+     * @param  array ...$errors
      * @return bool
      */
     public function hasError(...$errors)
@@ -180,7 +180,7 @@ class ReCaptchaResponse implements JsonSerializable, Serializable
     /**
      * Dynamically return an attribute as a property.
      *
-     * @param $name
+     * @param string $name The attribute name
      * @return null|mixed
      */
     public function __get($name)

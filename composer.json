@@ -23,7 +23,7 @@
     "require-dev": {
         "nyholm/psr7" : "1.*",
         "symfony/http-client": "5.*",
-        "phpunit/phpunit": "^8.0",
+        "phpunit/phpunit": "^8.0|^9.0",
         "friendsofphp/php-cs-fixer": "^2.0",
         "php-coveralls/php-coveralls": "^2.1"
     },
