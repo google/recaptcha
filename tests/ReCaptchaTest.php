@@ -217,7 +217,7 @@ class ReCaptchaTest extends TestCase
 
         $this->assertTrue($response->valid());
         $this->assertInstanceOf(ReCaptchaResponse::class, $response);
-        $this->assertContains($array, $response->toArray());
+        $this->assertContainsEquals($array, $response->toArray());
     }
 
     public function testVerifiesFailedReCaptcha()
@@ -281,7 +281,7 @@ class ReCaptchaTest extends TestCase
         $response = $recaptcha->verify('test_token', '255.255.255.255');
 
         $this->assertInstanceOf(ReCaptchaResponse::class, $response);
-        $this->assertContains($array, $response->toArray());
+        $this->assertContainsEquals($array, $response->toArray());
     }
 
     public function testVerifiesReCaptchaOrThrowsException()

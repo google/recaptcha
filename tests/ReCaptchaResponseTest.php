@@ -21,7 +21,7 @@ class ReCaptchaResponseTest extends TestCase
     {
         $response = new ReCaptchaResponse($this->success);
 
-        $this->assertContains($this->success, $response->toArray());
+        $this->assertContainsEquals($this->success, $response->toArray());
 
         $this->assertEquals($this->success, $response->getAttributes());
     }
@@ -108,9 +108,9 @@ class ReCaptchaResponseTest extends TestCase
         $this->assertNotEmpty(json_decode($encoded, true));
         $this->assertNotEmpty(json_decode($string, true));
 
-        $this->assertContains($this->success, json_decode($json, true));
-        $this->assertContains($this->success, json_decode($encoded, true));
-        $this->assertContains($this->success, json_decode($string, true));
+        $this->assertContainsEquals($this->success, json_decode($json, true));
+        $this->assertContainsEquals($this->success, json_decode($encoded, true));
+        $this->assertContainsEquals($this->success, json_decode($string, true));
     }
 
     public function testSerialization()
