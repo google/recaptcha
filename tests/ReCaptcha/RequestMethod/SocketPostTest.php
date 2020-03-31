@@ -53,7 +53,7 @@ class SocketPostTest extends TestCase
                 ->method('fwrite');
         $socket->expects($this->once())
                 ->method('fgets')
-                ->willReturn("HTTP/1.1 200 OK\n\nRESPONSEBODY");
+                ->willReturn("HTTP/1.0 200 OK\n\nRESPONSEBODY");
         $socket->expects($this->exactly(2))
                 ->method('feof')
                 ->will($this->onConsecutiveCalls(false, true));
@@ -81,7 +81,7 @@ class SocketPostTest extends TestCase
                 ->with($this->matchesRegularExpression('/^POST \/some\/path.*Host: over\.ride/s'));
         $socket->expects($this->once())
                 ->method('fgets')
-                ->willReturn("HTTP/1.1 200 OK\n\nRESPONSEBODY");
+                ->willReturn("HTTP/1.0 200 OK\n\nRESPONSEBODY");
         $socket->expects($this->exactly(2))
                 ->method('feof')
                 ->will($this->onConsecutiveCalls(false, true));
@@ -107,7 +107,7 @@ class SocketPostTest extends TestCase
                 ->method('fwrite');
         $socket->expects($this->once())
                 ->method('fgets')
-                ->willReturn("HTTP/1.1 500 NOPEn\\nBOBBINS");
+                ->willReturn("HTTP/1.0 500 NOPEn\\nBOBBINS");
         $socket->expects($this->exactly(2))
                 ->method('feof')
                 ->will($this->onConsecutiveCalls(false, true));

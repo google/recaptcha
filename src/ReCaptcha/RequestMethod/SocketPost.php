@@ -81,7 +81,7 @@ class SocketPost implements RequestMethod
 
         $content = $params->toQueryString();
 
-        $request = "POST " . $urlParsed['path'] . " HTTP/1.1\r\n";
+        $request = "POST " . $urlParsed['path'] . " HTTP/1.0\r\n";
         $request .= "Host: " . $urlParsed['host'] . "\r\n";
         $request .= "Content-Type: application/x-www-form-urlencoded\r\n";
         $request .= "Content-length: " . strlen($content) . "\r\n";
@@ -97,7 +97,7 @@ class SocketPost implements RequestMethod
 
         $this->socket->fclose();
 
-        if (0 !== strpos($response, 'HTTP/1.1 200 OK')) {
+        if (0 !== strpos($response, 'HTTP/1.0 200 OK')) {
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
         }
 
