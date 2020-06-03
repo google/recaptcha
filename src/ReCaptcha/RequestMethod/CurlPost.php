@@ -92,7 +92,7 @@ class CurlPost implements RequestMethod
         );
         // jakrei -  added proxy support
         if ($_ENV['RECAPTCHA_PROXY']) {
-            $options['CURLOPT_PROXY'] = $_ENV['RECAPTCHA_PROXY'];
+            $options[CURLOPT_PROXY] = $_ENV['RECAPTCHA_PROXY'];
         }
         -
         $this->curl->setoptArray($handle, $options);
