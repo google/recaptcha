@@ -1,5 +1,5 @@
 {
-    "name": "google/recaptcha",
+    "name": "jakreiter/recaptchaproxyable",
     "description": "Client library for reCAPTCHA, a free service that protects websites from spam and abuse.",
     "type": "library",
     "keywords": ["recaptcha", "captcha", "spam", "abuse"],
