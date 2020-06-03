@@ -138,3 +138,11 @@ project](https://cloud.google.com/appengine/docs/flexible/php/download).
 
 No one ever has enough engineers, so we're very happy to accept contributions
 via Pull Requests. For details, see [CONTRIBUTING](CONTRIBUTING.md)
+
+## Proxy support
+To make requests to Google servers via proxy add environment variable
+RECAPTCHA_PROXY with proxy address and port. 
+Exampple:
+```
+RECAPTCHA_PROXY=192.168.1.100:3128
+```
