@@ -145,12 +145,7 @@ class ReCaptcha implements ReCaptchaContract
     }
 
     /**
-     * Calls the reCAPTCHA siteverify API to verify whether the user passes
-     * CAPTCHA test and additionally runs any specified additional checks
-     *
-     * @param string $response The user response token provided by reCAPTCHA, verifying the user on your site.
-     * @param string $remoteIp The end user's IP address.
-     * @return Response Response from the service.
+     * @inheritDoc
      */
     public function verify($response, $remoteIp = null)
     {
@@ -205,11 +200,7 @@ class ReCaptcha implements ReCaptchaContract
     }
 
     /**
-     * Provide a hostname to match against in verify()
-     * This should be without a protocol or trailing slash, e.g. www.google.com
-     *
-     * @param string $hostname Expected hostname
-     * @return ReCaptcha Current instance for fluent interface
+     * @inheritDoc
      */
     public function setExpectedHostname($hostname)
     {
@@ -218,10 +209,7 @@ class ReCaptcha implements ReCaptchaContract
     }
 
     /**
-     * Provide an APK package name to match against in verify()
-     *
-     * @param string $apkPackageName Expected APK package name
-     * @return ReCaptcha Current instance for fluent interface
+     * @inheritDoc
      */
     public function setExpectedApkPackageName($apkPackageName)
     {
@@ -230,11 +218,7 @@ class ReCaptcha implements ReCaptchaContract
     }
 
     /**
-     * Provide an action to match against in verify()
-     * This should be set per page.
-     *
-     * @param string $action Expected action
-     * @return ReCaptcha Current instance for fluent interface
+     * @inheritDoc
      */
     public function setExpectedAction($action)
     {
@@ -243,11 +227,7 @@ class ReCaptcha implements ReCaptchaContract
     }
 
     /**
-     * Provide a threshold to meet or exceed in verify()
-     * Threshold should be a float between 0 and 1 which will be tested as response >= threshold.
-     *
-     * @param float $threshold Expected threshold
-     * @return ReCaptcha Current instance for fluent interface
+     * @inheritDoc
      */
     public function setScoreThreshold($threshold)
     {
@@ -256,10 +236,7 @@ class ReCaptcha implements ReCaptchaContract
     }
 
     /**
-     * Provide a timeout in seconds to test against the challenge timestamp in verify()
-     *
-     * @param int $timeoutSeconds Expected hostname
-     * @return ReCaptcha Current instance for fluent interface
+     * @inheritDoc
      */
     public function setChallengeTimeout($timeoutSeconds)
     {
