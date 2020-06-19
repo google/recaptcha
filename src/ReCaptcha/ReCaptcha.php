@@ -37,7 +37,7 @@ namespace ReCaptcha;
 /**
  * reCAPTCHA client.
  */
-class ReCaptcha
+class ReCaptcha implements ReCaptchaContract
 {
     /**
      * Version of this client library.
