@@ -30,7 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-require __DIR__ . '/appengine-https.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,21 +53,9 @@ require __DIR__ . '/appengine-https.php';
   <p>Try out the various forms of <a href="https://www.google.com/recaptcha/">reCAPTCHA</a>.</p>
   <p>You can find the source code for these examples on GitHub in <kbd><a href="https://github.com/google/recaptcha">google/recaptcha</a></kbd>.</p>
   <ul>
-    <li><h2>reCAPTCHA v2</h2>
-    <ul>
-      <li><a href="/recaptcha-v2-checkbox.php">"I'm not a robot" checkbox</a></li>
-      <li><a href="/recaptcha-v2-checkbox-explicit.php">"I'm not a robot" checkbox - Explicit render</a></li>
-      <li><a href="/recaptcha-v2-invisible.php">Invisible</a></li>
-    </ul>
-    </li>
     <li><h2>reCAPTCHA v3</h2>
     <ul>
-      <li><a href="/recaptcha-v3-request-scores.php">Request scores</a></li>
-    </ul>
-    </li>
-    <li><h2>General</h2>
-    <ul>
-      <li><a href="/recaptcha-content-security-policy.php">Content Security Policy</a></li>
+      <li><a href="/recaptcha-v3-verify.php">Test ReCAPTCHA</a></li>
     </ul>
     </li>
   </ul>

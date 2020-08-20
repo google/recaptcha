@@ -4,11 +4,6 @@
          colors="true"
          verbose="true"
          bootstrap="src/autoload.php">
-    <testsuites>
-        <testsuite name="reCAPTCHA Test Suite">
-            <directory>tests/ReCaptcha/</directory>
-        </testsuite>
-    </testsuites>
     <filter>
         <whitelist>
             <directory suffix=".php">src/ReCaptcha/</directory>

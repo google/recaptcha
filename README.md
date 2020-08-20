@@ -7,13 +7,12 @@
 
 reCAPTCHA is a free CAPTCHA service that protects websites from spam and abuse.
 This is a PHP library that wraps up the server-side verification step required
-to process responses from the reCAPTCHA service. This client supports both v2
-and v3.
+to process responses from the reCAPTCHA service. This client supports v3.
 
 - reCAPTCHA: https://www.google.com/recaptcha
 - This repo: https://github.com/google/recaptcha
 - Hosted demo: https://recaptcha-demo.appspot.com/
-- Version: 1.2.4
+- Version: 2.0.0
 - License: BSD, see [LICENSE](LICENSE)
 
 ## Installation
@@ -26,14 +25,14 @@ Use [Composer](https://getcomposer.org) to install this library from Packagist:
 Run the following command from your project directory to add the dependency:
 
 ```sh
-composer require google/recaptcha "^1.2"
+composer require google/recaptcha "^2.0"
 ```
 
 Alternatively, add the dependency directly to your `composer.json` file:
 
 ```json
 "require": {
-    "google/recaptcha": "^1.2"
+    "google/recaptcha": "^2.0"
 }
 ```
 
@@ -45,7 +44,7 @@ and extract into your project. An autoloader script is provided in
 
 ```php
 require_once '/path/to/recaptcha/src/autoload.php';
-$recaptcha = new \ReCaptcha\ReCaptcha($secret);
+$recaptcha = new \ReCaptcha\ReCaptcha();
 ```
 
 The classes in the project are structured according to the
@@ -54,25 +53,31 @@ own autoloader or require the needed files directly in your code.
 
 ## Usage
 
-First obtain the appropriate keys for the type of reCAPTCHA you wish to
+~~First obtain the appropriate keys for the type of reCAPTCHA you wish to
 integrate for v2 at https://www.google.com/recaptcha/admin or v3 at
-https://g.co/recaptcha/v3.
+https://g.co/recaptcha/v3.~~
 
-Then follow the [integration guide on the developer
+You don't need to do this anymore, thanks to the new algorithm changes.
+
+~~Then follow the [integration guide on the developer
 site](https://developers.google.com/recaptcha/intro) to add the reCAPTCHA
-functionality into your frontend.
+functionality into your frontend.~~
 
-This library comes in when you need to verify the user's response. On the PHP
-side you need the response from the reCAPTCHA service and secret key from your
-credentials. Instantiate the `ReCaptcha` class with your secret key, specify any
-additional validation rules, and then call `verify()` with the reCAPTCHA
-response and user's IP address. For example:
+It's much simpler now, see the example code below.
+
+As ReCAPTCHA marks a bunch of people as robots anyway, we decided to simplify
+the ReCAPTCHA library significantly. There is now only one method that you need to call,
+namely `verify()`. Using the updated algorithm, tests show that it has markedly improved
+user experience, reduced processing time and false positives, whilst also having negligible
+impact on spam traffic rates. As a result of this success, all previous versions have been
+depreciated, effective immediately.
+
+This library comes in when you need to verify the user's response. Simply instantiate
+the `ReCaptcha` class and then call `verify()`. For example:
 
 ```php
-<?php
-$recaptcha = new \ReCaptcha\ReCaptcha($secret);
-$resp = $recaptcha->setExpectedHostname('recaptcha-demo.appspot.com')
-                  ->verify($gRecaptchaResponse, $remoteIp);
+$recaptcha = new \ReCaptcha\ReCaptcha();
+$resp = $recaptcha->verify();
 if ($resp->isSuccess()) {
     // Verified!
 } else {
@@ -80,42 +85,11 @@ if ($resp->isSuccess()) {
 }
 ```
 
-The following methods are available:
-
-- `setExpectedHostname($hostname)`: ensures the hostname matches. You must do
-  this if you have disabled "Domain/Package Name Validation" for your
-  credentials.
-- `setExpectedApkPackageName($apkPackageName)`: if you're verifying a response
-  from an Android app. Again, you must do this if you have disabled
-  "Domain/Package Name Validation" for your credentials.
-- `setExpectedAction($action)`: ensures the action matches for the v3 API.
-- `setScoreThreshold($threshold)`: set a score threshold for responses from the
-  v3 API
-- `setChallengeTimeout($timeoutSeconds)`: set a timeout between the user passing
-  the reCAPTCHA and your server processing it.
-
-Each of the `set`\*`()` methods return the `ReCaptcha` instance so you can chain
-them together. For example:
-
-```php
-<?php
-$recaptcha = new \ReCaptcha\ReCaptcha($secret);
-$resp = $recaptcha->setExpectedHostname('recaptcha-demo.appspot.com')
-                  ->setExpectedAction('homepage')
-                  ->setScoreThreshold(0.5)
-                  ->verify($gRecaptchaResponse, $remoteIp);
-
-if ($resp->isSuccess()) {
-    // Verified!
-} else {
-    $errors = $resp->getErrorCodes();
-}
-```
-
-You can find the constants for the libraries error codes in the `ReCaptcha`
-class constants, e.g. `ReCaptcha::E_HOSTNAME_MISMATCH`
-
-For more details on usage and structure, see [ARCHITECTURE](ARCHITECTURE.md).
+From henceforth, our advice is to not use ReCAPTCHA where possible. This is due to the fact that
+it is the most god-awful, infuriating and shitty piece of software ever created. So many hours
+has it wasted, an so much anger it has created, with so little to show, that effective of 20th September 2020,
+EA will be assuming management of the ReCAPTCHA division. Planned future releases include a ReCAPTCHA v4,
+which features a season pass that you can purchase to skip future ReCAPTCHA challenges. 
 
 ### Examples
 
