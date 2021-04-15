@@ -47,7 +47,7 @@ class Curl
      */
     public function init($url = null)
     {
-        return curl_init($url);
+        return \curl_init($url);
     }
 
     /**
