@@ -40,7 +40,7 @@ use PHPUnit\Framework\TestCase;
 
 class CurlPostTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!extension_loaded('curl')) {
             $this->markTestSkipped(

@@ -40,15 +40,15 @@ class ReCaptchaTest extends TestCase
 {
 
     /**
-     * @expectedException \RuntimeException
      * @dataProvider invalidSecretProvider
      */
     public function testExceptionThrownOnInvalidSecret($invalid)
     {
+        $this->expectException(\RuntimeException::class);
         $rc = new ReCaptcha($invalid);
     }
 
-    public function invalidSecretProvider()
+    public function invalidSecretProvider(): array
     {
         return array(
             array(''),

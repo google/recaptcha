@@ -44,12 +44,12 @@ class PostTest extends TestCase
     protected $parameters = null;
     protected $runcount = 0;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->parameters = new RequestParameters('secret', 'response', 'remoteip', 'version');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         self::$assert = null;
     }
@@ -114,8 +114,11 @@ class PostTest extends TestCase
         $headers = array(
             'Content-type: application/x-www-form-urlencoded',
         );
+
+        // error_log(print_r($options, true));
+        // error_log(print_r($headers, true));
         foreach ($headers as $header) {
-            $this->assertContains($header, $options['http']['header']);
+            $this->assertStringContainsString($header, $options['http']['header']);
         }
     }
 
