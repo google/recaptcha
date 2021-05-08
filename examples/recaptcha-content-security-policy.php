@@ -60,7 +60,7 @@ header(
     ."frame-src https://www.google.com/; " // allow frames from this URL
 
     ."style-src 'self'; " // allow style from our own origin
-    ."connect-src 'self'; " // allow the fetch calls to our own origin
+    ."connect-src 'self' 'nonce-".$nonce."'; " // allow the fetch calls to our own origin
 );
 
 // Register API keys at https://www.google.com/recaptcha/admin
@@ -112,11 +112,12 @@ else:
     <p>This example is sending the <kbd>Content-Security-Policy</kbd> header. Look at the source and inspect the network tab for this request to see what's happening. The reCAPTCHA v3 API is being called here, however you can use the same approach for the v2 API calls as well.</p>
     <p><strong>NOTE:</strong>This is a sample implementation, the score returned here is not a reflection on your Google account or type of traffic. In production, refer to the distribution of scores shown in <a href="https://www.google.com/recaptcha/admin" target="_blank">your admin interface</a> and adjust your own threshold accordingly. <strong>Do not raise issues regarding the score you see here.</strong></p>
     <ol id="recaptcha-steps">
-        <li class="step0">reCAPTCHA script loading</li>
-        <li class="step1 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo $siteKey; ?>', {action: '<?php echo $pageAction; ?>'})'</pre></li>
-        <li class="step2 hidden">Received token from reCAPTCHA service, sending to our backend with:
+    <li class="step0">reCAPTCHA script loading</li>
+        <li class="step1 hidden">Press the button containing a traffic light to continue. <button>🚗</button><button class="go">🚦</button><button>🚙</button></li>
+        <li class="step2 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo $siteKey; ?>', {action: '<?php echo $pageAction; ?>'})'</pre></li>
+        <li class="step3 hidden">Received token from reCAPTCHA service, sending to our backend with:
         <pre class="token">fetch('/recaptcha-v3-verify.php?token=abc123</pre></li>
-        <li class="step3 hidden">Received response from our backend: <pre class="response">{"json": "from-backend"}</pre></li>
+        <li class="step4 hidden">Received response from our backend: <pre class="response">{"json": "from-backend"}</pre></li>
     </ol>
     <p><a href="/recaptcha-content-security-policy.php">⤴️ Try again</a></p>
 
@@ -124,16 +125,21 @@ else:
     <script nonce="<?php echo $nonce; ?>">
     var onloadCallback = function() {
         const steps = document.getElementById('recaptcha-steps');
+
         grecaptcha.ready(function() {
             document.querySelector('.step1').classList.remove('hidden');
+        });
+
+        document.querySelector('.go').addEventListener('click', e => {
+            document.querySelector('.step2').classList.remove('hidden');
             grecaptcha.execute('<?php echo $siteKey; ?>', {action: '<?php echo $pageAction; ?>'}).then(function(token) {
                 document.querySelector('.token').innerHTML = 'fetch(\'/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token=\'' + token;
-                document.querySelector('.step2').classList.remove('hidden');
+                document.querySelector('.step3').classList.remove('hidden');
 
                 fetch('/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token='+token).then(function(response) {
                     response.json().then(function(data) {
                         document.querySelector('.response').innerHTML = JSON.stringify(data, null, 2);
-                        document.querySelector('.step3').classList.remove('hidden');
+                        document.querySelector('.step4').classList.remove('hidden');
                     });
                 });
             });
