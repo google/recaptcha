@@ -113,7 +113,7 @@ else:
     <p><strong>NOTE:</strong>This is a sample implementation, the score returned here is not a reflection on your Google account or type of traffic. In production, refer to the distribution of scores shown in <a href="https://www.google.com/recaptcha/admin" target="_blank">your admin interface</a> and adjust your own threshold accordingly. <strong>Do not raise issues regarding the score you see here.</strong></p>
     <ol id="recaptcha-steps">
     <li class="step0">reCAPTCHA script loading</li>
-        <li class="step1 hidden">Press the button containing a traffic light to continue. <button>🚗</button><button class="go">🚦</button><button>🚙</button></li>
+        <li class="step1 hidden">Press the button containing a traffic light to continue. <button>🚗</button> <button class="go">🚦</button> <button>🚙</button></li>
         <li class="step2 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo $siteKey; ?>', {action: '<?php echo $pageAction; ?>'})'</pre></li>
         <li class="step3 hidden">Received token from reCAPTCHA service, sending to our backend with:
         <pre class="token">fetch('/recaptcha-v3-verify.php?token=abc123</pre></li>
