@@ -88,25 +88,31 @@ else:
     <p><strong>NOTE:</strong>This is a sample implementation, the score returned here is not a reflection on your Google account or type of traffic. In production, refer to the distribution of scores shown in <a href="https://www.google.com/recaptcha/admin" target="_blank">your admin interface</a> and adjust your own threshold accordingly. <strong>Do not raise issues regarding the score you see here.</strong></p>
     <ol id="recaptcha-steps">
         <li class="step0">reCAPTCHA script loading</li>
-        <li class="step1 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo $siteKey; ?>', {action: '<?php echo $pageAction; ?>'})'</pre></li>
-        <li class="step2 hidden">Received token from reCAPTCHA service, sending to our backend with:
+        <li class="step1 hidden">Press the button containing a traffic light to continue. <button>🚗</button><button class="go">🚦</button><button>🚙</button></li>
+        <li class="step2 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo $siteKey; ?>', {action: '<?php echo $pageAction; ?>'})'</pre></li>
+        <li class="step3 hidden">Received token from reCAPTCHA service, sending to our backend with:
         <pre class="token">fetch('/recaptcha-v3-verify.php?token=abc123</pre></li>
-        <li class="step3 hidden">Received response from our backend: <pre class="response">{"json": "from-backend"}</pre></li>
+        <li class="step4 hidden">Received response from our backend: <pre class="response">{"json": "from-backend"}</pre></li>
     </ol>
     <p><a href="/recaptcha-v3-request-scores.php">⤴️ Try again</a></p>
     <script src="https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>"></script>
     <script>
         const steps = document.getElementById('recaptcha-steps');
+
         grecaptcha.ready(function() {
             document.querySelector('.step1').classList.remove('hidden');
+        });
+
+        document.querySelector('.go').addEventListener('click', e => {
+            document.querySelector('.step2').classList.remove('hidden');
             grecaptcha.execute('<?php echo $siteKey; ?>', {action: '<?php echo $pageAction; ?>'}).then(function(token) {
                 document.querySelector('.token').innerHTML = 'fetch(\'/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token=\'' + token;
-                document.querySelector('.step2').classList.remove('hidden');
+                document.querySelector('.step3').classList.remove('hidden');
 
                 fetch('/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token='+token).then(function(response) {
                     response.json().then(function(data) {
                         document.querySelector('.response').innerHTML = JSON.stringify(data, null, 2);
-                        document.querySelector('.step3').classList.remove('hidden');
+                        document.querySelector('.step4').classList.remove('hidden');
                     });
                 });
             });
