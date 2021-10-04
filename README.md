@@ -66,7 +66,9 @@ This library comes in when you need to verify the user's response. On the PHP
 side you need the response from the reCAPTCHA service and secret key from your
 credentials. Instantiate the `ReCaptcha` class with your secret key, specify any
 additional validation rules, and then call `verify()` with the reCAPTCHA
-response and user's IP address. For example:
+response (usually in `$_POST['g-recaptcha-response']` or the response from
+`grecaptcha.execute()` in JS which is in `$gRecaptchaResponse` in the example)
+and user's IP address. For example:
 
 ```php
 <?php
