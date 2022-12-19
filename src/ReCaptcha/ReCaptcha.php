@@ -52,6 +52,12 @@ class ReCaptcha
     const SITE_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
 
     /**
+     * User response token parameter name
+     * @const string
+     */
+    const USER_TOKEN_PARAMETER = 'g-recaptcha-response';
+
+    /**
      * Invalid JSON received
      * @const string
      */

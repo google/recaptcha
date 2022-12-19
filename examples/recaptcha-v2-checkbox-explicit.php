@@ -37,6 +37,8 @@ require __DIR__ . '/appengine-https.php';
 // not install via Composer.
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use ReCaptcha\ReCaptcha;
+
 // Register API keys at https://www.google.com/recaptcha/admin
 $siteKey = '';
 $secret = '';
@@ -77,7 +79,7 @@ if ($siteKey === '' || $secret === ''):
     <h2>Add your keys</h2>
     <p>If you do not have keys already then visit <kbd> <a href = "https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a></kbd> to generate them. Edit this file and set the respective keys in the <kbd>config.php</kbd> file or directly to <kbd>$siteKey</kbd> and <kbd>$secret</kbd>. Reload the page after this.</p>
     <?php
-elseif (isset($_POST['g-recaptcha-response'])):
+elseif (isset($_POST[ReCaptcha::USER_TOKEN_PARAMETER])):
     // The POST data here is unfiltered because this is an example.
     // In production, *always* sanitise and validate your input'
     ?>
@@ -86,7 +88,7 @@ elseif (isset($_POST['g-recaptcha-response'])):
         <?php
     // If the form submission includes the "g-captcha-response" field
     // Create an instance of the service using your secret
-    $recaptcha = new \ReCaptcha\ReCaptcha($secret);
+    $recaptcha = new ReCaptcha($secret);
 
     // If file_get_contents() is locked down on your PHP installation to disallow
     // its use with URLs, then you can use the alternative request method instead.
@@ -94,7 +96,7 @@ elseif (isset($_POST['g-recaptcha-response'])):
     //  $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\SocketPost());
     // Make the call to verify the response and also pass the user's IP address
     $resp = $recaptcha->setExpectedHostname($_SERVER['SERVER_NAME'])
-                      ->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
+                      ->verify($_POST[ReCaptcha::USER_TOKEN_PARAMETER], $_SERVER['REMOTE_ADDR']);
 
     if ($resp->isSuccess()):
         // If the response is a success, that's it!
