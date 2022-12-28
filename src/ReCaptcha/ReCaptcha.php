@@ -37,6 +37,7 @@ namespace ReCaptcha;
 /**
  * reCAPTCHA client.
  */
+#[\AllowDynamicProperties]
 class ReCaptcha
 {
     /**
