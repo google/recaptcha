@@ -34,7 +34,7 @@
 
 namespace ReCaptcha\RequestMethod;
 
-use \ReCaptcha\ReCaptcha;
+use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestParameters;
 use PHPUnit\Framework\TestCase;
 
@@ -44,12 +44,12 @@ class PostTest extends TestCase
     protected $parameters = null;
     protected $runcount = 0;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->parameters = new RequestParameters('secret', 'response', 'remoteip', 'version');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         self::$assert = null;
     }
@@ -111,12 +111,7 @@ class PostTest extends TestCase
         $this->assertEquals($this->parameters->toQueryString(), $options['http']['content']);
 
         $this->assertArrayHasKey('header', $options['http']);
-        $headers = array(
-            'Content-type: application/x-www-form-urlencoded',
-        );
-        foreach ($headers as $header) {
-            $this->assertContains($header, $options['http']['header']);
-        }
+        $this->assertStringContainsStringIgnoringCase('Content-type: application/x-www-form-urlencoded', $options['http']['header']);
     }
 
     public function sslContextOptionsCallback(array $args)

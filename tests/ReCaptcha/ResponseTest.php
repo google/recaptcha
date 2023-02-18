@@ -38,7 +38,6 @@ use PHPUnit\Framework\TestCase;
 
 class ResponseTest extends TestCase
 {
-
     /**
      * @dataProvider provideJson
      */
@@ -54,7 +53,7 @@ class ResponseTest extends TestCase
         $this->assertEquals($action, $response->getAction());
     }
 
-    public function provideJson()
+    public static function provideJson()
     {
         return array(
             array(
