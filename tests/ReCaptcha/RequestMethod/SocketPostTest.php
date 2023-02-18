@@ -44,7 +44,6 @@ class SocketPostTest extends TestCase
     {
         $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('fsockopen', 'fwrite', 'fgets', 'feof', 'fclose'))
             ->getMock();
         $socket->expects($this->once())
                 ->method('fsockopen')
@@ -70,7 +69,6 @@ class SocketPostTest extends TestCase
     {
         $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('fsockopen', 'fwrite', 'fgets', 'feof', 'fclose'))
             ->getMock();
         $socket->expects($this->once())
                 ->method('fsockopen')
@@ -98,7 +96,6 @@ class SocketPostTest extends TestCase
     {
         $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('fsockopen', 'fwrite', 'fgets', 'feof', 'fclose'))
             ->getMock();
         $socket->expects($this->once())
                 ->method('fsockopen')
@@ -124,7 +121,6 @@ class SocketPostTest extends TestCase
     {
         $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('fsockopen'))
             ->getMock();
         $socket->expects($this->once())
                 ->method('fsockopen')

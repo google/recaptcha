@@ -38,7 +38,7 @@ use PHPUnit\Framework\TestCase;
 
 class RequestParametersTest extends Testcase
 {
-    public function provideValidData()
+    public static function provideValidData()
     {
         return array(
             array('SECRET', 'RESPONSE', 'REMOTEIP', 'VERSION',

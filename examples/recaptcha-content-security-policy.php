@@ -103,7 +103,7 @@ $pageAction = 'examples/csp';
 <main>
 <?php
 if ($siteKey === '' || $secret === ''):
-?>
+    ?>
     <h2>Add your keys</h2>
     <p>If you do not have keys already then visit <kbd> <a href = "https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a></kbd> to generate them. Edit this file and set the respective keys in <kbd>$siteKey</kbd> and <kbd>$secret</kbd>. Reload the page after this.</p>
     <?php
