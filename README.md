@@ -54,7 +54,7 @@ $recaptcha = new \ReCaptcha\ReCaptcha($secret);
 ```
 
 The classes in the project are structured according to the
-[PSR-4](http://www.php-fig.org/psr/psr-4/) standard, so you can also use your
+[PSR-4](https://www.php-fig.org/psr/psr-4/) standard, so you can also use your
 own autoloader or require the needed files directly in your code.
 
 ## Usage
