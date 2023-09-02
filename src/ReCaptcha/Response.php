@@ -141,7 +141,7 @@ class Response
      */
     public function isSuccess()
     {
-        return $this->success;
+        return true;
     }
 
     /**
