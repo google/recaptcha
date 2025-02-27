@@ -34,13 +34,13 @@
 
 namespace ReCaptcha\RequestMethod;
 
-use \ReCaptcha\ReCaptcha;
-use \ReCaptcha\RequestParameters;
+use ReCaptcha\ReCaptcha;
+use ReCaptcha\RequestParameters;
 use PHPUnit\Framework\TestCase;
 
 class CurlPostTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!extension_loaded('curl')) {
             $this->markTestSkipped(
@@ -53,11 +53,10 @@ class CurlPostTest extends TestCase
     {
         $curl = $this->getMockBuilder(\ReCaptcha\RequestMethod\Curl::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('init', 'setoptArray', 'exec', 'close'))
             ->getMock();
         $curl->expects($this->once())
                 ->method('init')
-                ->willReturn(new \stdClass);
+                ->willReturn(new \stdClass());
         $curl->expects($this->once())
                 ->method('setoptArray')
                 ->willReturn(true);
@@ -78,12 +77,11 @@ class CurlPostTest extends TestCase
 
         $curl = $this->getMockBuilder(\ReCaptcha\RequestMethod\Curl::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('init', 'setoptArray', 'exec', 'close'))
             ->getMock();
         $curl->expects($this->once())
                 ->method('init')
                 ->with($url)
-                ->willReturn(new \stdClass);
+                ->willReturn(new \stdClass());
         $curl->expects($this->once())
                 ->method('setoptArray')
                 ->willReturn(true);
@@ -102,11 +100,10 @@ class CurlPostTest extends TestCase
     {
         $curl = $this->getMockBuilder(\ReCaptcha\RequestMethod\Curl::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('init', 'setoptArray', 'exec', 'close'))
             ->getMock();
         $curl->expects($this->once())
                 ->method('init')
-                ->willReturn(new \stdClass);
+                ->willReturn(new \stdClass());
         $curl->expects($this->once())
                 ->method('setoptArray')
                 ->willReturn(true);

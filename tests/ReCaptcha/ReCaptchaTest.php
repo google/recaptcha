@@ -38,17 +38,16 @@ use PHPUnit\Framework\TestCase;
 
 class ReCaptchaTest extends TestCase
 {
-
     /**
-     * @expectedException \RuntimeException
      * @dataProvider invalidSecretProvider
      */
     public function testExceptionThrownOnInvalidSecret($invalid)
     {
+        $this->expectException(\RuntimeException::class);
         $rc = new ReCaptcha($invalid);
     }
 
-    public function invalidSecretProvider()
+    public static function invalidSecretProvider()
     {
         return array(
             array(''),
@@ -71,7 +70,6 @@ class ReCaptchaTest extends TestCase
     {
         $method = $this->getMockBuilder(\ReCaptcha\RequestMethod::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('submit'))
             ->getMock();
         $method->expects($this->any())
             ->method('submit')
