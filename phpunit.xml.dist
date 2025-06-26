@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd" colors="true" bootstrap="src/autoload.php" cacheDirectory=".phpunit.cache">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" colors="true" bootstrap="src/autoload.php" cacheDirectory=".phpunit.cache">
   <coverage>
-    <include>
-      <directory suffix=".php">src/ReCaptcha/</directory>
-    </include>
     <report>
       <clover outputFile="build/logs/clover.xml"/>
     </report>
@@ -14,4 +11,9 @@
     </testsuite>
   </testsuites>
   <logging/>
+  <source>
+    <include>
+      <directory suffix=".php">src/ReCaptcha/</directory>
+    </include>
+  </source>
 </phpunit>
