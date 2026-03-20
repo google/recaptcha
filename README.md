@@ -85,7 +85,26 @@ if ($resp->isSuccess()) {
 }
 ```
 
-The following methods are available:
+### reCAPTCHA Enterprise
+
+If you are using [reCAPTCHA Enterprise](https://cloud.google.com/recaptcha-enterprise/docs), you should use the `ReCaptchaEnterprise` class. It behaves similarly to the standard client but requires your Google Cloud Project ID, an API Key, and your Site Key.
+
+```php
+<?php
+$recaptcha = new \ReCaptcha\ReCaptchaEnterprise($projectId, $apiKey, $siteKey);
+$resp = $recaptcha->setExpectedAction('homepage')
+                  ->setScoreThreshold(0.5)
+                  ->verify($gRecaptchaResponse);
+
+if ($resp->isSuccess()) {
+    // Verified!
+    $score = $resp->getScore();
+} else {
+    $errors = $resp->getErrorCodes();
+}
+```
+
+The following methods are available on both `ReCaptcha` and `ReCaptchaEnterprise`:
 
 - `setExpectedHostname($hostname)`: ensures the hostname matches. You must do
   this if you have disabled "Domain/Package Name Validation" for your
