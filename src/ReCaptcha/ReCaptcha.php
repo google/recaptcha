@@ -134,18 +134,18 @@ class ReCaptcha
     public const E_CHALLENGE_TIMEOUT = 'challenge-timeout';
 
     /**
+     * Method used to communicate with service. Defaults to POST request.
+     *
+     * @var RequestMethod
+     */
+    protected $requestMethod;
+
+    /**
      * Shared secret for the site.
      *
      * @var string
      */
     private $secret;
-
-    /**
-     * Method used to communicate with service. Defaults to POST request.
-     *
-     * @var RequestMethod
-     */
-    private $requestMethod;
 
     private $hostname;
     private $apkPackageName;
@@ -201,45 +201,8 @@ class ReCaptcha
         $params = new RequestParameters($this->secret, $response, $remoteIp, self::VERSION);
         $rawResponse = $this->requestMethod->submit($params);
         $initialResponse = Response::fromJson($rawResponse);
-        $validationErrors = [];
 
-        if (isset($this->hostname) && 0 !== strcasecmp($this->hostname, $initialResponse->getHostname())) {
-            $validationErrors[] = self::E_HOSTNAME_MISMATCH;
-        }
-
-        if (isset($this->apkPackageName) && 0 !== strcasecmp($this->apkPackageName, $initialResponse->getApkPackageName())) {
-            $validationErrors[] = self::E_APK_PACKAGE_NAME_MISMATCH;
-        }
-
-        if (isset($this->action) && 0 !== strcasecmp($this->action, $initialResponse->getAction())) {
-            $validationErrors[] = self::E_ACTION_MISMATCH;
-        }
-
-        if (isset($this->threshold) && $this->threshold > $initialResponse->getScore()) {
-            $validationErrors[] = self::E_SCORE_THRESHOLD_NOT_MET;
-        }
-
-        if (isset($this->timeoutSeconds)) {
-            $challengeTs = strtotime($initialResponse->getChallengeTs());
-
-            if ($challengeTs > 0 && time() - $challengeTs > $this->timeoutSeconds) {
-                $validationErrors[] = self::E_CHALLENGE_TIMEOUT;
-            }
-        }
-
-        if (empty($validationErrors)) {
-            return $initialResponse;
-        }
-
-        return new Response(
-            false,
-            array_merge($initialResponse->getErrorCodes(), $validationErrors),
-            $initialResponse->getHostname(),
-            $initialResponse->getChallengeTs(),
-            $initialResponse->getApkPackageName(),
-            $initialResponse->getScore(),
-            $initialResponse->getAction()
-        );
+        return $this->verifyResponse($initialResponse);
     }
 
     /**
@@ -313,5 +276,53 @@ class ReCaptcha
         $this->timeoutSeconds = $timeoutSeconds;
 
         return $this;
+    }
+
+    /**
+     * Verify the initial response from the service.
+     *
+     * @return Response
+     */
+    protected function verifyResponse(Response $initialResponse)
+    {
+        $validationErrors = [];
+
+        if (isset($this->hostname) && 0 !== strcasecmp($this->hostname, $initialResponse->getHostname())) {
+            $validationErrors[] = self::E_HOSTNAME_MISMATCH;
+        }
+
+        if (isset($this->apkPackageName) && 0 !== strcasecmp($this->apkPackageName, $initialResponse->getApkPackageName())) {
+            $validationErrors[] = self::E_APK_PACKAGE_NAME_MISMATCH;
+        }
+
+        if (isset($this->action) && 0 !== strcasecmp($this->action, $initialResponse->getAction())) {
+            $validationErrors[] = self::E_ACTION_MISMATCH;
+        }
+
+        if (isset($this->threshold) && $this->threshold > $initialResponse->getScore()) {
+            $validationErrors[] = self::E_SCORE_THRESHOLD_NOT_MET;
+        }
+
+        if (isset($this->timeoutSeconds)) {
+            $challengeTs = strtotime($initialResponse->getChallengeTs());
+
+            if ($challengeTs > 0 && time() - $challengeTs > $this->timeoutSeconds) {
+                $validationErrors[] = self::E_CHALLENGE_TIMEOUT;
+            }
+        }
+
+        if (empty($validationErrors)) {
+            return $initialResponse;
+        }
+
+        return new Response(
+            false,
+            array_merge($initialResponse->getErrorCodes(), $validationErrors),
+            $initialResponse->getHostname(),
+            $initialResponse->getChallengeTs(),
+            $initialResponse->getApkPackageName(),
+            $initialResponse->getScore(),
+            $initialResponse->getAction()
+        );
     }
 }
