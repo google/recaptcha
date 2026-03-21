@@ -41,12 +41,39 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * Global state for mocking functions in the ReCaptcha namespace.
+ */
+class GlobalState
+{
+    public static $isCurlAvailable;
+}
+
+/**
+ * Mock function_exists in the ReCaptcha namespace.
+ *
+ * @param mixed $function
+ */
+function function_exists($function)
+{
+    if ('curl_version' === $function && !is_null(GlobalState::$isCurlAvailable)) {
+        return GlobalState::$isCurlAvailable;
+    }
+
+    return \function_exists($function);
+}
+
+/**
  * @internal
  *
  * @coversNothing
  */
 class ReCaptchaTest extends TestCase
 {
+    protected function tearDown(): void
+    {
+        GlobalState::$isCurlAvailable = null;
+    }
+
     #[DataProvider('invalidSecretProvider')]
     public function testExceptionThrownOnInvalidSecret($invalid)
     {
@@ -73,18 +100,26 @@ class ReCaptchaTest extends TestCase
         $this->assertEquals([Recaptcha::E_MISSING_INPUT_RESPONSE], $response->getErrorCodes());
     }
 
-    public function testDefaultRequestMethod()
+    public function testDefaultRequestMethodWithCurl()
     {
+        GlobalState::$isCurlAvailable = true;
         $rc = new ReCaptcha('secret');
         $reflection = new \ReflectionClass($rc);
         $property = $reflection->getProperty('requestMethod');
         $requestMethod = $property->getValue($rc);
 
-        if (function_exists('curl_version')) {
-            $this->assertInstanceOf(RequestMethod\CurlPost::class, $requestMethod);
-        } else {
-            $this->assertInstanceOf(RequestMethod\Post::class, $requestMethod);
-        }
+        $this->assertInstanceOf(RequestMethod\CurlPost::class, $requestMethod);
+    }
+
+    public function testDefaultRequestMethodWithoutCurl()
+    {
+        GlobalState::$isCurlAvailable = false;
+        $rc = new ReCaptcha('secret');
+        $reflection = new \ReflectionClass($rc);
+        $property = $reflection->getProperty('requestMethod');
+        $requestMethod = $property->getValue($rc);
+
+        $this->assertInstanceOf(RequestMethod\Post::class, $requestMethod);
     }
 
     public function testVerifyReturnsResponse()
