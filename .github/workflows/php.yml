@@ -49,7 +49,7 @@ jobs:
       run: composer run-script test
 
     - name: Upload to Coveralls
-      uses: coverallsapp/github-action@v2
+      uses: coverallsapp/github-action@v2.3.6
       with:
         file: build/logs/clover.xml
         flag-name: php-${{ matrix.php }}
@@ -60,6 +60,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
-      uses: coverallsapp/github-action@v2
+      uses: coverallsapp/github-action@v2.3.6
       with:
         parallel-finished: true
