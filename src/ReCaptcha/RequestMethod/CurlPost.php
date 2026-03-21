@@ -50,13 +50,6 @@ use ReCaptcha\RequestParameters;
 class CurlPost implements RequestMethod
 {
     /**
-     * Curl connection to the reCAPTCHA service.
-     *
-     * @var Curl
-     */
-    private $curl;
-
-    /**
      * URL for reCAPTCHA siteverify API.
      *
      * @var string
@@ -66,12 +59,10 @@ class CurlPost implements RequestMethod
     /**
      * Only needed if you want to override the defaults.
      *
-     * @param Curl   $curl          Curl resource
      * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct(?Curl $curl = null, $siteVerifyUrl = null)
+    public function __construct($siteVerifyUrl = null)
     {
-        $this->curl = (is_null($curl)) ? new Curl() : $curl;
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
     }
 
@@ -84,7 +75,7 @@ class CurlPost implements RequestMethod
      */
     public function submit(RequestParameters $params)
     {
-        $handle = $this->curl->init($this->siteVerifyUrl);
+        $handle = curl_init($this->siteVerifyUrl);
 
         $options = [
             CURLOPT_POST => true,
@@ -97,9 +88,9 @@ class CurlPost implements RequestMethod
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,
         ];
-        $this->curl->setoptArray($handle, $options);
+        curl_setopt_array($handle, $options);
 
-        $response = $this->curl->exec($handle);
+        $response = curl_exec($handle);
 
         if (false !== $response) {
             return $response;

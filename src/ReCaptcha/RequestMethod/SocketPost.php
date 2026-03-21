@@ -48,24 +48,15 @@ use ReCaptcha\RequestParameters;
  */
 class SocketPost implements RequestMethod
 {
-    /**
-     * Socket to the reCAPTCHA service.
-     *
-     * @var Socket
-     */
-    private $socket;
-
     private $siteVerifyUrl;
 
     /**
      * Only needed if you want to override the defaults.
      *
-     * @param Socket $socket        optional socket, injectable for testing
      * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct(?Socket $socket = null, $siteVerifyUrl = null)
+    public function __construct($siteVerifyUrl = null)
     {
-        $this->socket = (is_null($socket)) ? new Socket() : $socket;
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
     }
 
@@ -82,7 +73,9 @@ class SocketPost implements RequestMethod
         $errstr = '';
         $urlParsed = parse_url($this->siteVerifyUrl);
 
-        if (false === $this->socket->fsockopen('ssl://'.$urlParsed['host'], 443, $errno, $errstr, 30)) {
+        $handle = fsockopen('ssl://'.$urlParsed['host'], 443, $errno, $errstr, 30);
+
+        if (false === $handle || 0 !== $errno || '' !== $errstr) {
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
         }
 
@@ -95,14 +88,14 @@ class SocketPost implements RequestMethod
         $request .= "Connection: close\r\n\r\n";
         $request .= $content."\r\n\r\n";
 
-        $this->socket->fwrite($request);
+        fwrite($handle, $request);
         $response = '';
 
-        while (!$this->socket->feof()) {
-            $response .= $this->socket->fgets(4096);
+        while (!feof($handle)) {
+            $response .= fgets($handle, 4096);
         }
 
-        $this->socket->fclose();
+        fclose($handle);
 
         if (0 !== strpos($response, 'HTTP/1.0 200 OK')) {
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';

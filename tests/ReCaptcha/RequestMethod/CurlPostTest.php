@@ -42,6 +42,50 @@ use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestParameters;
 
 /**
+ * Global state for mocking curl functions.
+ */
+class CurlPostGlobalState
+{
+    public static $initUrl;
+    public static $setoptArrayOptions;
+    public static $execResponse = 'RESPONSEBODY';
+}
+
+/**
+ * Mock curl_init in the ReCaptcha\RequestMethod namespace.
+ *
+ * @param null|mixed $url
+ */
+function curl_init($url = null)
+{
+    CurlPostGlobalState::$initUrl = $url;
+
+    return new \stdClass();
+}
+
+/**
+ * Mock curl_setopt_array in the ReCaptcha\RequestMethod namespace.
+ *
+ * @param mixed $ch
+ */
+function curl_setopt_array($ch, array $options)
+{
+    CurlPostGlobalState::$setoptArrayOptions = $options;
+
+    return true;
+}
+
+/**
+ * Mock curl_exec in the ReCaptcha\RequestMethod namespace.
+ *
+ * @param mixed $ch
+ */
+function curl_exec($ch)
+{
+    return CurlPostGlobalState::$execResponse;
+}
+
+/**
  * @internal
  *
  * @coversNothing
@@ -50,85 +94,37 @@ class CurlPostTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (!extension_loaded('curl')) {
-            $this->markTestSkipped(
-                'The cURL extension is not available.'
-            );
-        }
+        CurlPostGlobalState::$initUrl = null;
+        CurlPostGlobalState::$setoptArrayOptions = null;
+        CurlPostGlobalState::$execResponse = 'RESPONSEBODY';
     }
 
     public function testSubmit()
     {
-        $curl = $this->getMockBuilder(Curl::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $curl->expects($this->once())
-            ->method('init')
-            ->willReturn(new \stdClass())
-        ;
-        $curl->expects($this->once())
-            ->method('setoptArray')
-            ->willReturn(true)
-        ;
-        $curl->expects($this->once())
-            ->method('exec')
-            ->willReturn('RESPONSEBODY')
-        ;
-
-        $pc = new CurlPost($curl);
+        $pc = new CurlPost();
         $response = $pc->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals(ReCaptcha::SITE_VERIFY_URL, CurlPostGlobalState::$initUrl);
+        $this->assertTrue(CurlPostGlobalState::$setoptArrayOptions[CURLOPT_POST]);
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
     public function testOverrideSiteVerifyUrl()
     {
         $url = 'OVERRIDE';
-
-        $curl = $this->getMockBuilder(Curl::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $curl->expects($this->once())
-            ->method('init')
-            ->with($url)
-            ->willReturn(new \stdClass())
-        ;
-        $curl->expects($this->once())
-            ->method('setoptArray')
-            ->willReturn(true)
-        ;
-        $curl->expects($this->once())
-            ->method('exec')
-            ->willReturn('RESPONSEBODY')
-        ;
-
-        $pc = new CurlPost($curl, $url);
+        $pc = new CurlPost($url);
         $response = $pc->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals($url, CurlPostGlobalState::$initUrl);
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
     public function testConnectionFailureReturnsError()
     {
-        $curl = $this->getMockBuilder(Curl::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $curl->expects($this->once())
-            ->method('init')
-            ->willReturn(new \stdClass())
-        ;
-        $curl->expects($this->once())
-            ->method('setoptArray')
-            ->willReturn(true)
-        ;
-        $curl->expects($this->once())
-            ->method('exec')
-            ->willReturn(false)
-        ;
-
-        $pc = new CurlPost($curl);
+        CurlPostGlobalState::$execResponse = false;
+        $pc = new CurlPost();
         $response = $pc->submit(new RequestParameters('secret', 'response'));
+
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
 }

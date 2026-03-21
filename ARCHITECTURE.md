@@ -25,12 +25,9 @@ README for more details.
 
 Create a class that implements the
 [`RequestMethod`](./src/ReCaptcha/RequestMethod.php) interface. The convention
-is to name this class `RequestMethod\`_MethodType_`Post` and create a separate
-`RequestMethod\`_MethodType_ class that wraps just the calls to the network
-calls themselves. This means that the `RequestMethod\`_MethodType_`Post` can be
-unit tested by passing in a mock. Take a look at
-[`RequestMethod\CurlPost`](./src/ReCaptcha/RequestMethod/CurlPost.php) and
-[`RequestMethod\Curl`](./src/ReCaptcha/RequestMethod/Curl.php) with the matching
+is to name this class `RequestMethod\`_MethodType_`Post`. Take a look at
+[`RequestMethod\CurlPost`](./src/ReCaptcha/RequestMethod/CurlPost.php)
+with the matching
 [`RequestMethod/CurlPostTest`](./tests/ReCaptcha/RequestMethod/CurlPostTest.php)
 to see this pattern in action.
 

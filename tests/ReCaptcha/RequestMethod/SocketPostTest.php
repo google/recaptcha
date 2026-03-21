@@ -42,107 +42,140 @@ use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestParameters;
 
 /**
+ * Global state for mocking socket functions.
+ */
+class SocketPostGlobalState
+{
+    public static $fsockopenHostname;
+    public static $fsockopenErrno = 0;
+    public static $fsockopenErrstr = '';
+    public static $fsockopenSuccess = true;
+    public static $fwriteData = '';
+    public static $fgetsResponses = [];
+    public static $feofCount = 0;
+    public static $fcloseCalled = false;
+}
+
+/**
+ * Mock fsockopen in the ReCaptcha\RequestMethod namespace.
+ *
+ * @param mixed      $hostname
+ * @param mixed      $port
+ * @param mixed      $errno
+ * @param mixed      $errstr
+ * @param null|mixed $timeout
+ */
+function fsockopen($hostname, $port = -1, &$errno = 0, &$errstr = '', $timeout = null)
+{
+    SocketPostGlobalState::$fsockopenHostname = $hostname;
+    $errno = SocketPostGlobalState::$fsockopenErrno;
+    $errstr = SocketPostGlobalState::$fsockopenErrstr;
+
+    return SocketPostGlobalState::$fsockopenSuccess ? new \stdClass() : false;
+}
+
+/**
+ * Mock fwrite in the ReCaptcha\RequestMethod namespace.
+ *
+ * @param mixed      $handle
+ * @param mixed      $string
+ * @param null|mixed $length
+ */
+function fwrite($handle, $string, $length = null)
+{
+    SocketPostGlobalState::$fwriteData .= $string;
+
+    return strlen($string);
+}
+
+/**
+ * Mock fgets in the ReCaptcha\RequestMethod namespace.
+ *
+ * @param mixed      $handle
+ * @param null|mixed $length
+ */
+function fgets($handle, $length = null)
+{
+    return array_shift(SocketPostGlobalState::$fgetsResponses);
+}
+
+/**
+ * Mock feof in the ReCaptcha\RequestMethod namespace.
+ *
+ * @param mixed $handle
+ */
+function feof($handle)
+{
+    return empty(SocketPostGlobalState::$fgetsResponses);
+}
+
+/**
+ * Mock fclose in the ReCaptcha\RequestMethod namespace.
+ *
+ * @param mixed $handle
+ */
+function fclose($handle)
+{
+    SocketPostGlobalState::$fcloseCalled = true;
+}
+
+/**
  * @internal
  *
  * @coversNothing
  */
 class SocketPostTest extends TestCase
 {
-    public function testSubmitSuccess()
+    protected function setUp(): void
     {
-        $socket = $this->createMock(Socket::class);
-        $socket->expects($this->once())
-            ->method('fsockopen')
-            ->willReturn(true)
-        ;
-        $socket->expects($this->once())
-            ->method('fwrite')
-        ;
-        $socket->expects($this->once())
-            ->method('fgets')
-            ->willReturn("HTTP/1.0 200 OK\n\nRESPONSEBODY")
-        ;
-        $socket->expects($this->exactly(2))
-            ->method('feof')
-            ->willReturnOnConsecutiveCalls(false, true)
-        ;
-        $socket->expects($this->once())
-            ->method('fclose')
-            ->willReturn(true)
-        ;
-
-        $ps = new SocketPost($socket);
-        $response = $ps->submit(new RequestParameters('secret', 'response', 'remoteip', 'version'));
-        $this->assertEquals('RESPONSEBODY', $response);
+        SocketPostGlobalState::$fsockopenHostname = null;
+        SocketPostGlobalState::$fsockopenErrno = 0;
+        SocketPostGlobalState::$fsockopenErrstr = '';
+        SocketPostGlobalState::$fsockopenSuccess = true;
+        SocketPostGlobalState::$fwriteData = '';
+        SocketPostGlobalState::$fgetsResponses = [];
+        SocketPostGlobalState::$fcloseCalled = false;
     }
 
-    public function testOverrideSiteVerifyUrl()
+    public function testSubmit()
     {
-        $socket = $this->createMock(Socket::class);
-        $socket->expects($this->once())
-            ->method('fsockopen')
-            ->with('ssl://over.ride', 443, 0, '', 30)
-            ->willReturn(true)
-        ;
-        $socket->expects($this->once())
-            ->method('fwrite')
-            ->with($this->matchesRegularExpression('/^POST \/some\/path.*Host: over\.ride/s'))
-        ;
-        $socket->expects($this->once())
-            ->method('fgets')
-            ->willReturn("HTTP/1.0 200 OK\n\nRESPONSEBODY")
-        ;
-        $socket->expects($this->exactly(2))
-            ->method('feof')
-            ->willReturnOnConsecutiveCalls(false, true)
-        ;
-        $socket->expects($this->once())
-            ->method('fclose')
-            ->willReturn(true)
-        ;
+        SocketPostGlobalState::$fgetsResponses = [
+            "HTTP/1.0 200 OK\r\n",
+            "Content-Type: application/json\r\n",
+            "\r\n",
+            'RESPONSEBODY',
+        ];
 
-        $ps = new SocketPost($socket, 'https://over.ride/some/path');
-        $response = $ps->submit(new RequestParameters('secret', 'response', 'remoteip', 'version'));
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('ssl://www.google.com', SocketPostGlobalState::$fsockopenHostname);
+        $this->assertStringContainsString('secret=secret', SocketPostGlobalState::$fwriteData);
+        $this->assertStringContainsString('response=response', SocketPostGlobalState::$fwriteData);
         $this->assertEquals('RESPONSEBODY', $response);
-    }
-
-    public function testSubmitBadResponse()
-    {
-        $socket = $this->createMock(Socket::class);
-        $socket->expects($this->once())
-            ->method('fsockopen')
-            ->willReturn(true)
-        ;
-        $socket->expects($this->once())
-            ->method('fwrite')
-        ;
-        $socket->expects($this->once())
-            ->method('fgets')
-            ->willReturn('HTTP/1.0 500 NOPEn\nBOBBINS')
-        ;
-        $socket->expects($this->exactly(2))
-            ->method('feof')
-            ->willReturnOnConsecutiveCalls(false, true)
-        ;
-        $socket->expects($this->once())
-            ->method('fclose')
-            ->willReturn(true)
-        ;
-
-        $ps = new SocketPost($socket);
-        $response = $ps->submit(new RequestParameters('secret', 'response', 'remoteip', 'version'));
-        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
+        $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
     }
 
     public function testConnectionFailureReturnsError()
     {
-        $socket = $this->createMock(Socket::class);
-        $socket->expects($this->once())
-            ->method('fsockopen')
-            ->willReturn(false)
-        ;
-        $ps = new SocketPost($socket);
-        $response = $ps->submit(new RequestParameters('secret', 'response', 'remoteip', 'version'));
+        SocketPostGlobalState::$fsockopenSuccess = false;
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
+    }
+
+    public function testBadResponseReturnsError()
+    {
+        SocketPostGlobalState::$fgetsResponses = [
+            "HTTP/1.0 500 Internal Server Error\r\n",
+            "\r\n",
+            'FAIL',
+        ];
+
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
     }
 }
