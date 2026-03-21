@@ -1,0 +1,62 @@
+name: Deploy Examples to Cloud Run
+
+on:
+  push:
+    branches: [ "main" ]
+  # Optional: Enable for PR previews
+  # pull_request:
+  #   branches: [ "main" ]
+
+env:
+  PROJECT_ID: recaptcha-demo-php
+  SERVICE_NAME: recaptcha-examples
+  REGION: us-central1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Authenticate with Google Cloud
+    # You'll need to set up a Service Account with 'Cloud Run Admin' and 'Storage Admin' roles
+    # and add its key as a GitHub secret: GCP_SA_KEY
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v1'
+
+    - name: 'Build and Push Container'
+      run: |
+        gcloud builds submit --tag gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+
+    - name: 'Deploy to Cloud Run'
+      uses: 'google-github-actions/deploy-cloudrun@v1'
+      with:
+        service: '${{ env.SERVICE_NAME }}'
+        image: 'gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}'
+        region: '${{ env.REGION }}'
+        env_vars: |
+          RECAPTCHA_V2_SITE_KEY=${{ secrets.RECAPTCHA_V2_SITE_KEY }}
+          RECAPTCHA_V2_SECRET_KEY=${{ secrets.RECAPTCHA_V2_SECRET_KEY }}
+          RECAPTCHA_V3_SITE_KEY=${{ secrets.RECAPTCHA_V3_SITE_KEY }}
+          RECAPTCHA_V3_SECRET_KEY=${{ secrets.RECAPTCHA_V3_SECRET_KEY }}
+        flags: '--allow-unauthenticated'
+
+  # Example job for PR Previews (commented out by default)
+  # preview:
+  #   if: github.event_name == 'pull_request'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: 'Deploy Preview'
+  #       run: |
+  #         # Script to deploy with service name: recaptcha-examples-pr-${{ github.event.number }}
+  #         # And update PR with the URL

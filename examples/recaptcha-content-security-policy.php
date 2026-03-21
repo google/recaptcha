@@ -66,8 +66,8 @@ header(
 );
 
 // Register API keys at https://www.google.com/recaptcha/admin
-$siteKey = '';
-$secret = '';
+$siteKey = getenv('RECAPTCHA_V2_SITE_KEY') ?: '';
+$secret = getenv('RECAPTCHA_V2_SECRET_KEY') ?: '';
 
 // Copy the config.php.dist file to config.php and update it with your keys to run the examples
 if ('' == $siteKey && is_readable(__DIR__.'/config.php')) {
