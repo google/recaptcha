@@ -47,3 +47,19 @@ jobs:
 
     - name: Run test suite
       run: composer run-script test
+
+    - name: Upload to Coveralls
+      uses: coverallsapp/github-action@v2
+      with:
+        file: build/logs/clover.xml
+        flag-name: php-${{ matrix.php }}
+        parallel: true
+
+  finish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
