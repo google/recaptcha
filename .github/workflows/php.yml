@@ -49,16 +49,17 @@ jobs:
       run: composer run-script test
 
     - name: Upload to Coveralls
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        COVERALLS_PARALLEL: true
-        COVERALLS_FLAG_NAME: php-${{ matrix.php }}
-      run: vendor/bin/php-coveralls -v
+      uses: coverallsapp/github-action@v2
+      with:
+        file: build/logs/clover.xml
+        flag-name: php-${{ matrix.php }}
+        parallel: true
 
   finish:
     needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
-      run: |
-        curl -k https://coveralls.io/webhook?repo_token=${{ secrets.GITHUB_TOKEN }} -d "payload[build_num]=${{ github.run_id }}&payload[status]=done"
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
