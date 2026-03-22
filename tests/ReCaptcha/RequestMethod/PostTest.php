@@ -129,9 +129,9 @@ class PostTest extends TestCase
         $this->assertCommonOptions($args);
 
         $options = stream_context_get_options($args[2]);
-        $this->assertArrayHasKey('http', $options);
-        $this->assertArrayHasKey('verify_peer', $options['http']);
-        $this->assertTrue($options['http']['verify_peer']);
+        $this->assertArrayHasKey('ssl', $options);
+        $this->assertArrayHasKey('verify_peer', $options['ssl']);
+        $this->assertTrue($options['ssl']['verify_peer']);
     }
 
     protected function assertCommonOptions(array $args)

@@ -77,7 +77,9 @@ class Post implements RequestMethod
                 'header' => "Content-type: application/x-www-form-urlencoded\r\n",
                 'method' => 'POST',
                 'content' => $params->toQueryString(),
-                // Force the peer to validate (not needed in 5.6.0+, but still works)
+            ],
+            // Force the peer to validate (not needed in 5.6.0+, but still works)
+            'ssl' => [
                 'verify_peer' => true,
             ],
         ];
