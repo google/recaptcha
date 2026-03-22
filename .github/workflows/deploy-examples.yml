@@ -35,7 +35,7 @@ jobs:
 
     - name: 'Build and Push Container'
       run: |
-        gcloud builds submit --tag gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} --no-source-logs
+        gcloud builds submit --tag gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} --suppress-logs
 
     - name: 'Set Service Name'
       id: set-service-name
