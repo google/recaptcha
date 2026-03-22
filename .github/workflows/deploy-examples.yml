@@ -1,4 +1,4 @@
-name: Deploy Examples to Cloud Run
+name: Deploy Examples to Cloud Run and Firebase
 
 on:
   push:
@@ -73,17 +73,13 @@ jobs:
           RECAPTCHA_V3_SECRET_KEY=${{ secrets.RECAPTCHA_V3_SECRET_KEY }}
         flags: '--allow-unauthenticated'
 
-    - name: 'Comment on PR'
-      if: github.event_name == 'pull_request'
-      uses: actions/github-script@v6
+    - name: 'Deploy to Firebase Hosting'
+      uses: FirebaseExtended/action-hosting-deploy@v0
       with:
-        script: |
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: '🚀 PR Preview deployed to: ${{ steps.deploy.outputs.url }}'
-          })
+        repoToken: '${{ secrets.GITHUB_TOKEN }}'
+        firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RECAPTCHA_DEMO_PHP }}'
+        projectId: ${{ env.PROJECT_ID }}
+        channelId: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || 'live' }}
 
   cleanup:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

@@ -17,3 +17,7 @@ CONTRIBUTING.md
 LICENSE
 app.yaml
 firebase-debug.log
+.firebaserc
+firebase.json
+public/
+
