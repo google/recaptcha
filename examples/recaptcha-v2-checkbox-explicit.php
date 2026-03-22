@@ -73,7 +73,7 @@ $lang = 'en';
 
 <header>
     <h1>reCAPTCHA demo</h1><h2>"I'm not a robot" checkbox - Explicit render</h2>
-    <p><a href="/">↩️ Home</a></p>
+    <p><a href="/"><span aria-hidden="true">↩️</span> Home</a></p>
 </header>
 <main>
 <?php
@@ -108,7 +108,7 @@ if ('' === $siteKey || '' === $secret) {
         <h2>Success!</h2>
         <kbd><pre><?php var_export($resp); ?></pre></kbd>
         <p>That's it. Everything is working. Go integrate this into your real project.</p>
-        <p><a href="/recaptcha-v2-checkbox-explicit.php">⤴️ Try again</a></p>
+        <p><a href="/recaptcha-v2-checkbox-explicit.php"><span aria-hidden="true">⤴️</span> Try again</a></p>
         <?php
     } else {
         // If it's not successful, then one or more error codes will be returned.
@@ -117,7 +117,7 @@ if ('' === $siteKey || '' === $secret) {
         <kbd><pre><?php var_export($resp); ?></pre></kbd>
         <p>Check the error code reference at <kbd><a href="https://developers.google.com/recaptcha/docs/verify#error-code-reference">https://developers.google.com/recaptcha/docs/verify#error-code-reference</a></kbd>.
         <p><strong>Note:</strong> Error code <kbd>missing-input-response</kbd> may mean the user just didn't complete the reCAPTCHA.</p>
-        <p><a href="/recaptcha-v2-checkbox-explicit.php">⤴️ Try again</a></p>
+        <p><a href="/recaptcha-v2-checkbox-explicit.php"><span aria-hidden="true">⤴️</span> Try again</a></p>
         <?php
     }
 } else {
@@ -132,7 +132,7 @@ if ('' === $siteKey || '' === $secret) {
             <!-- Set up a container to render the widget -->
             <div class="g-recaptcha form-field"></div>
             <!-- Disable the button by default, will enable when the widget loads -->
-            <button class="form-field" type="submit" disabled>Submit ↦</button>
+            <button class="form-field" type="submit" disabled>Submit <span aria-hidden="true">↦</span></button>
         </fieldset>
     </form>
     <script type="text/javascript">

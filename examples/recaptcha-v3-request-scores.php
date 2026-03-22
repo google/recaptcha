@@ -74,7 +74,7 @@ $pageAction = 'examples/v3scores';
 <title>reCAPTCHA demo - Request scores</title>
 <header>
     <h1>reCAPTCHA demo</h1><h2>Request scores</h2>
-    <p><a href="/">↩️ Home</a></p>
+    <p><a href="/"><span aria-hidden="true">↩️</span> Home</a></p>
 </header>
 <main>
 <?php
@@ -95,7 +95,7 @@ if ('' === $siteKey || '' === $secret) {
         <pre class="token">fetch('/recaptcha-v3-verify.php?token=abc123</pre></li>
         <li class="step3 hidden">Received response from our backend: <pre class="response">{"json": "from-backend"}</pre></li>
     </ol>
-    <p><a href="/recaptcha-v3-request-scores.php">⤴️ Try again</a></p>
+    <p><a href="/recaptcha-v3-request-scores.php"><span aria-hidden="true">⤴️</span> Try again</a></p>
     <script src="https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>"></script>
     <script>
         const steps = document.getElementById('recaptcha-steps');

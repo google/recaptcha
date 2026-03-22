@@ -73,7 +73,7 @@ $lang = 'en';
 
 <header>
     <h1>reCAPTCHA demo</h1><h2>Invisible</h2>
-    <p><a href="/">↩️ Home</a></p>
+    <p><a href="/"><span aria-hidden="true">↩️</span> Home</a></p>
 </header>
 <main>
 <?php
@@ -108,7 +108,7 @@ if ('' === $siteKey || '' === $secret) {
         <h2>Success!</h2>
         <kbd><pre><?php var_export($resp); ?></pre></kbd>
         <p>That's it. Everything is working. Go integrate this into your real project.</p>
-        <p><a href="/recaptcha-v2-invisible.php">⤴️ Try again</a></p>
+        <p><a href="/recaptcha-v2-invisible.php"><span aria-hidden="true">⤴️</span> Try again</a></p>
         <?php
     } else {
         // If it's not successful, then one or more error codes will be returned.
@@ -117,7 +117,7 @@ if ('' === $siteKey || '' === $secret) {
         <kbd><pre><?php var_export($resp); ?></pre></kbd>
         <p>Check the error code reference at <kbd><a href="https://developers.google.com/recaptcha/docs/verify#error-code-reference">https://developers.google.com/recaptcha/docs/verify#error-code-reference</a></kbd>.
         <p><strong>Note:</strong> Error code <kbd>missing-input-response</kbd> may mean the user just didn't complete the reCAPTCHA.</p>
-        <p><a href="/recaptcha-v2-invisible.php">⤴️ Try again</a></p>
+        <p><a href="/recaptcha-v2-invisible.php"><span aria-hidden="true">⤴️</span> Try again</a></p>
         <?php
     }
 } else {
@@ -129,7 +129,7 @@ if ('' === $siteKey || '' === $secret) {
             <legend>An example form</legend>
             <label class="form-field">Example input A: <input type="text" name="ex-a" value="foo"></label>
             <label class="form-field">Example input B: <input type="text" name="ex-b" value="bar"></label>
-            <button class="g-recaptcha form-field" data-sitekey="<?php echo $siteKey; ?>" data-callback='onSubmit'>Submit ↦</button>
+            <button class="g-recaptcha form-field" data-sitekey="<?php echo $siteKey; ?>" data-callback='onSubmit'>Submit <span aria-hidden="true">↦</span></button>
         </fieldset>
     </form>
     <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=<?php echo $lang; ?>" async defer></script>
