@@ -20,6 +20,7 @@ jobs:
       contents: 'read'
       id-token: 'write'
       pull-requests: 'write'
+      checks: 'write'
 
     steps:
     - name: Checkout code
