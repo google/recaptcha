@@ -35,7 +35,20 @@ jobs:
 
     - name: 'Build and Push Container'
       run: |
-        gcloud builds submit --tag gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} --suppress-logs
+        BUILD_ID=$(gcloud builds submit --tag gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} --async --format='value(id)')
+        echo "Build started with ID: $BUILD_ID"
+        while true; do
+          STATUS=$(gcloud builds describe $BUILD_ID --format='value(status)')
+          echo "Current status: $STATUS"
+          if [[ "$STATUS" == "SUCCESS" ]]; then
+            break
+          fi
+          if [[ "$STATUS" == "FAILURE" || "$STATUS" == "INTERNAL_ERROR" || "$STATUS" == "TIMEOUT" || "$STATUS" == "CANCELLED" ]]; then
+            echo "Build failed with status: $STATUS"
+            exit 1
+          fi
+          sleep 10
+        done
 
     - name: 'Set Service Name'
       id: set-service-name
