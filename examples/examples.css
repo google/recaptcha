@@ -32,6 +32,20 @@ main {
   margin: 1rem;
 }
 
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+:focus-visible {
+  outline: 2px solid #222244;
+  outline-offset: 2px;
+}
+
 .hidden {
   display: none;
 }

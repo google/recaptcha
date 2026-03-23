@@ -113,7 +113,7 @@ if ('' === $siteKey || '' === $secret) {
     ?>
     <p>This example is sending the <kbd>Content-Security-Policy</kbd> header. Look at the source and inspect the network tab for this request to see what's happening. The reCAPTCHA v3 API is being called here, however you can use the same approach for the v2 API calls as well.</p>
     <p><strong>NOTE:</strong>This is a sample implementation, the score returned here is not a reflection on your Google account or type of traffic. In production, refer to the distribution of scores shown in <a href="https://www.google.com/recaptcha/admin" target="_blank">your admin interface</a> and adjust your own threshold accordingly. <strong>Do not raise issues regarding the score you see here.</strong></p>
-    <ol id="recaptcha-steps">
+    <ol id="recaptcha-steps" aria-live="polite">
         <li class="step0">reCAPTCHA script loading</li>
         <li class="step1 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo $siteKey; ?>', {action: '<?php echo $pageAction; ?>'})'</pre></li>
         <li class="step2 hidden">Received token from reCAPTCHA service, sending to our backend with:
