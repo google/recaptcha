@@ -68,11 +68,17 @@ jobs:
         no_traffic: ${{ github.event_name == 'pull_request' }}
         tag: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || 'live' }}
 
-    - name: 'Update firebase.json with Tag'
+
+    - name: 'Setup Firebase Site and Config for PR'
       if: github.event_name == 'pull_request'
       run: |
+        npm install -g firebase-tools
+        SITE_ID="${{ env.PROJECT_ID }}-pr-${{ github.event.number }}"
         TAG="pr-${{ github.event.number }}"
-        sed -i "s/\"serviceId\": \"recaptcha-examples\"/\"serviceId\": \"recaptcha-examples\", \"tag\": \"$TAG\"/" firebase.json
+        # Create the site (ignore error if it already exists)
+        firebase hosting:sites:create $SITE_ID --project ${{ env.PROJECT_ID }} || true
+        # Update firebase.json to deploy to the PR site and route to the specific PR tag
+        jq ".hosting.site = \"$SITE_ID\" | .hosting.rewrites[0].run.tag = \"$TAG\" | del(.hosting.rewrites[0].run.pinTag)" firebase.json > firebase.tmp.json && mv firebase.tmp.json firebase.json
 
     - name: 'Deploy to Firebase Hosting'
       uses: FirebaseExtended/action-hosting-deploy@v0
@@ -80,7 +86,7 @@ jobs:
         repoToken: '${{ secrets.GITHUB_TOKEN }}'
         firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RECAPTCHA_DEMO_PHP }}'
         projectId: ${{ env.PROJECT_ID }}
-        channelId: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || 'live' }}
+        channelId: 'live'
 
   cleanup:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
