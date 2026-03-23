@@ -51,20 +51,11 @@ jobs:
           sleep 10
         done
 
-    - name: 'Set Service Name'
-      id: set-service-name
-      run: |
-        if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-          echo "name=recaptcha-examples-pr-${{ github.event.number }}" >> $GITHUB_OUTPUT
-        else
-          echo "name=${{ env.SERVICE_NAME }}" >> $GITHUB_OUTPUT
-        fi
-
     - name: 'Deploy to Cloud Run'
-      id: deploy
+      id: deploy-cloud-run
       uses: 'google-github-actions/deploy-cloudrun@v1'
       with:
-        service: '${{ steps.set-service-name.outputs.name }}'
+        service: '${{ env.SERVICE_NAME }}'
         image: 'gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}'
         region: '${{ env.REGION }}'
         env_vars: |
@@ -73,6 +64,15 @@ jobs:
           RECAPTCHA_V3_SITE_KEY=${{ secrets.RECAPTCHA_V3_SITE_KEY }}
           RECAPTCHA_V3_SECRET_KEY=${{ secrets.RECAPTCHA_V3_SECRET_KEY }}
         flags: '--allow-unauthenticated'
+        # For PRs, we want to route to the new revision without affecting prod traffic
+        no_traffic: ${{ github.event_name == 'pull_request' }}
+        tag: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || 'live' }}
+
+    - name: 'Update firebase.json with Tag'
+      if: github.event_name == 'pull_request'
+      run: |
+        TAG="pr-${{ github.event.number }}"
+        sed -i "s/\"serviceId\": \"recaptcha-examples\"/\"serviceId\": \"recaptcha-examples\", \"tag\": \"$TAG\"/" firebase.json
 
     - name: 'Deploy to Firebase Hosting'
       uses: FirebaseExtended/action-hosting-deploy@v0
@@ -94,6 +94,7 @@ jobs:
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v1'
 
-    - name: 'Delete PR Preview Service'
+    - name: 'Delete PR Tag from Cloud Run'
       run: |
-        gcloud run services delete recaptcha-examples-pr-${{ github.event.number }} --region ${{ env.REGION }} --quiet
+        # We don't delete the service, just remove the tag or ignore
+        gcloud run services update ${{ env.SERVICE_NAME }} --remove-tags pr-${{ github.event.number }} --region ${{ env.REGION }} || true
