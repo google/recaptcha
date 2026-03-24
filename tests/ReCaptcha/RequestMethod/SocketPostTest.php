@@ -58,6 +58,7 @@ class SocketPostGlobalState
     public static array $fgetsResponses = [];
     public static int $feofCount = 0;
     public static bool $fcloseCalled = false;
+    public static bool $streamSetTimeoutSuccess = true;
 }
 
 /**
@@ -105,7 +106,7 @@ function feof(\stdClass $handle): bool
  */
 function stream_set_timeout(\stdClass $handle, int $seconds, int $microseconds = 0): bool
 {
-    return true;
+    return SocketPostGlobalState::$streamSetTimeoutSuccess;
 }
 
 /**
@@ -134,6 +135,7 @@ class SocketPostTest extends TestCase
         SocketPostGlobalState::$fwriteData = '';
         SocketPostGlobalState::$fgetsResponses = [];
         SocketPostGlobalState::$fcloseCalled = false;
+        SocketPostGlobalState::$streamSetTimeoutSuccess = true;
     }
 
     public function testSubmit(): void
@@ -153,6 +155,15 @@ class SocketPostTest extends TestCase
         $this->assertStringContainsString('response=response', SocketPostGlobalState::$fwriteData);
         $this->assertEquals('RESPONSEBODY', $response);
         $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
+    }
+
+    public function testStreamTimeoutFailureReturnsError(): void
+    {
+        SocketPostGlobalState::$streamSetTimeoutSuccess = false;
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
 
     public function testUrlFailureReturnsError(): void
