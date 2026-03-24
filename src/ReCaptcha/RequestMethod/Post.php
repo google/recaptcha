@@ -77,10 +77,6 @@ class Post implements RequestMethod
                 'content' => $params->toQueryString(),
                 'timeout' => 60,
             ],
-            'ssl' => [
-                // Force the peer to validate (not needed in 5.6.0+, but still works)
-                'verify_peer' => true,
-            ],
         ];
         $context = stream_context_create($options);
         $response = file_get_contents($this->siteVerifyUrl, false, $context);
