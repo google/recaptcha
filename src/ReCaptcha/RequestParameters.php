@@ -44,41 +44,33 @@ class RequestParameters
 {
     /**
      * The shared key between your site and reCAPTCHA.
-     *
-     * @var string
      */
-    private $secret;
+    private string $secret;
 
     /**
      * The user response token provided by reCAPTCHA, verifying the user on your site.
-     *
-     * @var string
      */
-    private $response;
+    private string $response;
 
     /**
      * Remote user's IP address.
-     *
-     * @var string
      */
-    private $remoteIp;
+    private ?string $remoteIp;
 
     /**
      * Client version.
-     *
-     * @var string
      */
-    private $version;
+    private ?string $version;
 
     /**
      * Initialise parameters.
      *
-     * @param string $secret   site secret
-     * @param string $response value from g-captcha-response form field
-     * @param string $remoteIp user's IP address
-     * @param string $version  version of this client library
+     * @param string      $secret   site secret
+     * @param string      $response value from g-captcha-response form field
+     * @param null|string $remoteIp user's IP address
+     * @param null|string $version  version of this client library
      */
-    public function __construct($secret, $response, $remoteIp = null, $version = null)
+    public function __construct(string $secret, string $response, ?string $remoteIp = null, ?string $version = null)
     {
         $this->secret = $secret;
         $this->response = $response;
@@ -89,9 +81,9 @@ class RequestParameters
     /**
      * Array representation.
      *
-     * @return array array formatted parameters
+     * @return array<string, string> array formatted parameters
      */
-    public function toArray()
+    public function toArray(): array
     {
         $params = ['secret' => $this->secret, 'response' => $this->response];
 
@@ -111,7 +103,7 @@ class RequestParameters
      *
      * @return string query string formatted parameters
      */
-    public function toQueryString()
+    public function toQueryString(): string
     {
         return http_build_query($this->toArray(), '', '&');
     }

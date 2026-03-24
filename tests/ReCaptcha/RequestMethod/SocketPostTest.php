@@ -46,26 +46,24 @@ use ReCaptcha\RequestParameters;
  */
 class SocketPostGlobalState
 {
-    public static $fsockopenHostname;
-    public static $fsockopenErrno = 0;
-    public static $fsockopenErrstr = '';
-    public static $fsockopenSuccess = true;
-    public static $fwriteData = '';
-    public static $fgetsResponses = [];
-    public static $feofCount = 0;
-    public static $fcloseCalled = false;
+    public static ?string $fsockopenHostname = null;
+    public static int $fsockopenErrno = 0;
+    public static string $fsockopenErrstr = '';
+    public static bool $fsockopenSuccess = true;
+    public static string $fwriteData = '';
+
+    /**
+     * @var array<int, false|string>
+     */
+    public static array $fgetsResponses = [];
+    public static int $feofCount = 0;
+    public static bool $fcloseCalled = false;
 }
 
 /**
  * Mock fsockopen in the ReCaptcha\RequestMethod namespace.
- *
- * @param mixed      $hostname
- * @param mixed      $port
- * @param mixed      $errno
- * @param mixed      $errstr
- * @param null|mixed $timeout
  */
-function fsockopen($hostname, $port = -1, &$errno = 0, &$errstr = '', $timeout = null)
+function fsockopen(string $hostname, int $port = -1, int &$errno = 0, string &$errstr = '', ?float $timeout = null): false|\stdClass
 {
     SocketPostGlobalState::$fsockopenHostname = $hostname;
     $errno = SocketPostGlobalState::$fsockopenErrno;
@@ -76,12 +74,8 @@ function fsockopen($hostname, $port = -1, &$errno = 0, &$errstr = '', $timeout =
 
 /**
  * Mock fwrite in the ReCaptcha\RequestMethod namespace.
- *
- * @param mixed      $handle
- * @param mixed      $string
- * @param null|mixed $length
  */
-function fwrite($handle, $string, $length = null)
+function fwrite(\stdClass $handle, string $string, ?int $length = null): int
 {
     SocketPostGlobalState::$fwriteData .= $string;
 
@@ -90,21 +84,18 @@ function fwrite($handle, $string, $length = null)
 
 /**
  * Mock fgets in the ReCaptcha\RequestMethod namespace.
- *
- * @param mixed      $handle
- * @param null|mixed $length
  */
-function fgets($handle, $length = null)
+function fgets(\stdClass $handle, ?int $length = null): false|string
 {
-    return array_shift(SocketPostGlobalState::$fgetsResponses);
+    $response = array_shift(SocketPostGlobalState::$fgetsResponses);
+
+    return null === $response ? false : $response;
 }
 
 /**
  * Mock feof in the ReCaptcha\RequestMethod namespace.
- *
- * @param mixed $handle
  */
-function feof($handle)
+function feof(\stdClass $handle): bool
 {
     return empty(SocketPostGlobalState::$fgetsResponses);
 }
@@ -123,12 +114,12 @@ function stream_set_timeout($handle, $seconds, $microseconds = 0)
 
 /**
  * Mock fclose in the ReCaptcha\RequestMethod namespace.
- *
- * @param mixed $handle
  */
-function fclose($handle)
+function fclose(\stdClass $handle): bool
 {
     SocketPostGlobalState::$fcloseCalled = true;
+
+    return true;
 }
 
 /**
@@ -149,7 +140,7 @@ class SocketPostTest extends TestCase
         SocketPostGlobalState::$fcloseCalled = false;
     }
 
-    public function testSubmit()
+    public function testSubmit(): void
     {
         SocketPostGlobalState::$fgetsResponses = [
             "HTTP/1.0 200 OK\r\n",
@@ -168,7 +159,45 @@ class SocketPostTest extends TestCase
         $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
     }
 
-    public function testConnectionFailureReturnsError()
+    public function testUrlFailureReturnsError(): void
+    {
+        $sp = new SocketPost('invalid_url');
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
+    }
+
+    public function testSubmitWithFgetsFailure(): void
+    {
+        SocketPostGlobalState::$fgetsResponses = [
+            "HTTP/1.0 200 OK\r\n",
+            false,
+            "Content-Type: application/json\r\n",
+            "\r\n",
+            'RESPONSEBODY',
+        ];
+
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('RESPONSEBODY', $response);
+        $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
+    }
+
+    public function testMalformedResponseReturnsError(): void
+    {
+        SocketPostGlobalState::$fgetsResponses = [
+            "HTTP/1.0 200 OK\r\n",
+            "Content-Type: application/json\r\n",
+        ];
+
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
+    }
+
+    public function testConnectionFailureReturnsError(): void
     {
         SocketPostGlobalState::$fsockopenSuccess = false;
         $sp = new SocketPost();
@@ -177,7 +206,7 @@ class SocketPostTest extends TestCase
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
 
-    public function testBadResponseReturnsError()
+    public function testBadResponseReturnsError(): void
     {
         SocketPostGlobalState::$fgetsResponses = [
             "HTTP/1.0 500 Internal Server Error\r\n",

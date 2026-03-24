@@ -47,7 +47,8 @@ $siteKey = '';
 $secret = '';
 
 // Copy the config.php.dist file to config.php and update it with your keys to run the examples
-if ('' == $siteKey && is_readable(__DIR__.'/config.php')) {
+if (is_readable(__DIR__.'/config.php')) {
+    /** @var array{'v2-standard': array{site: string, secret: string}} $config */
     $config = include __DIR__.'/config.php';
     $siteKey = $config['v2-standard']['site'];
     $secret = $config['v2-standard']['secret'];
@@ -91,6 +92,7 @@ if ('' === $siteKey || '' === $secret) {
         <?php
     // If the form submission includes the "g-captcha-response" field
     // Create an instance of the service using your secret
+    /** @var string $secret */
     $recaptcha = new ReCaptcha($secret);
 
     // If file_get_contents() is locked down on your PHP installation to disallow
@@ -98,8 +100,17 @@ if ('' === $siteKey || '' === $secret) {
     // This makes use of fsockopen() instead.
     //  $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\SocketPost());
     // Make the call to verify the response and also pass the user's IP address
-    $resp = $recaptcha->setExpectedHostname($_SERVER['SERVER_NAME'])
-        ->verify($_POST[ReCaptcha::RESPONSE_KEY], $_SERVER['REMOTE_ADDR'])
+    /** @var string $serverName */
+    $serverName = $_SERVER['SERVER_NAME'];
+
+    /** @var string $responseKey */
+    $responseKey = $_POST[ReCaptcha::RESPONSE_KEY];
+
+    /** @var null|string $remoteAddr */
+    $remoteAddr = $_SERVER['REMOTE_ADDR'];
+
+    $resp = $recaptcha->setExpectedHostname($serverName)
+        ->verify($responseKey, $remoteAddr)
     ;
 
     if ($resp->isSuccess()) {
@@ -139,7 +150,7 @@ if ('' === $siteKey || '' === $secret) {
     var onloadCallback = function() {
         var captchaContainer = document.querySelector('.g-recaptcha');
         grecaptcha.render(captchaContainer, {
-          'sitekey' : '<?php echo $siteKey; ?>'
+          'sitekey' : '<?php echo (string) $siteKey; ?>'
         });
         document.querySelector('button[type="submit"]').disabled = false;
     };

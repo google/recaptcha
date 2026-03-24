@@ -135,23 +135,19 @@ class ReCaptcha
 
     /**
      * Shared secret for the site.
-     *
-     * @var string
      */
-    private $secret;
+    private string $secret;
 
     /**
      * Method used to communicate with service. Defaults to POST request.
-     *
-     * @var RequestMethod
      */
-    private $requestMethod;
+    private RequestMethod $requestMethod;
 
-    private $hostname;
-    private $apkPackageName;
-    private $action;
-    private $threshold;
-    private $timeoutSeconds;
+    private string $hostname;
+    private string $apkPackageName;
+    private string $action;
+    private float $threshold;
+    private int $timeoutSeconds;
 
     /**
      * Create a configured instance to use the reCAPTCHA service.
@@ -161,14 +157,10 @@ class ReCaptcha
      *
      * @throws \RuntimeException if $secret is invalid
      */
-    public function __construct($secret, ?RequestMethod $requestMethod = null)
+    public function __construct(string $secret, ?RequestMethod $requestMethod = null)
     {
         if (empty($secret)) {
             throw new \RuntimeException('No secret provided');
-        }
-
-        if (!is_string($secret)) {
-            throw new \RuntimeException('The provided secret must be a string');
         }
 
         $this->secret = $secret;
@@ -186,12 +178,12 @@ class ReCaptcha
      * Calls the reCAPTCHA siteverify API to verify whether the user passes
      * CAPTCHA test and additionally runs any specified additional checks.
      *
-     * @param string $response the user response token provided by reCAPTCHA, verifying the user on your site
-     * @param string $remoteIp the end user's IP address
+     * @param string      $response the user response token provided by reCAPTCHA, verifying the user on your site
+     * @param null|string $remoteIp the end user's IP address
      *
      * @return Response response from the service
      */
-    public function verify($response, $remoteIp = null)
+    public function verify(string $response, ?string $remoteIp = null): Response
     {
         // Discard empty solution submissions
         if (empty($response)) {
@@ -250,7 +242,7 @@ class ReCaptcha
      *
      * @return ReCaptcha Current instance for fluent interface
      */
-    public function setExpectedHostname($hostname)
+    public function setExpectedHostname(string $hostname): self
     {
         $this->hostname = $hostname;
 
@@ -264,7 +256,7 @@ class ReCaptcha
      *
      * @return ReCaptcha Current instance for fluent interface
      */
-    public function setExpectedApkPackageName($apkPackageName)
+    public function setExpectedApkPackageName(string $apkPackageName): self
     {
         $this->apkPackageName = $apkPackageName;
 
@@ -279,7 +271,7 @@ class ReCaptcha
      *
      * @return ReCaptcha Current instance for fluent interface
      */
-    public function setExpectedAction($action)
+    public function setExpectedAction(string $action): self
     {
         $this->action = $action;
 
@@ -294,9 +286,9 @@ class ReCaptcha
      *
      * @return ReCaptcha Current instance for fluent interface
      */
-    public function setScoreThreshold($threshold)
+    public function setScoreThreshold(float $threshold): self
     {
-        $this->threshold = floatval($threshold);
+        $this->threshold = $threshold;
 
         return $this;
     }
@@ -308,7 +300,7 @@ class ReCaptcha
      *
      * @return ReCaptcha Current instance for fluent interface
      */
-    public function setChallengeTimeout($timeoutSeconds)
+    public function setChallengeTimeout(int $timeoutSeconds): self
     {
         $this->timeoutSeconds = $timeoutSeconds;
 

@@ -46,17 +46,20 @@ use ReCaptcha\RequestParameters;
  */
 class CurlPostGlobalState
 {
-    public static $initUrl;
-    public static $setoptArrayOptions;
-    public static $execResponse = 'RESPONSEBODY';
+    public static ?string $initUrl = null;
+
+    /**
+     * @var null|array<int, mixed>
+     */
+    public static ?array $setoptArrayOptions = null;
+
+    public static bool|string $execResponse = 'RESPONSEBODY';
 }
 
 /**
  * Mock curl_init in the ReCaptcha\RequestMethod namespace.
- *
- * @param null|mixed $url
  */
-function curl_init($url = null)
+function curl_init(?string $url = null): \stdClass
 {
     CurlPostGlobalState::$initUrl = $url;
 
@@ -66,9 +69,9 @@ function curl_init($url = null)
 /**
  * Mock curl_setopt_array in the ReCaptcha\RequestMethod namespace.
  *
- * @param mixed $ch
+ * @param array<int, mixed> $options
  */
-function curl_setopt_array($ch, array $options)
+function curl_setopt_array(\stdClass $ch, array $options): bool
 {
     CurlPostGlobalState::$setoptArrayOptions = $options;
 
@@ -77,10 +80,8 @@ function curl_setopt_array($ch, array $options)
 
 /**
  * Mock curl_exec in the ReCaptcha\RequestMethod namespace.
- *
- * @param mixed $ch
  */
-function curl_exec($ch)
+function curl_exec(\stdClass $ch): bool|string
 {
     return CurlPostGlobalState::$execResponse;
 }
@@ -99,17 +100,20 @@ class CurlPostTest extends TestCase
         CurlPostGlobalState::$execResponse = 'RESPONSEBODY';
     }
 
-    public function testSubmit()
+    public function testSubmit(): void
     {
         $pc = new CurlPost();
         $response = $pc->submit(new RequestParameters('secret', 'response'));
 
         $this->assertEquals(ReCaptcha::SITE_VERIFY_URL, CurlPostGlobalState::$initUrl);
-        $this->assertTrue(CurlPostGlobalState::$setoptArrayOptions[CURLOPT_POST]);
+
+        /** @var array<int, mixed> $options */
+        $options = CurlPostGlobalState::$setoptArrayOptions;
+        $this->assertTrue($options[CURLOPT_POST]);
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
-    public function testOverrideSiteVerifyUrl()
+    public function testOverrideSiteVerifyUrl(): void
     {
         $url = 'OVERRIDE';
         $pc = new CurlPost($url);
@@ -119,7 +123,7 @@ class CurlPostTest extends TestCase
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
-    public function testConnectionFailureReturnsError()
+    public function testConnectionFailureReturnsError(): void
     {
         CurlPostGlobalState::$execResponse = false;
         $pc = new CurlPost();
