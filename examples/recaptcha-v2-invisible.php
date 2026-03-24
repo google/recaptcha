@@ -127,8 +127,12 @@ if ('' === $siteKey || '' === $secret) {
     <form action="/recaptcha-v2-invisible.php" method="post" id="demo-form">
         <fieldset>
             <legend>An example form</legend>
-            <label class="form-field">Example input A: <input type="text" name="ex-a" value="foo"></label>
-            <label class="form-field">Example input B: <input type="text" name="ex-b" value="bar"></label>
+            <div class="form-field">
+                <label for="ex-a">Example input A: </label><input type="text" id="ex-a" name="ex-a" value="foo">
+            </div>
+            <div class="form-field">
+                <label for="ex-b">Example input B: </label><input type="text" id="ex-b" name="ex-b" value="bar">
+            </div>
             <button class="g-recaptcha form-field" data-sitekey="<?php echo $siteKey; ?>" data-callback='onSubmit'>Submit <span aria-hidden="true">↦</span></button>
         </fieldset>
     </form>

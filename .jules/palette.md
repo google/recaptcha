@@ -1,0 +1,3 @@
+## 2024-05-24 - Explicit form labels and disabled button context
+**Learning:** Implicit label association (`<label>Input <input></label>`) is technically valid HTML but explicit association (`<label for="id">Input</label> <input id="id">`) provides significantly better support across various screen readers and assistive technologies. Also, disabled buttons without an explanation can be confusing for screen reader users and sighted users alike; temporarily adding a `title` attribute or an `aria-describedby` that gets removed upon enabling improves clarity.
+**Action:** Always prefer explicit `for` and `id` bindings on forms, and ensure any initially disabled submit buttons explain why they are disabled (e.g. waiting for a script/captcha to load).

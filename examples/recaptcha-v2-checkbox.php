@@ -127,8 +127,12 @@ if ('' === $siteKey || '' === $secret) {
     <form action="/recaptcha-v2-checkbox.php" method="post">
         <fieldset>
             <legend>An example form</legend>
-            <label class="form-field">Example input A: <input type="text" name="ex-a" value="foo"></label>
-            <label class="form-field">Example input B: <input type="text" name="ex-b" value="bar"></label>
+            <div class="form-field">
+                <label for="ex-a">Example input A: </label><input type="text" id="ex-a" name="ex-a" value="foo">
+            </div>
+            <div class="form-field">
+                <label for="ex-b">Example input B: </label><input type="text" id="ex-b" name="ex-b" value="bar">
+            </div>
             <!-- Default behaviour looks for the g-recaptcha class with a data-sitekey attribute -->
             <div class="g-recaptcha form-field" data-sitekey="<?php echo $siteKey; ?>"></div>
             <!-- Submitting before the widget loads will result in a missing-input-response error so you need to verify server side -->

@@ -127,12 +127,16 @@ if ('' === $siteKey || '' === $secret) {
     <form action="/recaptcha-v2-checkbox-explicit.php" method="post">
         <fieldset>
             <legend>An example form</legend>
-            <label class="form-field">Example input A: <input type="text" name="ex-a" value="foo"></label>
-            <label class="form-field">Example input B: <input type="text" name="ex-b" value="bar"></label>
+            <div class="form-field">
+                <label for="ex-a">Example input A: </label><input type="text" id="ex-a" name="ex-a" value="foo">
+            </div>
+            <div class="form-field">
+                <label for="ex-b">Example input B: </label><input type="text" id="ex-b" name="ex-b" value="bar">
+            </div>
             <!-- Set up a container to render the widget -->
             <div class="g-recaptcha form-field"></div>
             <!-- Disable the button by default, will enable when the widget loads -->
-            <button class="form-field" type="submit" disabled>Submit <span aria-hidden="true">↦</span></button>
+            <button class="form-field" type="submit" disabled title="Waiting for reCAPTCHA to load">Submit <span aria-hidden="true">↦</span></button>
         </fieldset>
     </form>
     <script type="text/javascript">
@@ -141,7 +145,9 @@ if ('' === $siteKey || '' === $secret) {
         grecaptcha.render(captchaContainer, {
           'sitekey' : '<?php echo $siteKey; ?>'
         });
-        document.querySelector('button[type="submit"]').disabled = false;
+        var submitButton = document.querySelector('button[type="submit"]');
+        submitButton.disabled = false;
+        submitButton.removeAttribute('title');
     };
     </script>
     <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=<?php echo $lang; ?>&onload=onloadCallback&render=explicit" async defer></script>
