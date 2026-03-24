@@ -110,6 +110,18 @@ function feof($handle)
 }
 
 /**
+ * Mock stream_set_timeout in the ReCaptcha\RequestMethod namespace.
+ *
+ * @param mixed $handle
+ * @param mixed $seconds
+ * @param mixed $microseconds
+ */
+function stream_set_timeout($handle, $seconds, $microseconds = 0)
+{
+    return true;
+}
+
+/**
  * Mock fclose in the ReCaptcha\RequestMethod namespace.
  *
  * @param mixed $handle

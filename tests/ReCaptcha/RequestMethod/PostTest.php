@@ -121,6 +121,9 @@ class PostTest extends TestCase
 
         $this->assertArrayHasKey('header', $options['http']);
         $this->assertStringContainsStringIgnoringCase('Content-type: application/x-www-form-urlencoded', $options['http']['header']);
+
+        $this->assertArrayHasKey('timeout', $options['http']);
+        $this->assertEquals(60, $options['http']['timeout']);
     }
 
     public function sslContextOptionsCallback(array $args)
@@ -129,9 +132,9 @@ class PostTest extends TestCase
         $this->assertCommonOptions($args);
 
         $options = stream_context_get_options($args[2]);
-        $this->assertArrayHasKey('http', $options);
-        $this->assertArrayHasKey('verify_peer', $options['http']);
-        $this->assertTrue($options['http']['verify_peer']);
+        $this->assertArrayHasKey('ssl', $options);
+        $this->assertArrayHasKey('verify_peer', $options['ssl']);
+        $this->assertTrue($options['ssl']['verify_peer']);
     }
 
     protected function assertCommonOptions(array $args)
