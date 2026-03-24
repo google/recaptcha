@@ -75,20 +75,33 @@ class ReCaptchaTest extends TestCase
     }
 
     #[DataProvider('invalidSecretProvider')]
-    public function testExceptionThrownOnInvalidSecret($invalid)
+    public function testExceptionThrownOnInvalidSecretType($invalid)
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\TypeError::class);
         $rc = new ReCaptcha($invalid);
     }
 
     public static function invalidSecretProvider()
     {
         return [
-            [''],
             [null],
-            [0],
             [new \stdClass()],
             [[]],
+        ];
+    }
+
+    #[DataProvider('emptySecretProvider')]
+    public function testExceptionThrownOnEmptySecret($emptySecret)
+    {
+        $this->expectException(\RuntimeException::class);
+        $rc = new ReCaptcha($emptySecret);
+    }
+
+    public static function emptySecretProvider()
+    {
+        return [
+            [''],
+            [0],
         ];
     }
 
