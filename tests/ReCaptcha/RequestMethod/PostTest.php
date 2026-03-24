@@ -133,11 +133,14 @@ class PostTest extends TestCase
         $this->assertArrayHasKey('content', $httpOptions);
         $this->assertEquals($this->parameters->toQueryString(), $httpOptions['content']);
 
-        $this->assertArrayHasKey('header', $options['http']);
-        $this->assertStringContainsStringIgnoringCase('Content-type: application/x-www-form-urlencoded', $options['http']['header']);
+        $this->assertArrayHasKey('header', $httpOptions);
 
-        $this->assertArrayHasKey('timeout', $options['http']);
-        $this->assertEquals(60, $options['http']['timeout']);
+        /** @var string $header */
+        $header = $httpOptions['header'];
+        $this->assertStringContainsStringIgnoringCase('Content-type: application/x-www-form-urlencoded', $header);
+
+        $this->assertArrayHasKey('timeout', $httpOptions);
+        $this->assertEquals(60, $httpOptions['timeout']);
     }
 
     /**
@@ -148,10 +151,15 @@ class PostTest extends TestCase
         ++$this->runcount;
         $this->assertCommonOptions($args);
 
-        $options = stream_context_get_options($args[2]);
+        /** @var resource $context */
+        $context = $args[2];
+        $options = stream_context_get_options($context);
         $this->assertArrayHasKey('ssl', $options);
-        $this->assertArrayHasKey('verify_peer', $options['ssl']);
-        $this->assertTrue($options['ssl']['verify_peer']);
+
+        /** @var array<string, mixed> $sslOptions */
+        $sslOptions = $options['ssl'];
+        $this->assertArrayHasKey('verify_peer', $sslOptions);
+        $this->assertTrue($sslOptions['verify_peer']);
     }
 
     /**

@@ -102,12 +102,8 @@ function feof(\stdClass $handle): bool
 
 /**
  * Mock stream_set_timeout in the ReCaptcha\RequestMethod namespace.
- *
- * @param mixed $handle
- * @param mixed $seconds
- * @param mixed $microseconds
  */
-function stream_set_timeout($handle, $seconds, $microseconds = 0)
+function stream_set_timeout(\stdClass $handle, int $seconds, int $microseconds = 0): bool
 {
     return true;
 }
