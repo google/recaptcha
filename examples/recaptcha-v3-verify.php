@@ -47,7 +47,8 @@ $siteKey = '';
 $secret = '';
 
 // Copy the config.php.dist file to config.php and update it with your keys to run the examples
-if ('' == $siteKey && is_readable(__DIR__.'/config.php')) {
+if (is_readable(__DIR__.'/config.php')) {
+    /** @var array{v3: array{site: string, secret: string}} $config */
     $config = include __DIR__.'/config.php';
     $siteKey = $config['v3']['site'];
     $secret = $config['v3']['secret'];
@@ -55,11 +56,25 @@ if ('' == $siteKey && is_readable(__DIR__.'/config.php')) {
 
 // Effectively we're providing an API endpoint here that will accept the token, verify it, and return the action / score to the page
 // In production, always sanitize and validate the input you retrieve from the request.
+/** @var string $secret */
 $recaptcha = new ReCaptcha($secret);
-$resp = $recaptcha->setExpectedHostname($_SERVER['SERVER_NAME'])
-    ->setExpectedAction($_GET['action'])
+
+/** @var string $serverName */
+$serverName = $_SERVER['SERVER_NAME'];
+
+/** @var string $action */
+$action = $_GET['action'];
+
+/** @var string $token */
+$token = $_GET['token'];
+
+/** @var null|string $remoteAddr */
+$remoteAddr = $_SERVER['REMOTE_ADDR'];
+
+$resp = $recaptcha->setExpectedHostname($serverName)
+    ->setExpectedAction($action)
     ->setScoreThreshold(0.5)
-    ->verify($_GET['token'], $_SERVER['REMOTE_ADDR'])
+    ->verify($token, $remoteAddr)
 ;
 header('Content-type:application/json');
 echo json_encode($resp->toArray());

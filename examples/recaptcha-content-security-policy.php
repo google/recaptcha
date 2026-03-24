@@ -70,7 +70,8 @@ $siteKey = '';
 $secret = '';
 
 // Copy the config.php.dist file to config.php and update it with your keys to run the examples
-if ('' == $siteKey && is_readable(__DIR__.'/config.php')) {
+if (is_readable(__DIR__.'/config.php')) {
+    /** @var array{v3: array{site: string, secret: string}} $config */
     $config = include __DIR__.'/config.php';
     $siteKey = $config['v3']['site'];
     $secret = $config['v3']['secret'];
@@ -115,7 +116,7 @@ if ('' === $siteKey || '' === $secret) {
     <p><strong>NOTE:</strong>This is a sample implementation, the score returned here is not a reflection on your Google account or type of traffic. In production, refer to the distribution of scores shown in <a href="https://www.google.com/recaptcha/admin" target="_blank">your admin interface</a> and adjust your own threshold accordingly. <strong>Do not raise issues regarding the score you see here.</strong></p>
     <ol id="recaptcha-steps">
         <li class="step0">reCAPTCHA script loading</li>
-        <li class="step1 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo $siteKey; ?>', {action: '<?php echo $pageAction; ?>'})'</pre></li>
+        <li class="step1 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo (string) $siteKey; ?>', {action: '<?php echo $pageAction; ?>'})'</pre></li>
         <li class="step2 hidden">Received token from reCAPTCHA service, sending to our backend with:
         <pre class="token">fetch('/recaptcha-v3-verify.php?token=abc123</pre></li>
         <li class="step3 hidden">Received response from our backend: <pre class="response">{"json": "from-backend"}</pre></li>
@@ -128,7 +129,7 @@ if ('' === $siteKey || '' === $secret) {
         const steps = document.getElementById('recaptcha-steps');
         grecaptcha.ready(function() {
             document.querySelector('.step1').classList.remove('hidden');
-            grecaptcha.execute('<?php echo $siteKey; ?>', {action: '<?php echo $pageAction; ?>'}).then(function(token) {
+            grecaptcha.execute('<?php echo (string) $siteKey; ?>', {action: '<?php echo $pageAction; ?>'}).then(function(token) {
                 document.querySelector('.token').innerHTML = 'fetch(\'/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token=\'' + token;
                 document.querySelector('.step2').classList.remove('hidden');
 
@@ -143,7 +144,7 @@ if ('' === $siteKey || '' === $secret) {
     };
     </script>
     <!-- Add the nonce value for the reCAPTCHA library to its script tag -->
-    <script async defer src="https://www.google.com/recaptcha/api.js?render=<?php echo $siteKey; ?>&onload=onloadCallback" nonce="<?php echo $nonce; ?>"></script>
+    <script async defer src="https://www.google.com/recaptcha/api.js?render=<?php echo (string) $siteKey; ?>&onload=onloadCallback" nonce="<?php echo $nonce; ?>"></script>
 
 <?php
 }?>

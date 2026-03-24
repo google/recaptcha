@@ -37,7 +37,13 @@
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
     if ('http' === $_SERVER['HTTP_X_FORWARDED_PROTO']) {
         header('HTTP/1.1 301 Moved Permanently');
-        header('Location: https://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']);
+
+        /** @var string $serverName */
+        $serverName = $_SERVER['SERVER_NAME'];
+
+        /** @var string $requestUri */
+        $requestUri = $_SERVER['REQUEST_URI'];
+        header('Location: https://'.$serverName.$requestUri);
 
         exit(0);
     }

@@ -48,17 +48,15 @@ class Post implements RequestMethod
 {
     /**
      * URL for reCAPTCHA siteverify API.
-     *
-     * @var string
      */
-    private $siteVerifyUrl;
+    private string $siteVerifyUrl;
 
     /**
      * Only needed if you want to override the defaults.
      *
-     * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @param null|string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct($siteVerifyUrl = null)
+    public function __construct(?string $siteVerifyUrl = null)
     {
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
     }
@@ -70,7 +68,7 @@ class Post implements RequestMethod
      *
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params)
+    public function submit(RequestParameters $params): string
     {
         $options = [
             'http' => [
@@ -84,7 +82,7 @@ class Post implements RequestMethod
         $context = stream_context_create($options);
         $response = file_get_contents($this->siteVerifyUrl, false, $context);
 
-        if (false !== $response) {
+        if (is_string($response)) {
             return $response;
         }
 

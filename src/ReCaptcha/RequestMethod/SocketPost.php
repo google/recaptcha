@@ -48,14 +48,14 @@ use ReCaptcha\RequestParameters;
  */
 class SocketPost implements RequestMethod
 {
-    private $siteVerifyUrl;
+    private string $siteVerifyUrl;
 
     /**
      * Only needed if you want to override the defaults.
      *
-     * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @param null|string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct($siteVerifyUrl = null)
+    public function __construct(?string $siteVerifyUrl = null)
     {
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
     }
@@ -67,11 +67,15 @@ class SocketPost implements RequestMethod
      *
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params)
+    public function submit(RequestParameters $params): string
     {
         $errno = 0;
         $errstr = '';
         $urlParsed = parse_url($this->siteVerifyUrl);
+
+        if (false === $urlParsed || !isset($urlParsed['host']) || !isset($urlParsed['path'])) {
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+        }
 
         $handle = fsockopen('ssl://'.$urlParsed['host'], 443, $errno, $errstr, 30);
 
@@ -92,7 +96,10 @@ class SocketPost implements RequestMethod
         $response = '';
 
         while (!feof($handle)) {
-            $response .= fgets($handle, 4096);
+            $line = fgets($handle, 4096);
+            if (is_string($line)) {
+                $response .= $line;
+            }
         }
 
         fclose($handle);
@@ -102,6 +109,10 @@ class SocketPost implements RequestMethod
         }
 
         $parts = preg_split("#\n\\s*\n#Uis", $response);
+
+        if (!is_array($parts) || !isset($parts[1])) {
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
+        }
 
         return $parts[1];
     }

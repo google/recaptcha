@@ -47,7 +47,8 @@ $siteKey = '';
 $secret = '';
 
 // Copy the config.php.dist file to config.php and update it with your keys to run the examples
-if ('' == $siteKey && is_readable(__DIR__.'/config.php')) {
+if (is_readable(__DIR__.'/config.php')) {
+    /** @var array{'v2-invisible': array{site: string, secret: string}} $config */
     $config = include __DIR__.'/config.php';
     $siteKey = $config['v2-invisible']['site'];
     $secret = $config['v2-invisible']['secret'];
@@ -91,6 +92,7 @@ if ('' === $siteKey || '' === $secret) {
         <?php
     // If the form submission includes the "g-captcha-response" field
     // Create an instance of the service using your secret
+    /** @var string $secret */
     $recaptcha = new ReCaptcha($secret);
 
     // If file_get_contents() is locked down on your PHP installation to disallow
@@ -99,8 +101,17 @@ if ('' === $siteKey || '' === $secret) {
     //  $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\SocketPost());
 
     // Make the call to verify the response and also pass the user's IP address
-    $resp = $recaptcha->setExpectedHostname($_SERVER['SERVER_NAME'])
-        ->verify($_POST[ReCaptcha::RESPONSE_KEY], $_SERVER['REMOTE_ADDR'])
+    /** @var string $serverName */
+    $serverName = $_SERVER['SERVER_NAME'];
+
+    /** @var string $responseKey */
+    $responseKey = $_POST[ReCaptcha::RESPONSE_KEY];
+
+    /** @var null|string $remoteAddr */
+    $remoteAddr = $_SERVER['REMOTE_ADDR'];
+
+    $resp = $recaptcha->setExpectedHostname($serverName)
+        ->verify($responseKey, $remoteAddr)
     ;
     if ($resp->isSuccess()) {
         // If the response is a success, that's it!
@@ -129,7 +140,7 @@ if ('' === $siteKey || '' === $secret) {
             <legend>An example form</legend>
             <label class="form-field">Example input A: <input type="text" name="ex-a" value="foo"></label>
             <label class="form-field">Example input B: <input type="text" name="ex-b" value="bar"></label>
-            <button class="g-recaptcha form-field" data-sitekey="<?php echo $siteKey; ?>" data-callback='onSubmit'>Submit <span aria-hidden="true">↦</span></button>
+            <button class="g-recaptcha form-field" data-sitekey="<?php echo (string) $siteKey; ?>" data-callback='onSubmit'>Submit <span aria-hidden="true">↦</span></button>
         </fieldset>
     </form>
     <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=<?php echo $lang; ?>" async defer></script>

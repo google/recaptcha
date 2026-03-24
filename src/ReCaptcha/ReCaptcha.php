@@ -135,15 +135,11 @@ class ReCaptcha
 
     /**
      * Shared secret for the site.
-     *
-     * @var string
      */
     private string $secret;
 
     /**
      * Method used to communicate with service. Defaults to POST request.
-     *
-     * @var RequestMethod
      */
     private RequestMethod $requestMethod;
 
@@ -182,8 +178,8 @@ class ReCaptcha
      * Calls the reCAPTCHA siteverify API to verify whether the user passes
      * CAPTCHA test and additionally runs any specified additional checks.
      *
-     * @param string $response the user response token provided by reCAPTCHA, verifying the user on your site
-     * @param string|null $remoteIp the end user's IP address
+     * @param string      $response the user response token provided by reCAPTCHA, verifying the user on your site
+     * @param null|string $remoteIp the end user's IP address
      *
      * @return Response response from the service
      */

@@ -47,29 +47,42 @@ use PHPUnit\Framework\TestCase;
  */
 class RequestParametersTest extends TestCase
 {
+    /**
+     * @param array<string, string> $expectedArray
+     */
     #[DataProvider('provideValidData')]
-    public function testToArray($secret, $response, $remoteIp, $version, $expectedArray, $expectedQuery)
+    public function testToArray(string $secret, string $response, ?string $remoteIp, ?string $version, array $expectedArray, string $expectedQuery): void
     {
         $params = new RequestParameters($secret, $response, $remoteIp, $version);
         $this->assertEquals($params->toArray(), $expectedArray);
     }
 
+    /**
+     * @param array<string, string> $expectedArray
+     */
     #[DataProvider('provideValidData')]
-    public function testToQueryString($secret, $response, $remoteIp, $version, $expectedArray, $expectedQuery)
+    public function testToQueryString(string $secret, string $response, ?string $remoteIp, ?string $version, array $expectedArray, string $expectedQuery): void
     {
         $params = new RequestParameters($secret, $response, $remoteIp, $version);
         $this->assertEquals($params->toQueryString(), $expectedQuery);
     }
 
-    public static function provideValidData()
+    /**
+     * @return array<int, array{0: string, 1: string, 2: null|string, 3: null|string, 4: array<string, string>, 5: string}>
+     */
+    public static function provideValidData(): array
     {
         return [
-            ['SECRET', 'RESPONSE', 'REMOTEIP', 'VERSION',
+            [
+                'SECRET', 'RESPONSE', 'REMOTEIP', 'VERSION',
                 ['secret' => 'SECRET', 'response' => 'RESPONSE', 'remoteip' => 'REMOTEIP', 'version' => 'VERSION'],
-                'secret=SECRET&response=RESPONSE&remoteip=REMOTEIP&version=VERSION'],
-            ['SECRET', 'RESPONSE', null, null,
+                'secret=SECRET&response=RESPONSE&remoteip=REMOTEIP&version=VERSION',
+            ],
+            [
+                'SECRET', 'RESPONSE', null, null,
                 ['secret' => 'SECRET', 'response' => 'RESPONSE'],
-                'secret=SECRET&response=RESPONSE'],
+                'secret=SECRET&response=RESPONSE',
+            ],
         ];
     }
 }

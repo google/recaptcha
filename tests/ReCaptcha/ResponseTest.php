@@ -47,20 +47,26 @@ use PHPUnit\Framework\TestCase;
  */
 class ResponseTest extends TestCase
 {
+    /**
+     * @param array<string> $errorCodes
+     */
     #[DataProvider('provideJson')]
-    public function testFromJson($json, $success, $errorCodes, $hostname, $challengeTs, $apkPackageName, $score, $action)
+    public function testFromJson(string $json, bool $success, array $errorCodes, ?string $hostname, ?string $challengeTs, ?string $apkPackageName, ?float $score, ?string $action): void
     {
         $response = Response::fromJson($json);
         $this->assertEquals($success, $response->isSuccess());
         $this->assertEquals($errorCodes, $response->getErrorCodes());
-        $this->assertEquals($hostname, $response->getHostname());
-        $this->assertEquals($challengeTs, $response->getChallengeTs());
-        $this->assertEquals($apkPackageName, $response->getApkPackageName());
+        $this->assertEquals($hostname ?? '', $response->getHostname());
+        $this->assertEquals($challengeTs ?? '', $response->getChallengeTs());
+        $this->assertEquals($apkPackageName ?? '', $response->getApkPackageName());
         $this->assertEquals($score, $response->getScore());
-        $this->assertEquals($action, $response->getAction());
+        $this->assertEquals($action ?? '', $response->getAction());
     }
 
-    public static function provideJson()
+    /**
+     * @return array<int, array{0: string, 1: bool, 2: array<string>, 3: null|string, 4: null|string, 5: null|string, 6: null|float, 7: null|string}>
+     */
+    public static function provideJson(): array
     {
         return [
             [
@@ -106,7 +112,7 @@ class ResponseTest extends TestCase
         ];
     }
 
-    public function testIsSuccess()
+    public function testIsSuccess(): void
     {
         $response = new Response(true);
         $this->assertTrue($response->isSuccess());
@@ -115,17 +121,17 @@ class ResponseTest extends TestCase
         $this->assertFalse($response->isSuccess());
 
         $response = new Response(true, [], 'example.com');
-        $this->assertEquals('example.com', $response->getHostName());
+        $this->assertEquals('example.com', $response->getHostname());
     }
 
-    public function testGetErrorCodes()
+    public function testGetErrorCodes(): void
     {
         $errorCodes = ['test'];
         $response = new Response(true, $errorCodes);
         $this->assertEquals($errorCodes, $response->getErrorCodes());
     }
 
-    public function testGetHostname()
+    public function testGetHostname(): void
     {
         $hostname = 'google.com';
         $errorCodes = [];
@@ -133,38 +139,37 @@ class ResponseTest extends TestCase
         $this->assertEquals($hostname, $response->getHostname());
     }
 
-    public function testGetChallengeTs()
+    public function testGetChallengeTs(): void
     {
         $timestamp = 'timestamp';
-        $errorCodes = [];
         $response = new Response(true, [], 'hostname', $timestamp);
         $this->assertEquals($timestamp, $response->getChallengeTs());
     }
 
-    public function TestGetApkPackageName()
+    public function testGetApkPackageName(): void
     {
         $apk = 'apk';
         $response = new Response(true, [], 'hostname', 'timestamp', 'apk');
         $this->assertEquals($apk, $response->getApkPackageName());
     }
 
-    public function testGetScore()
+    public function testGetScore(): void
     {
         $score = 0.5;
         $response = new Response(true, [], 'hostname', 'timestamp', 'apk', $score);
         $this->assertEquals($score, $response->getScore());
     }
 
-    public function testGetAction()
+    public function testGetAction(): void
     {
         $action = 'homepage';
-        $response = new Response(true, [], 'hostname', 'timestamp', 'apk', '0.5', 'homepage');
+        $response = new Response(true, [], 'hostname', 'timestamp', 'apk', 0.5, 'homepage');
         $this->assertEquals($action, $response->getAction());
     }
 
-    public function testToArray()
+    public function testToArray(): void
     {
-        $response = new Response(true, [], 'hostname', 'timestamp', 'apk', '0.5', 'homepage');
+        $response = new Response(true, [], 'hostname', 'timestamp', 'apk', 0.5, 'homepage');
         $expected = [
             'success' => true,
             'error-codes' => [],
