@@ -109,6 +109,10 @@ class ResponseTest extends TestCase
                 'BAD JSON',
                 false, [ReCaptcha::E_INVALID_JSON], null, null, null, null, null,
             ],
+            [
+                '{"success": false, "error-codes": "bad-request"}',
+                false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
+            ],
         ];
     }
 
