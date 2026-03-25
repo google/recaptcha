@@ -166,6 +166,17 @@ class SocketPostTest extends TestCase
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
 
+    public function testConnectionFailureWithValidHandleReturnsError(): void
+    {
+        SocketPostGlobalState::$fsockopenSuccess = true;
+        SocketPostGlobalState::$fsockopenErrno = 1;
+        SocketPostGlobalState::$fsockopenErrstr = 'Connection refused';
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
+    }
+
     public function testUrlFailureReturnsError(): void
     {
         $sp = new SocketPost('invalid_url');
