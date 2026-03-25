@@ -248,6 +248,14 @@ class ReCaptchaTest extends TestCase
         $this->assertEquals([ReCaptcha::E_CHALLENGE_TIMEOUT], $response->getErrorCodes());
     }
 
+    public function testVerifyWithInvalidChallengeTsAndTimeout(): void
+    {
+        $method = $this->getMockRequestMethod('{"success": true, "challenge_ts": "invalid-timestamp"}');
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->setChallengeTimeout(60)->verify('response');
+        $this->assertTrue($response->isSuccess());
+    }
+
     public function testVerifyMergesErrors(): void
     {
         $method = $this->getMockRequestMethod('{"success": false, "error-codes": ["initial-error"], "score": "0.1"}');
