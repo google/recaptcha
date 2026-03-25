@@ -84,21 +84,23 @@ function fwrite(\stdClass $handle, string $string, ?int $length = null): int
 }
 
 /**
- * Mock fgets in the ReCaptcha\RequestMethod namespace.
+ * Mock stream_get_contents in the ReCaptcha\RequestMethod namespace.
  */
-function fgets(\stdClass $handle, ?int $length = null): false|string
+function stream_get_contents(\stdClass $handle, ?int $length = null, int $offset = -1): false|string
 {
-    $response = array_shift(SocketPostGlobalState::$fgetsResponses);
+    if (empty(SocketPostGlobalState::$fgetsResponses)) {
+        return false;
+    }
 
-    return null === $response ? false : $response;
-}
+    $result = '';
+    foreach (SocketPostGlobalState::$fgetsResponses as $response) {
+        if (false !== $response) {
+            $result .= $response;
+        }
+    }
+    SocketPostGlobalState::$fgetsResponses = [];
 
-/**
- * Mock feof in the ReCaptcha\RequestMethod namespace.
- */
-function feof(\stdClass $handle): bool
-{
-    return empty(SocketPostGlobalState::$fgetsResponses);
+    return $result;
 }
 
 /**

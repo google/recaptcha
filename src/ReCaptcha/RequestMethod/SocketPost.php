@@ -97,16 +97,13 @@ class SocketPost implements RequestMethod
         $request .= $content."\r\n\r\n";
 
         fwrite($handle, $request);
-        $response = '';
-
-        while (!feof($handle)) {
-            $line = fgets($handle, 4096);
-            if (is_string($line)) {
-                $response .= $line;
-            }
-        }
+        $response = stream_get_contents($handle);
 
         fclose($handle);
+
+        if (!is_string($response)) {
+            $response = '';
+        }
 
         if (0 !== strpos($response, 'HTTP/1.0 200 OK')) {
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
