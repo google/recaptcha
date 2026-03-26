@@ -258,6 +258,22 @@ class ReCaptchaTest extends TestCase
         $this->assertTrue($response->isSuccess());
     }
 
+    public function testVerifyWithEmptyChallengeTsAndTimeout(): void
+    {
+        $method = $this->getMockRequestMethod('{"success": true, "challenge_ts": ""}');
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->setChallengeTimeout(60)->verify('response');
+        $this->assertTrue($response->isSuccess());
+    }
+
+    public function testVerifyWithMissingChallengeTsAndTimeout(): void
+    {
+        $method = $this->getMockRequestMethod('{"success": true}');
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->setChallengeTimeout(60)->verify('response');
+        $this->assertTrue($response->isSuccess());
+    }
+
     public function testVerifyMergesErrors(): void
     {
         $method = $this->getMockRequestMethod('{"success": false, "error-codes": ["initial-error"], "score": "0.1"}');
