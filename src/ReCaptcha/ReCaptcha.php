@@ -197,28 +197,24 @@ class ReCaptcha
         $initialResponse = Response::fromJson($rawResponse);
         $validationErrors = [];
 
-        if (isset($this->hostname) && 0 !== strcasecmp($this->hostname, $initialResponse->getHostname())) {
+        if ($this->isInvalidHostname($initialResponse)) {
             $validationErrors[] = self::E_HOSTNAME_MISMATCH;
         }
 
-        if (isset($this->apkPackageName) && 0 !== strcasecmp($this->apkPackageName, $initialResponse->getApkPackageName())) {
+        if ($this->isInvalidApkPackageName($initialResponse)) {
             $validationErrors[] = self::E_APK_PACKAGE_NAME_MISMATCH;
         }
 
-        if (isset($this->action) && 0 !== strcasecmp($this->action, $initialResponse->getAction())) {
+        if ($this->isInvalidAction($initialResponse)) {
             $validationErrors[] = self::E_ACTION_MISMATCH;
         }
 
-        if (isset($this->threshold) && $this->threshold > $initialResponse->getScore()) {
+        if ($this->isInvalidThreshold($initialResponse)) {
             $validationErrors[] = self::E_SCORE_THRESHOLD_NOT_MET;
         }
 
-        if (isset($this->timeoutSeconds)) {
-            $challengeTs = strtotime($initialResponse->getChallengeTs());
-
-            if ($challengeTs > 0 && time() - $challengeTs > $this->timeoutSeconds) {
-                $validationErrors[] = self::E_CHALLENGE_TIMEOUT;
-            }
+        if ($this->isInvalidTimeout($initialResponse)) {
+            $validationErrors[] = self::E_CHALLENGE_TIMEOUT;
         }
 
         if (empty($validationErrors)) {
@@ -307,5 +303,36 @@ class ReCaptcha
         $this->timeoutSeconds = $timeoutSeconds;
 
         return $this;
+    }
+
+    private function isInvalidHostname(Response $initialResponse): bool
+    {
+        return isset($this->hostname) && 0 !== strcasecmp($this->hostname, $initialResponse->getHostname());
+    }
+
+    private function isInvalidApkPackageName(Response $initialResponse): bool
+    {
+        return isset($this->apkPackageName) && 0 !== strcasecmp($this->apkPackageName, $initialResponse->getApkPackageName());
+    }
+
+    private function isInvalidAction(Response $initialResponse): bool
+    {
+        return isset($this->action) && 0 !== strcasecmp($this->action, $initialResponse->getAction());
+    }
+
+    private function isInvalidThreshold(Response $initialResponse): bool
+    {
+        return isset($this->threshold) && $this->threshold > $initialResponse->getScore();
+    }
+
+    private function isInvalidTimeout(Response $initialResponse): bool
+    {
+        if (!isset($this->timeoutSeconds)) {
+            return false;
+        }
+
+        $challengeTs = strtotime($initialResponse->getChallengeTs());
+
+        return $challengeTs > 0 && time() - $challengeTs > $this->timeoutSeconds;
     }
 }
