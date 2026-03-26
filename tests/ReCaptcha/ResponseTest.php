@@ -112,7 +112,15 @@ class ResponseTest extends TestCase
                 false, [ReCaptcha::E_INVALID_JSON], null, null, null, null, null,
             ],
             [
-                '{"success": false, "error-codes": "bad-request"}',
+                '{"success": false, "error-codes": "invalid-input-secret"}',
+                false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
+            ],
+            [
+                '{"success": false, "error-codes": null}',
+                false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
+            ],
+            [
+                '{"success": false, "error-codes": 123}',
                 false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
             ],
         ];
