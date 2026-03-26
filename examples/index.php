@@ -71,6 +71,9 @@ require __DIR__.'/appengine-https.php';
     <li><h2>General</h2>
     <ul>
       <li><a href="/recaptcha-content-security-policy.php">Content Security Policy</a></li>
+      <li><a href="/recaptcha-request-curl.php">Explicit <kbd>CurlPost</kbd></a></li>
+      <li><a href="/recaptcha-request-post.php">Explicit <kbd>Post</kbd></a></li>
+      <li><a href="/recaptcha-request-socket.php">Explicit <kbd>SocketPost</kbd></a></li>
     </ul>
     </li>
   </ul>
