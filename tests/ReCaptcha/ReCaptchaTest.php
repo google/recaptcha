@@ -178,6 +178,19 @@ class ReCaptchaTest extends TestCase
         $this->assertEquals([ReCaptcha::E_HOSTNAME_MISMATCH], $response->getErrorCodes());
     }
 
+    public function testVerifyHostnameMatchCaseInsensitive(): void
+    {
+        $method = $this->getMockRequestMethod('{"success": true, "hostname": "host.name"}');
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->setExpectedHostname('HOST.NAME')->verify('response');
+        $this->assertTrue($response->isSuccess());
+
+        $method = $this->getMockRequestMethod('{"success": true, "hostname": "HOST.NAME"}');
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->setExpectedHostname('host.name')->verify('response');
+        $this->assertTrue($response->isSuccess());
+    }
+
     public function testVerifyApkPackageNameMatch(): void
     {
         $method = $this->getMockRequestMethod('{"success": true, "apk_package_name": "apk.name"}');
