@@ -98,6 +98,18 @@ class Response
     }
 
     /**
+     * Build an error response JSON string with the specified error code.
+     *
+     * @param string $errorCode The error code to return
+     *
+     * @return string The JSON string
+     */
+    public static function errorJson(string $errorCode): string
+    {
+        return json_encode(['success' => false, 'error-codes' => [$errorCode]]);
+    }
+
+    /**
      * Build the response from the expected JSON returned by the service.
      */
     public static function fromJson(string $json): Response

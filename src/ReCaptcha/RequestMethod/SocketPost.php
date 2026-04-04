@@ -42,6 +42,7 @@ namespace ReCaptcha\RequestMethod;
 use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestMethod;
 use ReCaptcha\RequestParameters;
+use ReCaptcha\Response;
 
 /**
  * Sends a POST request to the reCAPTCHA service, but makes use of fsockopen()
@@ -76,17 +77,17 @@ class SocketPost implements RequestMethod
         $urlParsed = parse_url($this->siteVerifyUrl);
 
         if (false === $urlParsed || !isset($urlParsed['host']) || !isset($urlParsed['path'])) {
-            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+            return Response::errorJson(ReCaptcha::E_CONNECTION_FAILED);
         }
 
         $handle = fsockopen('ssl://'.$urlParsed['host'], 443, $errno, $errstr, 30);
 
         if (false === $handle || 0 !== $errno || '' !== $errstr) {
-            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+            return Response::errorJson(ReCaptcha::E_CONNECTION_FAILED);
         }
 
         if (false === stream_set_timeout($handle, 60)) {
-            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+            return Response::errorJson(ReCaptcha::E_CONNECTION_FAILED);
         }
 
         $content = $params->toQueryString();
@@ -108,13 +109,13 @@ class SocketPost implements RequestMethod
         }
 
         if (1 !== preg_match('#^HTTP/1\.[01] 200 OK#', $response)) {
-            return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
+            return Response::errorJson(ReCaptcha::E_BAD_RESPONSE);
         }
 
         $parts = preg_split("#\n\\s*\n#Uis", $response);
 
         if (!is_array($parts) || !isset($parts[1])) {
-            return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
+            return Response::errorJson(ReCaptcha::E_BAD_RESPONSE);
         }
 
         return $parts[1];
