@@ -84,7 +84,7 @@ if ('' === $siteKey || '' === $secret) {
     // In production, *always* sanitise and validate your input'
     ?>
         <h2><kbd>POST</kbd> data</h2>
-        <kbd><pre><?php var_export($_POST); ?></pre></kbd>
+        <kbd><pre><?php echo htmlspecialchars(print_r($_POST, true), ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?></pre></kbd>
         <?php
     // If the form submission includes the "g-captcha-response" field
     // Create an instance of the service using your secret
@@ -113,7 +113,7 @@ if ('' === $siteKey || '' === $secret) {
         // If the response is a success, that's it!
         ?>
         <h2>Success!</h2>
-        <kbd><pre><?php var_export($resp); ?></pre></kbd>
+        <kbd><pre><?php echo htmlspecialchars(print_r($resp, true), ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?></pre></kbd>
         <p>That's it. Everything is working. Go integrate this into your real project.</p>
         <p><a href="/recaptcha-v2-checkbox.php"><span aria-hidden="true">⤴️</span> Try again</a></p>
         <?php
@@ -121,7 +121,7 @@ if ('' === $siteKey || '' === $secret) {
         // If it's not successful, then one or more error codes will be returned.
         ?>
         <h2>Something went wrong</h2>
-        <kbd><pre><?php var_export($resp); ?></pre></kbd>
+        <kbd><pre><?php echo htmlspecialchars(print_r($resp, true), ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?></pre></kbd>
         <p>Check the error code reference at <kbd><a href="https://developers.google.com/recaptcha/docs/verify#error-code-reference">https://developers.google.com/recaptcha/docs/verify#error-code-reference</a></kbd>.
         <p><strong>Note:</strong> Error code <kbd>missing-input-response</kbd> may mean the user just didn't complete the reCAPTCHA.</p>
         <p><a href="/recaptcha-v2-checkbox.php"><span aria-hidden="true">⤴️</span> Try again</a></p>
