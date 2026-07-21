@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -137,41 +135,64 @@ class ReCaptcha
 
     /**
      * Shared secret for the site.
+     *
+     * @var string
      */
-    private string $secret;
+    private $secret;
 
     /**
      * Method used to communicate with service. Defaults to POST request.
+     *
+     * @var RequestMethod
      */
-    private RequestMethod $requestMethod;
+    private $requestMethod;
 
-    private ?string $hostname = null;
-    private ?string $apkPackageName = null;
-    private ?string $action = null;
-    private ?float $threshold = null;
-    private ?int $timeoutSeconds = null;
+    /**
+     * @var null|string
+     */
+    private $hostname;
+
+    /**
+     * @var null|string
+     */
+    private $apkPackageName;
+
+    /**
+     * @var null|string
+     */
+    private $action;
+
+    /**
+     * @var null|float
+     */
+    private $threshold;
+
+    /**
+     * @var null|int
+     */
+    private $timeoutSeconds;
 
     /**
      * Create a configured instance to use the reCAPTCHA service.
      *
-     * @param mixed         $secret        the shared key between your site and reCAPTCHA
+     * @param mixed         $secret        the shared key between your site and reCAPTCHA; must be a non-empty string
      * @param RequestMethod $requestMethod method used to send the request. Defaults to POST.
      *
      * @throws \RuntimeException if $secret is invalid
      */
     public function __construct($secret, ?RequestMethod $requestMethod = null)
     {
+        if (empty($secret)) {
+            throw new \RuntimeException('No secret provided');
+        }
+
         if (!is_string($secret)) {
             throw new \RuntimeException('The provided secret must be a string');
         }
 
-        if ('' === $secret) {
-            throw new \RuntimeException('No secret provided');
-        }
-
         $this->secret = $secret;
 
-        if (null !== $requestMethod) {
+        if (!is_null($requestMethod)) {
             $this->requestMethod = $requestMethod;
         } elseif (function_exists('curl_version')) {
             $this->requestMethod = new RequestMethod\CurlPost();
@@ -184,25 +205,21 @@ class ReCaptcha
      * Calls the reCAPTCHA siteverify API to verify whether the user passes
      * CAPTCHA test and additionally runs any specified additional checks.
      *
-     * @param string      $response the user response token provided by reCAPTCHA, verifying the user on your site
-     * @param null|string $remoteIp the end user's IP address
+     * @param string $response the user response token provided by reCAPTCHA, verifying the user on your site
+     * @param string $remoteIp the end user's IP address
      *
      * @return Response response from the service
      */
     public function verify($response, $remoteIp = null)
     {
-        $response = self::stringValue($response);
-
         // Discard empty solution submissions
-        if ('' === $response) {
+        if (empty($response)) {
             return new Response(false, [self::E_MISSING_INPUT_RESPONSE]);
         }
 
-        $remoteIp = self::nullableStringValue($remoteIp);
         $params = new RequestParameters($this->secret, $response, $remoteIp, self::VERSION);
         $rawResponse = $this->requestMethod->submit($params);
 
-        // @phpstan-ignore function.alreadyNarrowedType
         if (!is_string($rawResponse)) {
             return new Response(false, [self::E_BAD_RESPONSE]);
         }
@@ -210,23 +227,23 @@ class ReCaptcha
         $initialResponse = Response::fromJson($rawResponse);
         $validationErrors = [];
 
-        if (null !== $this->hostname && 0 !== strcasecmp($this->hostname, $initialResponse->getHostname())) {
+        if (isset($this->hostname) && 0 !== strcasecmp($this->hostname, $initialResponse->getHostname())) {
             $validationErrors[] = self::E_HOSTNAME_MISMATCH;
         }
 
-        if (null !== $this->apkPackageName && 0 !== strcasecmp($this->apkPackageName, $initialResponse->getApkPackageName())) {
+        if (isset($this->apkPackageName) && 0 !== strcasecmp($this->apkPackageName, $initialResponse->getApkPackageName())) {
             $validationErrors[] = self::E_APK_PACKAGE_NAME_MISMATCH;
         }
 
-        if (null !== $this->action && 0 !== strcasecmp($this->action, $initialResponse->getAction())) {
+        if (isset($this->action) && 0 !== strcasecmp($this->action, $initialResponse->getAction())) {
             $validationErrors[] = self::E_ACTION_MISMATCH;
         }
 
-        if (null !== $this->threshold && $this->threshold > $initialResponse->getScore()) {
+        if (isset($this->threshold) && $this->threshold > $initialResponse->getScore()) {
             $validationErrors[] = self::E_SCORE_THRESHOLD_NOT_MET;
         }
 
-        if (null !== $this->timeoutSeconds) {
+        if (isset($this->timeoutSeconds)) {
             $challengeTs = strtotime($initialResponse->getChallengeTs());
 
             if ($challengeTs > 0 && time() - $challengeTs > $this->timeoutSeconds) {
@@ -259,7 +276,7 @@ class ReCaptcha
      */
     public function setExpectedHostname($hostname)
     {
-        $this->hostname = self::stringValue($hostname);
+        $this->hostname = $hostname;
 
         return $this;
     }
@@ -273,7 +290,7 @@ class ReCaptcha
      */
     public function setExpectedApkPackageName($apkPackageName)
     {
-        $this->apkPackageName = self::stringValue($apkPackageName);
+        $this->apkPackageName = $apkPackageName;
 
         return $this;
     }
@@ -288,7 +305,7 @@ class ReCaptcha
      */
     public function setExpectedAction($action)
     {
-        $this->action = self::stringValue($action);
+        $this->action = $action;
 
         return $this;
     }
@@ -297,13 +314,13 @@ class ReCaptcha
      * Provide a threshold to meet or exceed in verify()
      * Threshold should be a float between 0 and 1 which will be tested as response >= threshold.
      *
-     * @param float $threshold Expected threshold
+     * @param float|int|string $threshold Expected threshold
      *
      * @return ReCaptcha Current instance for fluent interface
      */
     public function setScoreThreshold($threshold)
     {
-        $this->threshold = self::floatValue($threshold);
+        $this->threshold = floatval($threshold);
 
         return $this;
     }
@@ -317,44 +334,8 @@ class ReCaptcha
      */
     public function setChallengeTimeout($timeoutSeconds)
     {
-        $this->timeoutSeconds = self::intValue($timeoutSeconds);
+        $this->timeoutSeconds = $timeoutSeconds;
 
         return $this;
-    }
-
-    private static function nullableStringValue(mixed $value): ?string
-    {
-        if (is_null($value)) {
-            return null;
-        }
-
-        return self::stringValue($value);
-    }
-
-    private static function stringValue(mixed $value): string
-    {
-        if (is_scalar($value) || $value instanceof \Stringable) {
-            return (string) $value;
-        }
-
-        return '';
-    }
-
-    private static function floatValue(mixed $value): float
-    {
-        if (is_null($value) || is_scalar($value)) {
-            return floatval($value);
-        }
-
-        return 0.0;
-    }
-
-    private static function intValue(mixed $value): int
-    {
-        if (is_null($value) || is_scalar($value)) {
-            return intval($value);
-        }
-
-        return 0;
     }
 }

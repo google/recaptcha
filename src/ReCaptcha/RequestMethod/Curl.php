@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -45,9 +43,11 @@ namespace ReCaptcha\RequestMethod;
 class Curl
 {
     /**
-     * @param null|string $url
+     * @see http://php.net/curl_init
      *
-     * @return mixed
+     * @param string $url
+     *
+     * @return \CurlHandle|false cURL handle
      */
     public function init($url = null)
     {
@@ -55,35 +55,40 @@ class Curl
     }
 
     /**
-     * @param mixed             $ch
-     * @param array<int, mixed> $options
+     * @see http://php.net/curl_setopt_array
+     *
+     * @param \CurlHandle|false        $ch
+     * @param array<int|string, mixed> $options
      *
      * @return bool
      */
     public function setoptArray($ch, array $options)
     {
-        // @phpstan-ignore argument.type
+        if (false === $ch) {
+            return false;
+        }
+
         return curl_setopt_array($ch, $options);
     }
 
     /**
-     * @param mixed $ch
+     * @see http://php.net/curl_exec
      *
-     * @return mixed
+     * Note: always used with CURLOPT_RETURNTRANSFER set, so this returns the
+     * response body as a string on success, or false on failure.
+     *
+     * @param \CurlHandle|false $ch
+     *
+     * @return false|string
      */
     public function exec($ch)
     {
-        // @phpstan-ignore argument.type
-        return curl_exec($ch);
-    }
+        if (false === $ch) {
+            return false;
+        }
 
-    /**
-     * @param mixed $ch
-     *
-     * @phpstan-return void
-     */
-    public function close($ch)
-    {
-        // PHP automatically closes curl resources on destruction.
+        $result = curl_exec($ch);
+
+        return true === $result ? false : $result;
     }
 }

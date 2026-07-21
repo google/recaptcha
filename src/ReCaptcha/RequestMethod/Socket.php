@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -40,116 +38,112 @@ declare(strict_types=1);
 namespace ReCaptcha\RequestMethod;
 
 /**
- * Convenience wrapper around native socket and stream functions to allow mocking.
+ * Convenience wrapper around native socket and file functions to allow for
+ * mocking.
  */
 class Socket
 {
     /**
-     * @var mixed
+     * @var null|false|resource
      */
     private $handle;
 
     /**
-     * @param string     $hostname
-     * @param int        $port
-     * @param int        $errno
-     * @param string     $errstr
-     * @param null|float $timeout
+     * fsockopen.
      *
-     * @return mixed
+     * @see http://php.net/fsockopen
+     *
+     * @param string $hostname
+     * @param int    $port
+     * @param int    $errno
+     * @param string $errstr
+     * @param float  $timeout
+     *
+     * @return false|resource
      */
     public function fsockopen($hostname, $port = -1, &$errno = 0, &$errstr = '', $timeout = null)
     {
-        $timeout = is_null($timeout) ? floatval(ini_get('default_socket_timeout')) : floatval($timeout);
-        $this->handle = fsockopen($hostname, $port, $errno, $errstr, $timeout);
+        $resolvedTimeout = is_null($timeout) ? (float) ini_get('default_socket_timeout') : $timeout;
+        $this->handle = fsockopen($hostname, $port, $errno, $errstr, $resolvedTimeout);
 
         if (false != $this->handle && 0 === $errno && '' === $errstr) {
             return $this->handle;
-        }
-
-        if (false !== $this->handle) {
-            $this->fclose();
         }
 
         return false;
     }
 
     /**
-     * @param int $seconds
-     * @param int $microseconds
+     * fwrite.
      *
-     * @return bool
-     */
-    public function streamSetTimeout($seconds, $microseconds = 0)
-    {
-        // @phpstan-ignore argument.type
-        return stream_set_timeout($this->handle, $seconds, $microseconds);
-    }
-
-    /**
-     * @param string   $string
-     * @param null|int $length
+     * @see http://php.net/fwrite
      *
-     * @return false|int
+     * @param string $string
+     * @param int    $length
+     *
+     * @return bool|int
      */
     public function fwrite($string, $length = null)
     {
-        $string = (string) $string;
-
-        // @phpstan-ignore argument.type
-        return fwrite($this->handle, $string, is_null($length) ? strlen($string) : $length);
-    }
-
-    /**
-     * @param null|int $length
-     * @param int      $offset
-     *
-     * @return false|string
-     */
-    public function streamGetContents($length = null, $offset = -1)
-    {
-        if (is_null($length)) {
-            // @phpstan-ignore argument.type
-            return stream_get_contents($this->handle);
+        if (false === $this->handle || null === $this->handle) {
+            return false;
         }
 
-        // @phpstan-ignore argument.type
-        return stream_get_contents($this->handle, $length, $offset);
+        $resolvedLength = is_null($length) ? strlen($string) : max(0, $length);
+
+        return fwrite($this->handle, $string, $resolvedLength);
     }
 
     /**
-     * @param null|int $length
+     * fgets.
      *
-     * @return false|string
+     * @see http://php.net/fgets
+     *
+     * @param int $length
+     *
+     * @return string
      */
     public function fgets($length = null)
     {
-        if (is_null($length)) {
-            // @phpstan-ignore argument.type
-            return fgets($this->handle);
+        if (false === $this->handle || null === $this->handle) {
+            return '';
         }
 
-        $length = max(0, intval($length));
+        $resolvedLength = is_null($length) ? null : max(0, $length);
+        $line = fgets($this->handle, $resolvedLength);
 
-        // @phpstan-ignore argument.type
-        return fgets($this->handle, $length);
+        return false === $line ? '' : $line;
     }
 
     /**
+     * feof.
+     *
+     * @see http://php.net/feof
+     *
      * @return bool
      */
     public function feof()
     {
-        // @phpstan-ignore argument.type
+        if (false === $this->handle || null === $this->handle) {
+            return true;
+        }
+
         return feof($this->handle);
     }
 
     /**
+     * fclose.
+     *
+     * @see http://php.net/fclose
+     *
      * @return bool
      */
     public function fclose()
     {
-        // @phpstan-ignore argument.type
+        if (false === $this->handle || null === $this->handle) {
+            return false;
+        }
+
         return fclose($this->handle);
     }
 }

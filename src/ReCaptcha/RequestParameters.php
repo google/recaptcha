@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -44,28 +42,48 @@ namespace ReCaptcha;
  */
 class RequestParameters
 {
-    private string $secret;
+    /**
+     * The shared key between your site and reCAPTCHA.
+     *
+     * @var string
+     */
+    private $secret;
 
-    private string $response;
+    /**
+     * The user response token provided by reCAPTCHA, verifying the user on your site.
+     *
+     * @var string
+     */
+    private $response;
 
-    private ?string $remoteIp;
+    /**
+     * Remote user's IP address.
+     *
+     * @var null|string
+     */
+    private $remoteIp;
 
-    private ?string $version;
+    /**
+     * Client version.
+     *
+     * @var null|string
+     */
+    private $version;
 
     /**
      * Initialise parameters.
      *
-     * @param string      $secret   site secret
-     * @param string      $response value from g-recaptcha-response form field
-     * @param null|string $remoteIp user's IP address
-     * @param null|string $version  version of this client library
+     * @param string $secret   site secret
+     * @param string $response value from g-captcha-response form field
+     * @param string $remoteIp user's IP address
+     * @param string $version  version of this client library
      */
     public function __construct($secret, $response, $remoteIp = null, $version = null)
     {
-        $this->secret = self::stringValue($secret);
-        $this->response = self::stringValue($response);
-        $this->remoteIp = self::nullableStringValue($remoteIp);
-        $this->version = self::nullableStringValue($version);
+        $this->secret = $secret;
+        $this->response = $response;
+        $this->remoteIp = $remoteIp;
+        $this->version = $version;
     }
 
     /**
@@ -96,23 +114,5 @@ class RequestParameters
     public function toQueryString()
     {
         return http_build_query($this->toArray(), '', '&');
-    }
-
-    private static function nullableStringValue(mixed $value): ?string
-    {
-        if (is_null($value)) {
-            return null;
-        }
-
-        return self::stringValue($value);
-    }
-
-    private static function stringValue(mixed $value): string
-    {
-        if (is_scalar($value) || $value instanceof \Stringable) {
-            return (string) $value;
-        }
-
-        return '';
     }
 }

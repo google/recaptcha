@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -75,23 +73,12 @@ class RequestParametersTest extends TestCase
     public static function provideValidData(): array
     {
         return [
-            [
-                'SECRET', 'RESPONSE', 'REMOTEIP', 'VERSION',
+            ['SECRET', 'RESPONSE', 'REMOTEIP', 'VERSION',
                 ['secret' => 'SECRET', 'response' => 'RESPONSE', 'remoteip' => 'REMOTEIP', 'version' => 'VERSION'],
-                'secret=SECRET&response=RESPONSE&remoteip=REMOTEIP&version=VERSION',
-            ],
-            [
-                'SECRET', 'RESPONSE', null, null,
+                'secret=SECRET&response=RESPONSE&remoteip=REMOTEIP&version=VERSION'],
+            ['SECRET', 'RESPONSE', null, null,
                 ['secret' => 'SECRET', 'response' => 'RESPONSE'],
-                'secret=SECRET&response=RESPONSE',
-            ],
+                'secret=SECRET&response=RESPONSE'],
         ];
-    }
-
-    public function testClassRemainsExtendable(): void
-    {
-        $class = new \ReflectionClass(RequestParameters::class);
-
-        $this->assertFalse($class->isReadOnly());
     }
 }

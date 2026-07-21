@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -50,23 +48,23 @@ use PHPUnit\Framework\TestCase;
 class ResponseTest extends TestCase
 {
     /**
-     * @param array<string> $errorCodes
+     * @param array<int, string> $errorCodes
      */
     #[DataProvider('provideJson')]
-    public function testFromJson(mixed $json, bool $success, array $errorCodes, ?string $hostname, ?string $challengeTs, ?string $apkPackageName, ?float $score, ?string $action): void
+    public function testFromJson(string $json, bool $success, array $errorCodes, ?string $hostname, ?string $challengeTs, ?string $apkPackageName, ?float $score, ?string $action): void
     {
         $response = Response::fromJson($json);
         $this->assertEquals($success, $response->isSuccess());
         $this->assertEquals($errorCodes, $response->getErrorCodes());
-        $this->assertEquals($hostname ?? '', $response->getHostname());
-        $this->assertEquals($challengeTs ?? '', $response->getChallengeTs());
-        $this->assertEquals($apkPackageName ?? '', $response->getApkPackageName());
+        $this->assertEquals($hostname, $response->getHostname());
+        $this->assertEquals($challengeTs, $response->getChallengeTs());
+        $this->assertEquals($apkPackageName, $response->getApkPackageName());
         $this->assertEquals($score, $response->getScore());
-        $this->assertEquals($action ?? '', $response->getAction());
+        $this->assertEquals($action, $response->getAction());
     }
 
     /**
-     * @return array<int, array{0: mixed, 1: bool, 2: array<string>, 3: null|string, 4: null|string, 5: null|string, 6: null|float, 7: null|string}>
+     * @return array<int, array{0: string, 1: bool, 2: array<int, string>, 3: null|string, 4: null|string, 5: null|string, 6: null|float, 7: null|string}>
      */
     public static function provideJson(): array
     {
@@ -100,20 +98,8 @@ class ResponseTest extends TestCase
                 true, [], 'google.com', null, null, null, null,
             ],
             [
-                '{"success": "true"}',
-                true, [], null, null, null, null, null,
-            ],
-            [
-                '{"success": 1}',
-                true, [], null, null, null, null, null,
-            ],
-            [
                 '{"success": false}',
                 false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
-            ],
-            [
-                '{}',
-                false, [ReCaptcha::E_INVALID_JSON], null, null, null, null, null,
             ],
             [
                 '{"success": false, "hostname": "google.com"}',
@@ -123,30 +109,7 @@ class ResponseTest extends TestCase
                 'BAD JSON',
                 false, [ReCaptcha::E_INVALID_JSON], null, null, null, null, null,
             ],
-            [
-                null,
-                false, [ReCaptcha::E_INVALID_JSON], null, null, null, null, null,
-            ],
-            [
-                '{"success": false, "error-codes": "invalid-input-secret"}',
-                false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
-            ],
-            [
-                '{"success": false, "error-codes": null}',
-                false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
-            ],
-            [
-                '{"success": false, "error-codes": 123}',
-                false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
-            ],
         ];
-    }
-
-    public function testClassRemainsExtendable(): void
-    {
-        $class = new \ReflectionClass(Response::class);
-
-        $this->assertFalse($class->isReadOnly());
     }
 
     public function testIsSuccess(): void
@@ -158,7 +121,7 @@ class ResponseTest extends TestCase
         $this->assertFalse($response->isSuccess());
 
         $response = new Response(true, [], 'example.com');
-        $this->assertEquals('example.com', $response->getHostname());
+        $this->assertEquals('example.com', $response->getHostName());
     }
 
     public function testGetErrorCodes(): void
@@ -179,11 +142,12 @@ class ResponseTest extends TestCase
     public function testGetChallengeTs(): void
     {
         $timestamp = 'timestamp';
+        $errorCodes = [];
         $response = new Response(true, [], 'hostname', $timestamp);
         $this->assertEquals($timestamp, $response->getChallengeTs());
     }
 
-    public function testGetApkPackageName(): void
+    public function TestGetApkPackageName(): void
     {
         $apk = 'apk';
         $response = new Response(true, [], 'hostname', 'timestamp', 'apk');

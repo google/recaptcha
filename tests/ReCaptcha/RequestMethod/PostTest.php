@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -54,8 +52,16 @@ class PostTest extends TestCase
      * @var null|callable
      */
     public static $assert;
-    protected RequestParameters $parameters;
-    protected int $runcount = 0;
+
+    /**
+     * @var RequestParameters
+     */
+    protected $parameters;
+
+    /**
+     * @var int
+     */
+    protected $runcount = 0;
 
     public function setUp(): void
     {
@@ -71,6 +77,14 @@ class PostTest extends TestCase
     {
         $req = new Post();
         self::$assert = [$this, 'httpContextOptionsCallback'];
+        $req->submit($this->parameters);
+        $this->assertEquals(1, $this->runcount, 'The assertion was ran');
+    }
+
+    public function testSSLContextOptions(): void
+    {
+        $req = new Post();
+        self::$assert = [$this, 'sslContextOptionsCallback'];
         $req->submit($this->parameters);
         $this->assertEquals(1, $this->runcount, 'The assertion was ran');
     }
@@ -97,101 +111,90 @@ class PostTest extends TestCase
     }
 
     /**
-     * @param array<int, mixed> $args
+     * @param array{0: string, 1: bool, 2: resource} $args
      */
-    public function overrideUrlOptions(array $args): void
+    public function overrideUrlOptions(array $args): bool
     {
         ++$this->runcount;
         $this->assertEquals('https://over.ride/some/path', $args[0]);
+
+        return false;
     }
 
     /**
-     * @param array<int, mixed> $args
+     * @param array{0: string, 1: bool, 2: resource} $args
      */
-    public function httpContextOptionsCallback(array $args): void
+    public function httpContextOptionsCallback(array $args): bool
     {
         ++$this->runcount;
         $this->assertCommonOptions($args);
 
-        /** @var resource $context */
-        $context = $args[2];
-        $options = stream_context_get_options($context);
+        /** @var array<string, array<string, mixed>> $options */
+        $options = stream_context_get_options($args[2]);
         $this->assertArrayHasKey('http', $options);
-        $this->assertArrayHasKey('ssl', $options);
 
-        /** @var array<string, mixed> $httpOptions */
-        $httpOptions = $options['http'];
+        $this->assertArrayHasKey('method', $options['http']);
+        $this->assertEquals('POST', $options['http']['method']);
 
-        /** @var array<string, mixed> $sslOptions */
-        $sslOptions = $options['ssl'];
+        $this->assertArrayHasKey('content', $options['http']);
+        $this->assertEquals($this->parameters->toQueryString(), $options['http']['content']);
 
-        $this->assertArrayHasKey('method', $httpOptions);
-        $this->assertEquals('POST', $httpOptions['method']);
+        $this->assertArrayHasKey('header', $options['http']);
+        $this->assertIsString($options['http']['header']);
+        $this->assertStringContainsStringIgnoringCase('Content-type: application/x-www-form-urlencoded', (string) $options['http']['header']);
 
-        $this->assertArrayHasKey('content', $httpOptions);
-        $this->assertEquals($this->parameters->toQueryString(), $httpOptions['content']);
+        $this->assertArrayHasKey('timeout', $options['http']);
+        $this->assertEquals(60, $options['http']['timeout']);
 
-        $this->assertArrayHasKey('header', $httpOptions);
-
-        /** @var string $header */
-        $header = $httpOptions['header'];
-        $this->assertStringContainsStringIgnoringCase('Content-type: application/x-www-form-urlencoded', $header);
-
-        $this->assertArrayHasKey('timeout', $httpOptions);
-        $this->assertEquals(60, $httpOptions['timeout']);
-
-        $this->assertArrayHasKey('verify_peer', $sslOptions);
-        $this->assertTrue((bool) $sslOptions['verify_peer']);
-        $this->assertArrayHasKey('verify_peer_name', $sslOptions);
-        $this->assertTrue((bool) $sslOptions['verify_peer_name']);
+        return false;
     }
 
     /**
-     * @param array<int, mixed> $args
+     * @param array{0: string, 1: bool, 2: resource} $args
+     */
+    public function sslContextOptionsCallback(array $args): bool
+    {
+        ++$this->runcount;
+        $this->assertCommonOptions($args);
+
+        /** @var array<string, array<string, mixed>> $options */
+        $options = stream_context_get_options($args[2]);
+        $this->assertArrayHasKey('ssl', $options);
+        $this->assertArrayHasKey('verify_peer', $options['ssl']);
+        $this->assertTrue($options['ssl']['verify_peer']);
+        $this->assertArrayHasKey('verify_peer_name', $options['ssl']);
+        $this->assertTrue($options['ssl']['verify_peer_name']);
+
+        return false;
+    }
+
+    /**
+     * @param array{0: string, 1: bool, 2: resource} $args
      */
     protected function assertCommonOptions(array $args): void
     {
         $this->assertCount(3, $args);
-
-        /** @var string $url */
-        $url = $args[0];
-        $this->assertStringStartsWith('https://www.google.com/', $url);
+        $this->assertStringStartsWith('https://www.google.com/', $args[0]);
         $this->assertFalse($args[1]);
         $this->assertTrue(is_resource($args[2]), 'The context options should be a resource');
     }
 }
 
-function file_get_contents(string $filename, bool $use_include_path = false, mixed $context = null, int $offset = 0, ?int $length = null): false|string
+/**
+ * @param mixed ...$args
+ *
+ * @return false|string
+ */
+function file_get_contents(...$args)
 {
-    $args = func_get_args();
     if (PostTest::$assert) {
-        /** @var callable $assert */
-        $assert = PostTest::$assert;
-        $result = call_user_func($assert, $args);
-        if (null === $result) {
-            return '';
-        }
+        $result = call_user_func(PostTest::$assert, $args);
 
-        if (is_string($result)) {
-            return $result;
-        }
-
-        if (false === $result) {
-            return $result;
-        }
-
-        return false;
+        return is_string($result) ? $result : false;
     }
 
     // Since we can't represent maxlen in userland...
-    $result = call_user_func_array('\file_get_contents', $args);
-    if (is_string($result)) {
-        return $result;
-    }
+    $result = call_user_func_array('file_get_contents', $args);
 
-    if (false === $result) {
-        return $result;
-    }
-
-    return false;
+    return is_string($result) ? $result : false;
 }

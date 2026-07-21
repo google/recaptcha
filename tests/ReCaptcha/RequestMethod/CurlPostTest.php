@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -44,61 +42,6 @@ use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestParameters;
 
 /**
- * Global state for mocking curl functions.
- */
-class CurlPostGlobalState
-{
-    public static ?string $initUrl = null;
-
-    /**
-     * @var null|array<int, mixed>
-     */
-    public static ?array $setoptArrayOptions = null;
-
-    public static bool|string $execResponse = 'RESPONSEBODY';
-
-    public static bool $closeCalled = false;
-}
-
-/**
- * Mock curl_init in the ReCaptcha\RequestMethod namespace.
- */
-function curl_init(?string $url = null): \stdClass
-{
-    CurlPostGlobalState::$initUrl = $url;
-
-    return new \stdClass();
-}
-
-/**
- * Mock curl_setopt_array in the ReCaptcha\RequestMethod namespace.
- *
- * @param array<int, mixed> $options
- */
-function curl_setopt_array(\stdClass $ch, array $options): bool
-{
-    CurlPostGlobalState::$setoptArrayOptions = $options;
-
-    return true;
-}
-
-/**
- * Mock curl_exec in the ReCaptcha\RequestMethod namespace.
- */
-function curl_exec(\stdClass $ch): bool|string
-{
-    return CurlPostGlobalState::$execResponse;
-}
-
-/**
- * Mock curl_close in the ReCaptcha\RequestMethod namespace.
- */
-function curl_close(\stdClass $ch): void
-{
-    CurlPostGlobalState::$closeCalled = true;
-}
-
-/**
  * @internal
  *
  * @coversNothing
@@ -107,70 +50,85 @@ class CurlPostTest extends TestCase
 {
     protected function setUp(): void
     {
-        CurlPostGlobalState::$initUrl = null;
-        CurlPostGlobalState::$setoptArrayOptions = null;
-        CurlPostGlobalState::$execResponse = 'RESPONSEBODY';
-        CurlPostGlobalState::$closeCalled = false;
+        if (!extension_loaded('curl')) {
+            $this->markTestSkipped(
+                'The cURL extension is not available.'
+            );
+        }
     }
 
     public function testSubmit(): void
     {
-        $pc = new CurlPost();
+        $curl = $this->getMockBuilder(Curl::class)
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+        $curl->expects($this->once())
+            ->method('init')
+            ->willReturn(new \stdClass())
+        ;
+        $curl->expects($this->once())
+            ->method('setoptArray')
+            ->willReturn(true)
+        ;
+        $curl->expects($this->once())
+            ->method('exec')
+            ->willReturn('RESPONSEBODY')
+        ;
+
+        $pc = new CurlPost($curl);
         $response = $pc->submit(new RequestParameters('secret', 'response'));
-
-        $this->assertEquals(ReCaptcha::SITE_VERIFY_URL, CurlPostGlobalState::$initUrl);
-
-        /** @var array<int, mixed> $options */
-        $options = CurlPostGlobalState::$setoptArrayOptions;
-        $this->assertTrue($options[CURLOPT_POST]);
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
     public function testOverrideSiteVerifyUrl(): void
     {
         $url = 'OVERRIDE';
-        $pc = new CurlPost($url);
+
+        $curl = $this->getMockBuilder(Curl::class)
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+        $curl->expects($this->once())
+            ->method('init')
+            ->with($url)
+            ->willReturn(new \stdClass())
+        ;
+        $curl->expects($this->once())
+            ->method('setoptArray')
+            ->willReturn(true)
+        ;
+        $curl->expects($this->once())
+            ->method('exec')
+            ->willReturn('RESPONSEBODY')
+        ;
+
+        $pc = new CurlPost($curl, $url);
         $response = $pc->submit(new RequestParameters('secret', 'response'));
-
-        $this->assertEquals($url, CurlPostGlobalState::$initUrl);
         $this->assertEquals('RESPONSEBODY', $response);
-    }
-
-    public function testLegacyConstructorOverrideSiteVerifyUrl(): void
-    {
-        $url = 'OVERRIDE';
-        $pc = new CurlPost(null, $url);
-        $response = $pc->submit(new RequestParameters('secret', 'response'));
-
-        $this->assertEquals($url, CurlPostGlobalState::$initUrl);
-        $this->assertEquals('RESPONSEBODY', $response);
-    }
-
-    public function testLegacyNamedArgumentsCanInjectCurlWrapper(): void
-    {
-        $url = 'OVERRIDE';
-        $pc = new CurlPost(curl: new Curl(), siteVerifyUrl: $url);
-        $response = $pc->submit(new RequestParameters('secret', 'response'));
-
-        $this->assertEquals($url, CurlPostGlobalState::$initUrl);
-        $this->assertEquals('RESPONSEBODY', $response);
-    }
-
-    public function testCurlWrapperMethodsRemainUntyped(): void
-    {
-        $setoptArray = new \ReflectionMethod(Curl::class, 'setoptArray');
-        $close = new \ReflectionMethod(Curl::class, 'close');
-
-        $this->assertFalse($setoptArray->hasReturnType());
-        $this->assertFalse($close->hasReturnType());
     }
 
     public function testConnectionFailureReturnsError(): void
     {
-        CurlPostGlobalState::$execResponse = false;
-        $pc = new CurlPost();
-        $response = $pc->submit(new RequestParameters('secret', 'response'));
+        $curl = $this->getMockBuilder(Curl::class)
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+        $curl->expects($this->once())
+            ->method('init')
+            ->willReturn(new \stdClass())
+        ;
+        $curl->expects($this->once())
+            ->method('setoptArray')
+            ->willReturn(true)
+        ;
+        $curl->expects($this->once())
+            ->method('exec')
+            ->willReturn(false)
+        ;
 
+        $pc = new CurlPost($curl);
+        $response = $pc->submit(new RequestParameters('secret', 'response'));
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
 }

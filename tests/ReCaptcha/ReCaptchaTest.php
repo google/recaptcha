@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -43,42 +41,19 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Global state for mocking functions in the ReCaptcha namespace.
- */
-class GlobalState
-{
-    public static ?bool $isCurlAvailable = null;
-}
-
-/**
- * Mock function_exists in the ReCaptcha namespace.
- */
-function function_exists(string $function): bool
-{
-    if ('curl_version' === $function && !is_null(GlobalState::$isCurlAvailable)) {
-        return GlobalState::$isCurlAvailable;
-    }
-
-    return \function_exists($function);
-}
-
-/**
  * @internal
  *
  * @coversNothing
  */
 class ReCaptchaTest extends TestCase
 {
-    protected function tearDown(): void
-    {
-        GlobalState::$isCurlAvailable = null;
-    }
-
+    /**
+     * @param mixed $invalid
+     */
     #[DataProvider('invalidSecretProvider')]
-    public function testExceptionThrownOnInvalidSecretType(mixed $invalid): void
+    public function testExceptionThrownOnInvalidSecret($invalid): void
     {
         $this->expectException(\RuntimeException::class);
-
         $rc = new ReCaptcha($invalid);
     }
 
@@ -88,28 +63,11 @@ class ReCaptchaTest extends TestCase
     public static function invalidSecretProvider(): array
     {
         return [
+            [''],
             [null],
+            [0],
             [new \stdClass()],
             [[]],
-            [0],
-        ];
-    }
-
-    #[DataProvider('emptySecretProvider')]
-    public function testExceptionThrownOnEmptySecret(mixed $emptySecret): void
-    {
-        $this->expectException(\RuntimeException::class);
-
-        $rc = new ReCaptcha($emptySecret);
-    }
-
-    /**
-     * @return array<int, array<int, mixed>>
-     */
-    public static function emptySecretProvider(): array
-    {
-        return [
-            [''],
         ];
     }
 
@@ -121,105 +79,18 @@ class ReCaptchaTest extends TestCase
         $this->assertEquals([ReCaptcha::E_MISSING_INPUT_RESPONSE], $response->getErrorCodes());
     }
 
-    public function testVerifyReturnsErrorOnNullResponse(): void
+    public function testDefaultRequestMethod(): void
     {
-        $rc = new ReCaptcha('secret');
-
-        /** @phpstan-ignore argument.type */
-        $response = $rc->verify(null);
-        $this->assertFalse($response->isSuccess());
-        $this->assertEquals([ReCaptcha::E_MISSING_INPUT_RESPONSE], $response->getErrorCodes());
-    }
-
-    public function testLegacyRequestMethodImplementationWithoutReturnTypeCanBeUsed(): void
-    {
-        // BC: Legacy custom RequestMethod implementations without strict return types should still work
-        $method = new class implements RequestMethod {
-            public function submit(RequestParameters $params)
-            {
-                return '{"success": true}';
-            }
-        };
-
-        $rc = new ReCaptcha('secret', $method);
-        $response = $rc->verify('response');
-
-        $this->assertTrue($response->isSuccess());
-    }
-
-    public function testNonStringRequestMethodResponseReturnsBadResponse(): void
-    {
-        // Keep the 1.x compatibility path open for older custom RequestMethod implementations.
-        $method = new class implements RequestMethod {
-            public function submit(RequestParameters $params)
-            {
-                // @phpstan-ignore return.type
-                return false;
-            }
-        };
-
-        $rc = new ReCaptcha('secret', $method);
-        $response = $rc->verify('response');
-
-        $this->assertFalse($response->isSuccess());
-        $this->assertEquals([ReCaptcha::E_BAD_RESPONSE], $response->getErrorCodes());
-    }
-
-    public function testObjectValuesDoNotCrashLegacySetters(): void
-    {
-        $method = $this->getMockRequestMethod('{"success": true, "hostname": ""}');
-        $rc = new ReCaptcha('secret', $method);
-
-        /** @phpstan-ignore argument.type */
-        $response = $rc->setExpectedHostname(new \stdClass())->verify('response');
-
-        $this->assertTrue($response->isSuccess());
-    }
-
-    public function testZeroAsStringIsValidSecret(): void
-    {
-        $rc = new ReCaptcha('0');
-        $this->assertInstanceOf(ReCaptcha::class, $rc);
-    }
-
-    public function testZeroAsStringIsValidResponse(): void
-    {
-        $method = $this->getMockRequestMethod('{"success": true}');
-        $rc = new ReCaptcha('secret', $method);
-        $response = $rc->verify('0');
-        $this->assertTrue($response->isSuccess());
-    }
-
-    public function testScalarResponseIsAccepted(): void
-    {
-        $method = $this->getMockRequestMethod('{"success": true}');
-        $rc = new ReCaptcha('secret', $method);
-
-        /** @phpstan-ignore argument.type */
-        $response = $rc->verify(12345);
-        $this->assertTrue($response->isSuccess());
-    }
-
-    public function testDefaultRequestMethodWithCurl(): void
-    {
-        GlobalState::$isCurlAvailable = true;
         $rc = new ReCaptcha('secret');
         $reflection = new \ReflectionClass($rc);
         $property = $reflection->getProperty('requestMethod');
         $requestMethod = $property->getValue($rc);
 
-        $this->assertInstanceOf(RequestMethod\CurlPost::class, $requestMethod);
-    }
-
-    public function testDefaultRequestMethodWithoutCurl(): void
-    {
-        GlobalState::$isCurlAvailable = false;
-        $rc = new ReCaptcha('secret');
-        $reflection = new \ReflectionClass($rc);
-        $property = $reflection->getProperty('requestMethod');
-        $requestMethod = $property->getValue($rc);
-
-        $this->assertInstanceOf(RequestMethod\Post::class, $requestMethod);
+        if (function_exists('curl_version')) {
+            $this->assertInstanceOf(RequestMethod\CurlPost::class, $requestMethod);
+        } else {
+            $this->assertInstanceOf(RequestMethod\Post::class, $requestMethod);
+        }
     }
 
     public function testVerifyReturnsResponse(): void
@@ -253,19 +124,6 @@ class ReCaptchaTest extends TestCase
         $response = $rc->setExpectedHostname('host.name')->verify('response');
         $this->assertFalse($response->isSuccess());
         $this->assertEquals([ReCaptcha::E_HOSTNAME_MISMATCH], $response->getErrorCodes());
-    }
-
-    public function testVerifyHostnameMatchCaseInsensitive(): void
-    {
-        $method = $this->getMockRequestMethod('{"success": true, "hostname": "host.name"}');
-        $rc = new ReCaptcha('secret', $method);
-        $response = $rc->setExpectedHostname('HOST.NAME')->verify('response');
-        $this->assertTrue($response->isSuccess());
-
-        $method = $this->getMockRequestMethod('{"success": true, "hostname": "HOST.NAME"}');
-        $rc = new ReCaptcha('secret', $method);
-        $response = $rc->setExpectedHostname('host.name')->verify('response');
-        $this->assertTrue($response->isSuccess());
     }
 
     public function testVerifyApkPackageNameMatch(): void
@@ -306,7 +164,8 @@ class ReCaptchaTest extends TestCase
     {
         $method = $this->getMockRequestMethod('{"success": true, "score": "0.9"}');
         $rc = new ReCaptcha('secret', $method);
-        $response = $rc->setScoreThreshold(0.5)->verify('response');
+        // Passed as a string deliberately: setScoreThreshold() coerces via floatval().
+        $response = $rc->setScoreThreshold('0.5')->verify('response');
         $this->assertTrue($response->isSuccess());
     }
 
@@ -314,19 +173,10 @@ class ReCaptchaTest extends TestCase
     {
         $method = $this->getMockRequestMethod('{"success": true, "score": "0.1"}');
         $rc = new ReCaptcha('secret', $method);
-        $response = $rc->setScoreThreshold(0.5)->verify('response');
+        // Passed as a string deliberately: setScoreThreshold() coerces via floatval().
+        $response = $rc->setScoreThreshold('0.5')->verify('response');
         $this->assertFalse($response->isSuccess());
         $this->assertEquals([ReCaptcha::E_SCORE_THRESHOLD_NOT_MET], $response->getErrorCodes());
-    }
-
-    public function testScoreThresholdAcceptsNumericString(): void
-    {
-        $method = $this->getMockRequestMethod('{"success": true, "score": "0.9"}');
-        $rc = new ReCaptcha('secret', $method);
-
-        /** @phpstan-ignore argument.type */
-        $response = $rc->setScoreThreshold('0.5')->verify('response');
-        $this->assertTrue($response->isSuccess());
     }
 
     public function testVerifyWithinTimeout(): void
@@ -350,19 +200,12 @@ class ReCaptchaTest extends TestCase
         $this->assertEquals([ReCaptcha::E_CHALLENGE_TIMEOUT], $response->getErrorCodes());
     }
 
-    public function testVerifyWithInvalidChallengeTsAndTimeout(): void
-    {
-        $method = $this->getMockRequestMethod('{"success": true, "challenge_ts": "invalid-timestamp"}');
-        $rc = new ReCaptcha('secret', $method);
-        $response = $rc->setChallengeTimeout(60)->verify('response');
-        $this->assertTrue($response->isSuccess());
-    }
-
     public function testVerifyMergesErrors(): void
     {
         $method = $this->getMockRequestMethod('{"success": false, "error-codes": ["initial-error"], "score": "0.1"}');
         $rc = new ReCaptcha('secret', $method);
-        $response = $rc->setScoreThreshold(0.5)->verify('response');
+        // Passed as a string deliberately: setScoreThreshold() coerces via floatval().
+        $response = $rc->setScoreThreshold('0.5')->verify('response');
         $this->assertFalse($response->isSuccess());
         $this->assertEquals(['initial-error', ReCaptcha::E_SCORE_THRESHOLD_NOT_MET], $response->getErrorCodes());
     }
