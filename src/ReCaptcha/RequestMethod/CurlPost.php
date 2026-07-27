@@ -102,7 +102,7 @@ class CurlPost implements RequestMethod
 
         $response = $this->curl->exec($handle);
 
-        if (false !== $response) {
+        if (is_string($response)) {
             return $response;
         }
 

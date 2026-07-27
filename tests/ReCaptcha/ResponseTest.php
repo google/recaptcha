@@ -109,6 +109,20 @@ class ResponseTest extends TestCase
                 'BAD JSON',
                 false, [ReCaptcha::E_INVALID_JSON], null, null, null, null, null,
             ],
+            // Only a real boolean true counts as success. A loose comparison
+            // would treat any non-empty string, including "false", as success.
+            [
+                '{"success": "false"}',
+                false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
+            ],
+            [
+                '{"success": "true"}',
+                false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
+            ],
+            [
+                '{"success": 1}',
+                false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
+            ],
         ];
     }
 

@@ -134,7 +134,7 @@ class Response
         $score = isset($responseData['score']) && is_numeric($responseData['score']) ? floatval($responseData['score']) : null;
         $action = isset($responseData['action']) && is_string($responseData['action']) ? $responseData['action'] : '';
 
-        if (isset($responseData['success']) && true == $responseData['success']) {
+        if (isset($responseData['success']) && true === $responseData['success']) {
             return new Response(true, [], $hostname, $challengeTs, $apkPackageName, $score, $action);
         }
 

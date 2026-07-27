@@ -74,12 +74,9 @@ class Curl
     /**
      * @see http://php.net/curl_exec
      *
-     * Note: always used with CURLOPT_RETURNTRANSFER set, so this returns the
-     * response body as a string on success, or false on failure.
-     *
      * @param \CurlHandle|false $ch
      *
-     * @return false|string
+     * @return bool|string
      */
     public function exec($ch)
     {
@@ -87,8 +84,6 @@ class Curl
             return false;
         }
 
-        $result = curl_exec($ch);
-
-        return true === $result ? false : $result;
+        return curl_exec($ch);
     }
 }

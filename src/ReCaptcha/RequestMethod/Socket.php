@@ -67,6 +67,13 @@ class Socket
         $this->handle = fsockopen($hostname, $port, $errno, $errstr, $resolvedTimeout);
 
         if (false != $this->handle && 0 === $errno && '' === $errstr) {
+            // The timeout above only covers making the connection. Without
+            // this, reads fall back to default_socket_timeout, which a host is
+            // free to set to never time out at all, so a connection that
+            // stalled midway through the response would block the caller
+            // indefinitely.
+            stream_set_timeout($this->handle, (int) $resolvedTimeout);
+
             return $this->handle;
         }
 
@@ -101,18 +108,17 @@ class Socket
      *
      * @param int $length
      *
-     * @return string
+     * @return false|string
      */
     public function fgets($length = null)
     {
         if (false === $this->handle || null === $this->handle) {
-            return '';
+            return false;
         }
 
         $resolvedLength = is_null($length) ? null : max(0, $length);
-        $line = fgets($this->handle, $resolvedLength);
 
-        return false === $line ? '' : $line;
+        return fgets($this->handle, $resolvedLength);
     }
 
     /**
