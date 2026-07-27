@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -50,15 +48,17 @@ class Post implements RequestMethod
 {
     /**
      * URL for reCAPTCHA siteverify API.
+     *
+     * @var string
      */
-    private string $siteVerifyUrl;
+    private $siteVerifyUrl;
 
     /**
      * Only needed if you want to override the defaults.
      *
-     * @param null|string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct(?string $siteVerifyUrl = null)
+    public function __construct($siteVerifyUrl = null)
     {
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
     }
@@ -70,24 +70,21 @@ class Post implements RequestMethod
      *
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params): string
+    public function submit(RequestParameters $params)
     {
         $options = [
-            'ssl' => [
-                'verify_peer' => true,
-                'verify_peer_name' => true,
-            ],
             'http' => [
                 'header' => "Content-type: application/x-www-form-urlencoded\r\n",
                 'method' => 'POST',
                 'content' => $params->toQueryString(),
-                'timeout' => 60,
+                // Force the peer to validate (not needed in 5.6.0+, but still works)
+                'verify_peer' => true,
             ],
         ];
         $context = stream_context_create($options);
         $response = file_get_contents($this->siteVerifyUrl, false, $context);
 
-        if (is_string($response)) {
+        if (false !== $response) {
             return $response;
         }
 
