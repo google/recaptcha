@@ -108,6 +108,40 @@ class CurlPostTest extends TestCase
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
+    public function testSubmitSetsTimeoutAndPeerVerification(): void
+    {
+        $options = [];
+
+        $curl = $this->getMockBuilder(Curl::class)
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+        $curl->expects($this->once())
+            ->method('init')
+            ->willReturn(new \stdClass())
+        ;
+        $curl->expects($this->once())
+            ->method('setoptArray')
+            ->willReturnCallback(function ($ch, array $setOptions) use (&$options) {
+                $options = $setOptions;
+
+                return true;
+            })
+        ;
+        $curl->expects($this->once())
+            ->method('exec')
+            ->willReturn('RESPONSEBODY')
+        ;
+
+        $pc = new CurlPost($curl);
+        $pc->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertArrayHasKey(CURLOPT_TIMEOUT, $options);
+        $this->assertEquals(60, $options[CURLOPT_TIMEOUT]);
+        $this->assertArrayHasKey(CURLOPT_SSL_VERIFYPEER, $options);
+        $this->assertTrue($options[CURLOPT_SSL_VERIFYPEER]);
+    }
+
     public function testConnectionFailureReturnsError(): void
     {
         $curl = $this->getMockBuilder(Curl::class)

@@ -1,5 +1,7 @@
 parameters:
     level: max
+    # A custom RequestMethod implementation is not bound by the interface phpdoc,
+    # so runtime guards on values it returns are meaningful rather than redundant.
     treatPhpDocTypesAsCertain: false
     paths:
         - src
