@@ -25,14 +25,14 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "1.4.x-dev"
+            "dev-main": "1.5.x-dev"
         }
     },
     "scripts": {
         "lint": "vendor/bin/php-cs-fixer -vvv check --using-cache=no",
         "lint-fix": "vendor/bin/php-cs-fixer -vvv fix --using-cache=no",
         "phpstan": "vendor/bin/phpstan",
-        "test": "XDEBUG_MODE=coverage vendor/bin/phpunit",
+        "test": "@php -d xdebug.mode=coverage vendor/bin/phpunit",
         "serve-examples": "@php -S localhost:8080 -t examples"
     },
     "config": {

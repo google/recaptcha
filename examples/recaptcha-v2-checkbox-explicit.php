@@ -86,7 +86,7 @@ if ('' === $siteKey || '' === $secret) {
         <h2><kbd>POST</kbd> data</h2>
         <kbd><pre><?php echo htmlspecialchars(print_r($_POST, true), ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?></pre></kbd>
         <?php
-    // If the form submission includes the "g-captcha-response" field
+    // If the form submission includes the "g-recaptcha-response" field
     // Create an instance of the service using your secret
     /** @var string $secret */
     $recaptcha = new ReCaptcha($secret);
@@ -97,7 +97,7 @@ if ('' === $siteKey || '' === $secret) {
     //  $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\SocketPost());
     // Make the call to verify the response and also pass the user's IP address
     /** @var string $serverName */
-    $serverName = $_SERVER['SERVER_NAME'];
+    $serverName = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '';
 
     /** @var string $responseKey */
     $responseKey = $_POST[ReCaptcha::RESPONSE_KEY];

@@ -15,7 +15,7 @@ and v3.
 - reCAPTCHA: https://cloud.google.com/security/products/recaptcha
 - This repo: https://github.com/google/recaptcha
 - Hosted demo: https://recaptcha-demo.appspot.com/
-- Version: 1.5.0
+- Version: 1.5.1
 - License: BSD, see [LICENSE](LICENSE)
 
 > [!IMPORTANT]
@@ -76,7 +76,7 @@ This library comes in when you need to verify the user's response. On the PHP
 side you need the response from the reCAPTCHA service and secret key from your
 credentials. Instantiate the `ReCaptcha` class with your secret key, specify any
 additional validation rules, and then call `verify()` with the reCAPTCHA
-response (usually in `$_POST[\ReCaptcha\ReCaptcha::USER_TOKEN_PARAMETER]` or the
+response (usually in `$_POST[\ReCaptcha\ReCaptcha::RESPONSE_KEY]` or the
 response from `grecaptcha.execute()` in JS which is in `$gRecaptchaResponse` in
 the example) and user's IP address. For example:
 
@@ -168,6 +168,11 @@ $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\Sock
 ```
 
 For more details on usage and structure, see [ARCHITECTURE](ARCHITECTURE.md).
+
+The 1.x line preserves compatibility for the public request and response APIs.
+See [Public API compatibility](ARCHITECTURE.md#public-api-compatibility) for
+details on which API changes require a major release.
+
 
 ### Examples
 

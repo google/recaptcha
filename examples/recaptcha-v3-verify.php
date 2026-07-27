@@ -57,13 +57,13 @@ if (('' === $siteKey || '' === $secret) && is_readable(__DIR__.'/config.php')) {
 $recaptcha = new ReCaptcha($secret);
 
 /** @var string $serverName */
-$serverName = $_SERVER['SERVER_NAME'];
+$serverName = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '';
 
 /** @var string $action */
-$action = $_GET['action'];
+$action = $_GET['action'] ?? '';
 
 /** @var string $token */
-$token = $_GET['token'];
+$token = $_GET['token'] ?? '';
 
 /** @var null|string $remoteAddr */
 $remoteAddr = $_SERVER['REMOTE_ADDR'];

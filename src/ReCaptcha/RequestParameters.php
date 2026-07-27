@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -42,29 +40,58 @@ namespace ReCaptcha;
 /**
  * Stores and formats the parameters for the request to the reCAPTCHA service.
  */
-readonly class RequestParameters
+class RequestParameters
 {
+    /**
+     * The shared key between your site and reCAPTCHA.
+     *
+     * @var string
+     */
+    private $secret;
+
+    /**
+     * The user response token provided by reCAPTCHA, verifying the user on your site.
+     *
+     * @var string
+     */
+    private $response;
+
+    /**
+     * Remote user's IP address.
+     *
+     * @var null|string
+     */
+    private $remoteIp;
+
+    /**
+     * Client version.
+     *
+     * @var null|string
+     */
+    private $version;
+
     /**
      * Initialise parameters.
      *
-     * @param string      $secret   site secret
-     * @param string      $response value from g-captcha-response form field
-     * @param null|string $remoteIp user's IP address
-     * @param null|string $version  version of this client library
+     * @param string $secret   site secret
+     * @param string $response value from g-captcha-response form field
+     * @param string $remoteIp user's IP address
+     * @param string $version  version of this client library
      */
-    public function __construct(
-        private string $secret,
-        private string $response,
-        private ?string $remoteIp = null,
-        private ?string $version = null,
-    ) {}
+    public function __construct($secret, $response, $remoteIp = null, $version = null)
+    {
+        $this->secret = $secret;
+        $this->response = $response;
+        $this->remoteIp = $remoteIp;
+        $this->version = $version;
+    }
 
     /**
      * Array representation.
      *
      * @return array<string, string> array formatted parameters
      */
-    public function toArray(): array
+    public function toArray()
     {
         $params = ['secret' => $this->secret, 'response' => $this->response];
 
@@ -84,7 +111,7 @@ readonly class RequestParameters
      *
      * @return string query string formatted parameters
      */
-    public function toQueryString(): string
+    public function toQueryString()
     {
         return http_build_query($this->toArray(), '', '&');
     }

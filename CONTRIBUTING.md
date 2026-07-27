@@ -36,6 +36,25 @@ a good idea to run them locally before submission to avoid getting things
 bounced back. That said, tests can be a little daunting so feel free to submit
 your PR and ask for help.
 
+### Backward Compatibility Testing
+
+Changes to public APIs must preserve backward compatibility within the 1.x
+release line. When changes affect public methods, parameters, or return types,
+include tests for:
+
+1. Legacy implementation support. If interface contracts change, verify that old
+   implementations still work without modification.
+2. Type coercion scenarios. Verify that null, scalar, and non-standard inputs
+   behave as they did in 1.4.x.
+3. Custom `RequestMethod` implementations. Verify that user-provided
+   implementations continue to work without return type declarations.
+
+See the BC-focused tests in [`ReCaptchaTest.php`](./tests/ReCaptcha/ReCaptchaTest.php):
+- `testLegacyRequestMethodImplementationWithoutReturnTypeCanBeUsed()`
+- `testNonStringRequestMethodResponseReturnsBadResponse()`
+- `testScalarResponseIsAccepted()`
+- `testZeroAsStringIsValidResponse()`
+
 ## Code reviews
 
 All submissions, including submissions by project members, require review.

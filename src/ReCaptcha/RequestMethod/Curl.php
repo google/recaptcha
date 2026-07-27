@@ -37,60 +37,53 @@
 
 namespace ReCaptcha\RequestMethod;
 
-use ReCaptcha\ReCaptcha;
-use ReCaptcha\RequestMethod;
-use ReCaptcha\RequestParameters;
-
 /**
- * Sends POST requests to the reCAPTCHA service.
+ * Convenience wrapper around the cURL functions to allow mocking.
  */
-class Post implements RequestMethod
+class Curl
 {
     /**
-     * URL for reCAPTCHA siteverify API.
+     * @see http://php.net/curl_init
      *
-     * @var string
-     */
-    private $siteVerifyUrl;
-
-    /**
-     * Only needed if you want to override the defaults.
+     * @param string $url
      *
-     * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @return \CurlHandle|false cURL handle
      */
-    public function __construct($siteVerifyUrl = null)
+    public function init($url = null)
     {
-        $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
+        return curl_init($url);
     }
 
     /**
-     * Submit the POST request with the specified parameters.
+     * @see http://php.net/curl_setopt_array
      *
-     * @param RequestParameters $params Request parameters
+     * @param \CurlHandle|false        $ch
+     * @param array<int|string, mixed> $options
      *
-     * @return string Body of the reCAPTCHA response
+     * @return bool
      */
-    public function submit(RequestParameters $params)
+    public function setoptArray($ch, array $options)
     {
-        $options = [
-            'http' => [
-                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method' => 'POST',
-                'content' => $params->toQueryString(),
-                'timeout' => 60,
-            ],
-            'ssl' => [
-                'verify_peer' => true,
-                'verify_peer_name' => true,
-            ],
-        ];
-        $context = stream_context_create($options);
-        $response = file_get_contents($this->siteVerifyUrl, false, $context);
-
-        if (false !== $response) {
-            return $response;
+        if (false === $ch) {
+            return false;
         }
 
-        return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+        return curl_setopt_array($ch, $options);
+    }
+
+    /**
+     * @see http://php.net/curl_exec
+     *
+     * @param \CurlHandle|false $ch
+     *
+     * @return bool|string
+     */
+    public function exec($ch)
+    {
+        if (false === $ch) {
+            return false;
+        }
+
+        return curl_exec($ch);
     }
 }
