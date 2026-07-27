@@ -58,6 +58,20 @@ jobs:
         COVERALLS_FLAG_NAME: php-${{ matrix.php }}
       run: vendor/bin/php-coveralls -v
 
+  backward-compatibility:
+    name: Backward compatibility check
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        # The check compares the PR against the last release tag, so it needs
+        # the full history rather than a shallow clone.
+        fetch-depth: 0
+
+    - name: Check for BC breaks since the last release
+      uses: docker://nyholm/roave-bc-check-ga
+
   finish:
     needs: build
     runs-on: ubuntu-latest
