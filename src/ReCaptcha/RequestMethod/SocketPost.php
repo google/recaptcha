@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -50,15 +48,24 @@ use ReCaptcha\RequestParameters;
  */
 class SocketPost implements RequestMethod
 {
-    private string $siteVerifyUrl;
+    /**
+     * Socket to the reCAPTCHA service.
+     *
+     * @var Socket
+     */
+    private $socket;
+
+    private $siteVerifyUrl;
 
     /**
      * Only needed if you want to override the defaults.
      *
-     * @param null|string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @param Socket $socket        optional socket, injectable for testing
+     * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct(?string $siteVerifyUrl = null)
+    public function __construct(?Socket $socket = null, $siteVerifyUrl = null)
     {
+        $this->socket = (is_null($socket)) ? new Socket() : $socket;
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
     }
 
@@ -69,23 +76,13 @@ class SocketPost implements RequestMethod
      *
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params): string
+    public function submit(RequestParameters $params)
     {
         $errno = 0;
         $errstr = '';
         $urlParsed = parse_url($this->siteVerifyUrl);
 
-        if (false === $urlParsed || !isset($urlParsed['host']) || !isset($urlParsed['path'])) {
-            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
-        }
-
-        $handle = fsockopen('ssl://'.$urlParsed['host'], 443, $errno, $errstr, 30);
-
-        if (false === $handle || 0 !== $errno || '' !== $errstr) {
-            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
-        }
-
-        if (false === stream_set_timeout($handle, 60)) {
+        if (false === $this->socket->fsockopen('ssl://'.$urlParsed['host'], 443, $errno, $errstr, 30)) {
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
         }
 
@@ -98,24 +95,20 @@ class SocketPost implements RequestMethod
         $request .= "Connection: close\r\n\r\n";
         $request .= $content."\r\n\r\n";
 
-        fwrite($handle, $request);
-        $response = stream_get_contents($handle);
+        $this->socket->fwrite($request);
+        $response = '';
 
-        fclose($handle);
-
-        if (!is_string($response)) {
-            $response = '';
+        while (!$this->socket->feof()) {
+            $response .= $this->socket->fgets(4096);
         }
 
-        if (1 !== preg_match('#^HTTP/1\.[01] 200 OK#', $response)) {
+        $this->socket->fclose();
+
+        if (0 !== strpos($response, 'HTTP/1.0 200 OK')) {
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
         }
 
         $parts = preg_split("#\n\\s*\n#Uis", $response);
-
-        if (!is_array($parts) || !isset($parts[1])) {
-            return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
-        }
 
         return $parts[1];
     }

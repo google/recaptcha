@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -52,17 +50,28 @@ use ReCaptcha\RequestParameters;
 class CurlPost implements RequestMethod
 {
     /**
-     * URL for reCAPTCHA siteverify API.
+     * Curl connection to the reCAPTCHA service.
+     *
+     * @var Curl
      */
-    private string $siteVerifyUrl;
+    private $curl;
+
+    /**
+     * URL for reCAPTCHA siteverify API.
+     *
+     * @var string
+     */
+    private $siteVerifyUrl;
 
     /**
      * Only needed if you want to override the defaults.
      *
-     * @param null|string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @param Curl   $curl          Curl resource
+     * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct(?string $siteVerifyUrl = null)
+    public function __construct(?Curl $curl = null, $siteVerifyUrl = null)
     {
+        $this->curl = (is_null($curl)) ? new Curl() : $curl;
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
     }
 
@@ -73,9 +82,9 @@ class CurlPost implements RequestMethod
      *
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params): string
+    public function submit(RequestParameters $params)
     {
-        $handle = curl_init($this->siteVerifyUrl);
+        $handle = $this->curl->init($this->siteVerifyUrl);
 
         $options = [
             CURLOPT_POST => true,
@@ -87,20 +96,15 @@ class CurlPost implements RequestMethod
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_TIMEOUT => 60,
         ];
-        curl_setopt_array($handle, $options);
+        $this->curl->setoptArray($handle, $options);
 
-        try {
-            $response = curl_exec($handle);
+        $response = $this->curl->exec($handle);
 
-            if (is_string($response)) {
-                return $response;
-            }
-
-            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
-        } finally {
-            curl_close($handle);
+        if (false !== $response) {
+            return $response;
         }
+
+        return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
     }
 }

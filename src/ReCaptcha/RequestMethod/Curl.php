@@ -35,19 +35,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace ReCaptcha;
+namespace ReCaptcha\RequestMethod;
 
 /**
- * Method used to send the request to the service.
+ * Convenience wrapper around the cURL functions to allow mocking.
  */
-interface RequestMethod
+class Curl
 {
     /**
-     * Submit the request with the specified parameters.
+     * @see http://php.net/curl_init
      *
-     * @param RequestParameters $params Request parameters
+     * @param string $url
      *
-     * @return string Body of the reCAPTCHA response
+     * @return resource cURL handle
      */
-    public function submit(RequestParameters $params);
+    public function init($url = null)
+    {
+        return curl_init($url);
+    }
+
+    /**
+     * @see http://php.net/curl_setopt_array
+     *
+     * @param resource $ch
+     *
+     * @return bool
+     */
+    public function setoptArray($ch, array $options)
+    {
+        return curl_setopt_array($ch, $options);
+    }
+
+    /**
+     * @see http://php.net/curl_exec
+     *
+     * @param resource $ch
+     *
+     * @return mixed
+     */
+    public function exec($ch)
+    {
+        return curl_exec($ch);
+    }
 }
