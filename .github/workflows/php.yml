@@ -69,8 +69,23 @@ jobs:
         # the full history rather than a shallow clone.
         fetch-depth: 0
 
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+
+    # Installed into its own directory at run time rather than through a
+    # docker action or this project's dev dependencies, so the check always
+    # runs with current releases and its dependencies stay out of the
+    # library's own dependency resolution.
+    - name: Install roave/backward-compatibility-check
+      run: |
+        mkdir bc-check
+        cd bc-check
+        composer require --no-interaction roave/backward-compatibility-check
+
     - name: Check for BC breaks since the last release
-      uses: docker://nyholm/roave-bc-check-ga
+      run: bc-check/vendor/bin/roave-backward-compatibility-check --format=github-actions
 
   finish:
     needs: build
