@@ -1,0 +1,901 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Call to function is_string\(\) with non\-falsy\-string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/ReCaptcha/ReCaptcha.php
+
+		-
+			message: '#^Parameter \#1 \$string1 of function strcasecmp expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/ReCaptcha/ReCaptcha.php
+
+		-
+			message: '#^Property ReCaptcha\\ReCaptcha\:\:\$action has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/ReCaptcha/ReCaptcha.php
+
+		-
+			message: '#^Property ReCaptcha\\ReCaptcha\:\:\$apkPackageName has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/ReCaptcha/ReCaptcha.php
+
+		-
+			message: '#^Property ReCaptcha\\ReCaptcha\:\:\$hostname has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/ReCaptcha/ReCaptcha.php
+
+		-
+			message: '#^Property ReCaptcha\\ReCaptcha\:\:\$threshold has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/ReCaptcha/ReCaptcha.php
+
+		-
+			message: '#^Property ReCaptcha\\ReCaptcha\:\:\$timeoutSeconds has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/ReCaptcha/ReCaptcha.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\Curl\:\:init\(\) should return resource but returns \(CurlHandle\|false\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Curl.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\Curl\:\:setoptArray\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Curl.php
+
+		-
+			message: '#^Parameter \#1 \$handle of function curl_exec expects CurlHandle, resource given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Curl.php
+
+		-
+			message: '#^Parameter \#1 \$handle of function curl_setopt_array expects CurlHandle, resource given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Curl.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\CurlPost\:\:submit\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/CurlPost.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\Post\:\:submit\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Post.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\Socket\:\:fgets\(\) should return string but returns string\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Socket.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\Socket\:\:fsockopen\(\) should return resource but returns false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Socket.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fclose expects resource, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Socket.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function feof expects resource, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Socket.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fgets expects resource, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Socket.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fwrite expects resource, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Socket.php
+
+		-
+			message: '#^Parameter \#2 \$length of function fgets expects int\<0, max\>\|null, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Socket.php
+
+		-
+			message: '#^Parameter \#3 \$length of function fwrite expects int\<0, max\>\|null, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Socket.php
+
+		-
+			message: '#^Parameter \#5 \$timeout of function fsockopen expects float\|null, float\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Socket.php
+
+		-
+			message: '#^Property ReCaptcha\\RequestMethod\\Socket\:\:\$handle has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/ReCaptcha/RequestMethod/Socket.php
+
+		-
+			message: '#^Cannot access offset ''host'' on array\{scheme\?\: string, host\?\: string, port\?\: int\<0, 65535\>, user\?\: string, pass\?\: string, path\?\: string, query\?\: string, fragment\?\: string\}\|false\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: src/ReCaptcha/RequestMethod/SocketPost.php
+
+		-
+			message: '#^Cannot access offset ''path'' on array\{scheme\?\: string, host\?\: string, port\?\: int\<0, 65535\>, user\?\: string, pass\?\: string, path\?\: string, query\?\: string, fragment\?\: string\}\|false\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/ReCaptcha/RequestMethod/SocketPost.php
+
+		-
+			message: '#^Cannot access offset 1 on list\<string\>\|false\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/ReCaptcha/RequestMethod/SocketPost.php
+
+		-
+			message: '#^Parameter \#1 \$url of function parse_url expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/ReCaptcha/RequestMethod/SocketPost.php
+
+		-
+			message: '#^Property ReCaptcha\\RequestMethod\\SocketPost\:\:\$siteVerifyUrl has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/ReCaptcha/RequestMethod/SocketPost.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between false and resource will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: src/ReCaptcha/RequestMethod/SocketPost.php
+
+		-
+			message: '#^Call to function is_null\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 2
+			path: src/ReCaptcha/RequestParameters.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParameters\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/ReCaptcha/RequestParameters.php
+
+		-
+			message: '#^Property ReCaptcha\\RequestParameters\:\:\$remoteIp \(string\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/ReCaptcha/RequestParameters.php
+
+		-
+			message: '#^Property ReCaptcha\\RequestParameters\:\:\$version \(string\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/ReCaptcha/RequestParameters.php
+
+		-
+			message: '#^Cannot access offset ''action'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Cannot access offset ''apk_package_name'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Cannot access offset ''challenge_ts'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Cannot access offset ''error\-codes'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Cannot access offset ''hostname'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Cannot access offset ''score'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Cannot access offset ''success'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Method ReCaptcha\\Response\:\:__construct\(\) has parameter \$errorCodes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Method ReCaptcha\\Response\:\:getErrorCodes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Method ReCaptcha\\Response\:\:toArray\(\) should return array\{success\: bool, hostname\: string, challenge_ts\: string, apk_package_name\: string, score\: float\|null, action\: string, error\-codes\: array\<string\>\} but returns array\{success\: bool, hostname\: string, challenge_ts\: string, apk_package_name\: string, score\: float, action\: string, error\-codes\: array\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Parameter \#1 \$value of function floatval expects array\|bool\|float\|GMP\|int\|resource\|SimpleXMLElement\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Parameter \#3 \$hostname of class ReCaptcha\\Response constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Parameter \#4 \$challengeTs of class ReCaptcha\\Response constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Parameter \#5 \$apkPackageName of class ReCaptcha\\Response constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Parameter \#7 \$action of class ReCaptcha\\Response constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Property ReCaptcha\\Response\:\:\$errorCodes type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Property ReCaptcha\\Response\:\:\$score \(float\) does not accept float\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/ReCaptcha/Response.php
+
+		-
+			message: '#^Class ReCaptcha\\ReCaptcha referenced with incorrect case\: ReCaptcha\\Recaptcha\.$#'
+			identifier: class.nameCase
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:getMockRequestMethod\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:getMockRequestMethod\(\) has parameter \$responseJson with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:invalidSecretProvider\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testDefaultRequestMethod\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testExceptionThrownOnInvalidSecret\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testExceptionThrownOnInvalidSecret\(\) has parameter \$invalid with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyAboveThreshold\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyActionMatch\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyActionMisMatch\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyApkPackageNameMatch\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyApkPackageNameMisMatch\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyBelowThreshold\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyHostnameMatch\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyHostnameMisMatch\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyMergesErrors\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyOverTimeout\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyReturnsErrorOnMissingResponse\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyReturnsInitialResponseWithoutAdditionalChecks\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyReturnsResponse\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ReCaptchaTest\:\:testVerifyWithinTimeout\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Parameter \#1 \$secret of class ReCaptcha\\ReCaptcha constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Parameter \#1 \$threshold of method ReCaptcha\\ReCaptcha\:\:setScoreThreshold\(\) expects float, string given\.$#'
+			identifier: argument.type
+			count: 3
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Parameter \#1 \$timeoutSeconds of method ReCaptcha\\ReCaptcha\:\:setChallengeTimeout\(\) expects int, string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Parameter \#2 \$requestMethod of class ReCaptcha\\ReCaptcha constructor expects ReCaptcha\\RequestMethod\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 13
+			path: tests/ReCaptcha/ReCaptchaTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\CurlPostTest\:\:testConnectionFailureReturnsError\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/CurlPostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\CurlPostTest\:\:testOverrideSiteVerifyUrl\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/CurlPostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\CurlPostTest\:\:testSubmit\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/CurlPostTest.php
+
+		-
+			message: '#^Cannot access offset ''content'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Cannot access offset ''header'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Cannot access offset ''method'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Cannot access offset ''verify_peer'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Cannot call method toQueryString\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Cannot use \+\+ on mixed\.$#'
+			identifier: preInc.type
+			count: 3
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Function ReCaptcha\\RequestMethod\\file_get_contents\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:assertCommonOptions\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:assertCommonOptions\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:connectionFailureResponse\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:httpContextOptionsCallback\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:httpContextOptionsCallback\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:overrideUrlOptions\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:overrideUrlOptions\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:sslContextOptionsCallback\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:sslContextOptionsCallback\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:testConnectionFailureReturnsError\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:testHTTPContextOptions\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:testOverrideVerifyUrl\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\PostTest\:\:testSSLContextOptions\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function call_user_func expects callable\(\)\: mixed, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Parameter \#1 \$params of method ReCaptcha\\RequestMethod\\Post\:\:submit\(\) expects ReCaptcha\\RequestParameters, mixed given\.$#'
+			identifier: argument.type
+			count: 4
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Parameter \#1 \$stream_or_context of function stream_context_get_options expects resource, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Parameter \#2 \$array of method PHPUnit\\Framework\\Assert\:\:assertArrayHasKey\(\) expects array\<mixed\>\|ArrayAccess\<\(int\|string\), mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 4
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of method PHPUnit\\Framework\\Assert\:\:assertStringContainsStringIgnoringCase\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Parameter \#2 \$string of method PHPUnit\\Framework\\Assert\:\:assertStringStartsWith\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Property ReCaptcha\\RequestMethod\\PostTest\:\:\$assert has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Property ReCaptcha\\RequestMethod\\PostTest\:\:\$parameters has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Property ReCaptcha\\RequestMethod\\PostTest\:\:\$runcount has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/PostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\SocketPostTest\:\:testConnectionFailureReturnsError\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/SocketPostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\SocketPostTest\:\:testOverrideSiteVerifyUrl\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/SocketPostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\SocketPostTest\:\:testSubmitBadResponse\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/SocketPostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestMethod\\SocketPostTest\:\:testSubmitSuccess\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestMethod/SocketPostTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:provideValidData\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToArray\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToArray\(\) has parameter \$expectedArray with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToArray\(\) has parameter \$expectedQuery with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToArray\(\) has parameter \$remoteIp with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToArray\(\) has parameter \$response with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToArray\(\) has parameter \$secret with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToArray\(\) has parameter \$version with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToQueryString\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToQueryString\(\) has parameter \$expectedArray with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToQueryString\(\) has parameter \$expectedQuery with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToQueryString\(\) has parameter \$remoteIp with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToQueryString\(\) has parameter \$response with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToQueryString\(\) has parameter \$secret with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\RequestParametersTest\:\:testToQueryString\(\) has parameter \$version with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Parameter \#1 \$secret of class ReCaptcha\\RequestParameters constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Parameter \#2 \$response of class ReCaptcha\\RequestParameters constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Parameter \#3 \$remoteIp of class ReCaptcha\\RequestParameters constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Parameter \#4 \$version of class ReCaptcha\\RequestParameters constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/ReCaptcha/RequestParametersTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:TestGetApkPackageName\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:provideJson\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testFromJson\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testFromJson\(\) has parameter \$action with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testFromJson\(\) has parameter \$apkPackageName with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testFromJson\(\) has parameter \$challengeTs with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testFromJson\(\) has parameter \$errorCodes with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testFromJson\(\) has parameter \$hostname with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testFromJson\(\) has parameter \$json with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testFromJson\(\) has parameter \$score with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testFromJson\(\) has parameter \$success with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testGetAction\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testGetChallengeTs\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testGetErrorCodes\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testGetHostname\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testGetScore\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testIsSuccess\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Method ReCaptcha\\ResponseTest\:\:testToArray\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Parameter \#1 \$json of static method ReCaptcha\\Response\:\:fromJson\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/ReCaptcha/ResponseTest.php
+
+		-
+			message: '#^Parameter \#6 \$score of class ReCaptcha\\Response constructor expects float\|null, string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/ReCaptcha/ResponseTest.php

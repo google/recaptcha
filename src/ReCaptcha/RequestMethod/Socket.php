@@ -35,19 +35,90 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace ReCaptcha;
+namespace ReCaptcha\RequestMethod;
 
 /**
- * Method used to send the request to the service.
+ * Convenience wrapper around native socket and file functions to allow for
+ * mocking.
  */
-interface RequestMethod
+class Socket
 {
+    private $handle;
+
     /**
-     * Submit the request with the specified parameters.
+     * fsockopen.
      *
-     * @param RequestParameters $params Request parameters
+     * @see http://php.net/fsockopen
      *
-     * @return string Body of the reCAPTCHA response
+     * @param string $hostname
+     * @param int    $port
+     * @param int    $errno
+     * @param string $errstr
+     * @param float  $timeout
+     *
+     * @return resource
      */
-    public function submit(RequestParameters $params);
+    public function fsockopen($hostname, $port = -1, &$errno = 0, &$errstr = '', $timeout = null)
+    {
+        $this->handle = fsockopen($hostname, $port, $errno, $errstr, is_null($timeout) ? ini_get('default_socket_timeout') : $timeout);
+
+        if (false != $this->handle && 0 === $errno && '' === $errstr) {
+            return $this->handle;
+        }
+
+        return false;
+    }
+
+    /**
+     * fwrite.
+     *
+     * @see http://php.net/fwrite
+     *
+     * @param string $string
+     * @param int    $length
+     *
+     * @return bool|int
+     */
+    public function fwrite($string, $length = null)
+    {
+        return fwrite($this->handle, $string, is_null($length) ? strlen($string) : $length);
+    }
+
+    /**
+     * fgets.
+     *
+     * @see http://php.net/fgets
+     *
+     * @param int $length
+     *
+     * @return string
+     */
+    public function fgets($length = null)
+    {
+        return fgets($this->handle, $length);
+    }
+
+    /**
+     * feof.
+     *
+     * @see http://php.net/feof
+     *
+     * @return bool
+     */
+    public function feof()
+    {
+        return feof($this->handle);
+    }
+
+    /**
+     * fclose.
+     *
+     * @see http://php.net/fclose
+     *
+     * @return bool
+     */
+    public function fclose()
+    {
+        return fclose($this->handle);
+    }
 }
