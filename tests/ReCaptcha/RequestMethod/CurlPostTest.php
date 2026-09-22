@@ -39,6 +39,8 @@ declare(strict_types=1);
 
 namespace ReCaptcha\RequestMethod;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestParameters;
@@ -90,9 +92,9 @@ function curl_exec(\stdClass $ch): bool|string
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversClass(CurlPost::class)]
+#[UsesClass(RequestParameters::class)]
 class CurlPostTest extends TestCase
 {
     protected function setUp(): void

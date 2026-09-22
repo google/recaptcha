@@ -1,6 +1,24 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+
+
 parameters:
     level: max
     paths:
         - src
         - tests
         - examples
+    checkBenevolentUnionTypes: true
+    checkImplicitMixed: true
+    checkMissingCallableSignature: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    checkUninitializedProperties: true
+    reportUnmatchedIgnoredErrors: true
+    treatPhpDocTypesAsCertain: false
+    strictRules:
+        dynamicCallOnStaticMethod: false
+
+
+

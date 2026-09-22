@@ -39,14 +39,14 @@ declare(strict_types=1);
 
 namespace ReCaptcha;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversClass(Response::class)]
 class ResponseTest extends TestCase
 {
     /**

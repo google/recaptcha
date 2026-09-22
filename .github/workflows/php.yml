@@ -18,7 +18,7 @@ jobs:
         php: ['8.4', '8.5']
 
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup PHP
       uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
@@ -32,7 +32,7 @@ jobs:
 
     - name: Cache Composer packages
       id: composer-cache
-      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: vendor
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
@@ -41,6 +41,9 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
+
+    - name: Run security audit
+      run: composer audit
 
     - name: Run linting
       run: composer run-script lint
@@ -63,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         # The check compares the PR against the last release tag, so it needs
         # the full history rather than a shallow clone.
@@ -93,4 +96,4 @@ jobs:
     steps:
     - name: Coveralls Finished
       run: |
-        curl -k https://coveralls.io/webhook?repo_token=${{ secrets.GITHUB_TOKEN }} -d "repo_name=$GITHUB_REPOSITORY&payload[build_num]=${{ github.run_id }}&payload[status]=done"
+        curl https://coveralls.io/webhook?repo_token=${{ secrets.GITHUB_TOKEN }} -d "repo_name=$GITHUB_REPOSITORY&payload[build_num]=${{ github.run_id }}&payload[status]=done"

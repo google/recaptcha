@@ -39,7 +39,9 @@ declare(strict_types=1);
 
 namespace ReCaptcha;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -64,9 +66,12 @@ function function_exists(string $function): bool
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversClass(ReCaptcha::class)]
+#[UsesClass(RequestMethod\CurlPost::class)]
+#[UsesClass(RequestMethod\Post::class)]
+#[UsesClass(RequestParameters::class)]
+#[UsesClass(Response::class)]
 class ReCaptchaTest extends TestCase
 {
     protected function tearDown(): void
@@ -126,7 +131,9 @@ class ReCaptchaTest extends TestCase
     public function testZeroAsStringIsValidSecret(): void
     {
         $rc = new ReCaptcha('0');
-        $this->assertInstanceOf(ReCaptcha::class, $rc);
+        $reflection = new \ReflectionClass($rc);
+        $property = $reflection->getProperty('secret');
+        $this->assertSame('0', $property->getValue($rc));
     }
 
     public function testZeroAsStringIsValidResponse(): void

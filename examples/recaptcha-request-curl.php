@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * BSD 3-Clause License.
  *
@@ -82,7 +84,7 @@ if ('' === $siteKey || '' === $secret) {
     <h2>Add your keys</h2>
     <p>If you do not have keys already then visit <kbd> <a href = "https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a></kbd> to generate them. Edit this file and set the respective keys in the <kbd>config.php</kbd> file or directly to <kbd>$siteKey</kbd> and <kbd>$secret</kbd>. Reload the page after this.</p>
     <?php
-} elseif (!empty($_POST[ReCaptcha::RESPONSE_KEY])) {
+} elseif (isset($_POST[ReCaptcha::RESPONSE_KEY]) && '' !== $_POST[ReCaptcha::RESPONSE_KEY]) {
     // The POST data here is unfiltered because this is an example.
     // In production, *always* sanitise and validate your input'
     ?>
@@ -91,7 +93,6 @@ if ('' === $siteKey || '' === $secret) {
         <?php
     // If the form submission includes the "g-captcha-response" field
     // Create an instance of the service using your secret and the CurlPost request method.
-    /** @var string $secret */
     $recaptcha = new ReCaptcha($secret, new CurlPost());
 
     // Make the call to verify the response and also pass the user's IP address

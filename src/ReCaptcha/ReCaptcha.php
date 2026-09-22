@@ -221,7 +221,7 @@ class ReCaptcha
             }
         }
 
-        if (empty($validationErrors)) {
+        if ([] === $validationErrors) {
             return $initialResponse;
         }
 
