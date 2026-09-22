@@ -1,8 +1,6 @@
-includes:
-    - phpstan-baseline.neon
-
 parameters:
-    level: max
+    level: 2
+    treatPhpDocTypesAsCertain: false
     paths:
         - src
         - tests

@@ -70,7 +70,7 @@ class ReCaptchaTest extends TestCase
         $rc = new ReCaptcha('secret');
         $response = $rc->verify('');
         $this->assertFalse($response->isSuccess());
-        $this->assertEquals([Recaptcha::E_MISSING_INPUT_RESPONSE], $response->getErrorCodes());
+        $this->assertEquals([ReCaptcha::E_MISSING_INPUT_RESPONSE], $response->getErrorCodes());
     }
 
     public function testDefaultRequestMethod()
