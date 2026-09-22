@@ -35,7 +35,7 @@
  */
 
 spl_autoload_register(function ($class) {
-    if ('ReCaptcha\\' !== substr($class, 0, 10)) {
+    if (!str_starts_with($class, 'ReCaptcha\\')) {
         /* If the class does not lie under the "ReCaptcha" namespace,
          * then we can exit immediately.
          */

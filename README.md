@@ -15,7 +15,7 @@ and v3.
 - reCAPTCHA: https://cloud.google.com/security/products/recaptcha
 - This repo: https://github.com/google/recaptcha
 - Hosted demo: https://recaptcha-demo.appspot.com/
-- Version: 1.5.2
+- Version: 2.0.0
 - License: BSD, see [LICENSE](LICENSE)
 
 > [!IMPORTANT]
@@ -32,21 +32,22 @@ Use [Composer](https://getcomposer.org) to install this library from Packagist:
 Run the following command from your project directory to add the dependency:
 
 ```sh
-composer require google/recaptcha "^1.5"
+composer require google/recaptcha "^2.0"
 ```
 
 Alternatively, add the dependency directly to your `composer.json` file:
 
 ```json
 "require": {
-    "google/recaptcha": "^1.5"
+    "google/recaptcha": "^2.0"
 }
 ```
 
 ### Support for earlier versions of PHP
 
-From the 1.3 release support moved to PHP 8 and up. For earlier versions, you
-will need to stay with the 1.2 releases.
+Version 2.0 requires PHP 8.4 and up. From the 1.3 release support moved to PHP 8
+and up (use `^1.5` for the 1.x compatibility line). For earlier versions of PHP,
+you will need to stay with the 1.2 releases.
 
 ### Direct download
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -50,28 +52,17 @@ use ReCaptcha\RequestParameters;
 class CurlPost implements RequestMethod
 {
     /**
-     * Curl connection to the reCAPTCHA service.
-     *
-     * @var Curl
-     */
-    private $curl;
-
-    /**
      * URL for reCAPTCHA siteverify API.
-     *
-     * @var string
      */
-    private $siteVerifyUrl;
+    private string $siteVerifyUrl;
 
     /**
      * Only needed if you want to override the defaults.
      *
-     * @param Curl   $curl          Curl resource
-     * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @param null|string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct(?Curl $curl = null, $siteVerifyUrl = null)
+    public function __construct(?string $siteVerifyUrl = null)
     {
-        $this->curl = (is_null($curl)) ? new Curl() : $curl;
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
     }
 
@@ -82,9 +73,9 @@ class CurlPost implements RequestMethod
      *
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params)
+    public function submit(RequestParameters $params): string
     {
-        $handle = $this->curl->init($this->siteVerifyUrl);
+        $handle = curl_init($this->siteVerifyUrl);
 
         $options = [
             CURLOPT_POST => true,
@@ -98,11 +89,11 @@ class CurlPost implements RequestMethod
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_TIMEOUT => 60,
         ];
-        $this->curl->setoptArray($handle, $options);
+        curl_setopt_array($handle, $options);
 
-        $response = $this->curl->exec($handle);
+        $response = curl_exec($handle);
 
-        if (false !== $response) {
+        if (is_string($response)) {
             return $response;
         }
 
