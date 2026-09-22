@@ -76,6 +76,34 @@ class SocketPostTest extends TestCase
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
+    public function testSubmitSuccessHttp11()
+    {
+        $socket = $this->createMock(Socket::class);
+        $socket->expects($this->once())
+            ->method('fsockopen')
+            ->willReturn(true)
+        ;
+        $socket->expects($this->once())
+            ->method('fwrite')
+        ;
+        $socket->expects($this->once())
+            ->method('fgets')
+            ->willReturn("HTTP/1.1 200 OK\n\nRESPONSEBODY")
+        ;
+        $socket->expects($this->exactly(2))
+            ->method('feof')
+            ->willReturnOnConsecutiveCalls(false, true)
+        ;
+        $socket->expects($this->once())
+            ->method('fclose')
+            ->willReturn(true)
+        ;
+
+        $ps = new SocketPost($socket);
+        $response = $ps->submit(new RequestParameters('secret', 'response', 'remoteip', 'version'));
+        $this->assertEquals('RESPONSEBODY', $response);
+    }
+
     public function testOverrideSiteVerifyUrl()
     {
         $socket = $this->createMock(Socket::class);

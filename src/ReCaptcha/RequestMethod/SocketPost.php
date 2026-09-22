@@ -104,7 +104,7 @@ class SocketPost implements RequestMethod
 
         $this->socket->fclose();
 
-        if (0 !== strpos($response, 'HTTP/1.0 200 OK')) {
+        if (1 !== preg_match('#^HTTP/1\.[01] 200 OK#', $response)) {
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
         }
 

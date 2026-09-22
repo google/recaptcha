@@ -96,6 +96,7 @@ class CurlPost implements RequestMethod
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_TIMEOUT => 60,
         ];
         $this->curl->setoptArray($handle, $options);
 

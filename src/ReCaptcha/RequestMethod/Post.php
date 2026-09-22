@@ -73,12 +73,15 @@ class Post implements RequestMethod
     public function submit(RequestParameters $params)
     {
         $options = [
+            'ssl' => [
+                'verify_peer' => true,
+                'verify_peer_name' => true,
+            ],
             'http' => [
                 'header' => "Content-type: application/x-www-form-urlencoded\r\n",
                 'method' => 'POST',
                 'content' => $params->toQueryString(),
-                // Force the peer to validate (not needed in 5.6.0+, but still works)
-                'verify_peer' => true,
+                'timeout' => 60,
             ],
         ];
         $context = stream_context_create($options);

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<roave-bc-check>
+    <baseline>
+        <ignored-regex>#\[BC\] CHANGED: Value of constant ReCaptcha\\ReCaptcha::VERSION changed#</ignored-regex>
+    </baseline>
+</roave-bc-check>
