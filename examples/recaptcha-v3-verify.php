@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * BSD 3-Clause License.
  *
@@ -40,8 +42,8 @@ require_once __DIR__.'/../src/autoload.php';
 use ReCaptcha\ReCaptcha;
 
 // Register API keys at https://www.google.com/recaptcha/admin
-$siteKey = getenv('RECAPTCHA_V3_SITE') ?: '';
-$secret = getenv('RECAPTCHA_V3_SECRET') ?: '';
+$siteKey = (string) getenv('RECAPTCHA_V3_SITE');
+$secret = (string) getenv('RECAPTCHA_V3_SECRET');
 
 // Copy the config.php.dist file to config.php and update it with your keys to run the examples
 if (('' === $siteKey || '' === $secret) && is_readable(__DIR__.'/config.php')) {

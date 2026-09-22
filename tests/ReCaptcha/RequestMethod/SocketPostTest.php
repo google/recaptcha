@@ -39,6 +39,8 @@ declare(strict_types=1);
 
 namespace ReCaptcha\RequestMethod;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestParameters;
@@ -90,7 +92,7 @@ function fwrite(\stdClass $handle, string $string, ?int $length = null): int
  */
 function stream_get_contents(\stdClass $handle, ?int $length = null, int $offset = -1): false|string
 {
-    if (empty(SocketPostGlobalState::$fgetsResponses)) {
+    if ([] === SocketPostGlobalState::$fgetsResponses) {
         return false;
     }
 
@@ -125,9 +127,9 @@ function fclose(\stdClass $handle): bool
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversClass(SocketPost::class)]
+#[UsesClass(RequestParameters::class)]
 class SocketPostTest extends TestCase
 {
     protected function setUp(): void

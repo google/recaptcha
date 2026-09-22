@@ -13,14 +13,21 @@
         "php": ">=8.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^13.1",
+        "phpunit/phpunit": "^13.3",
         "friendsofphp/php-cs-fixer": "^3.95",
         "php-coveralls/php-coveralls": "^2.9.1",
-        "phpstan/phpstan": "^2.1.51"
+        "phpstan/phpstan": "^2.2",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0"
     },
     "autoload": {
         "psr-4": {
             "ReCaptcha\\": "src/ReCaptcha"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ReCaptcha\\": "tests/ReCaptcha"
         }
     },
     "extra": {

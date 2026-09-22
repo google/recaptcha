@@ -39,19 +39,21 @@ declare(strict_types=1);
 
 namespace ReCaptcha\RequestMethod;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestParameters;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversClass(Post::class)]
+#[UsesClass(RequestParameters::class)]
 class PostTest extends TestCase
 {
     /**
-     * @var null|callable
+     * @var null|callable(array<int, mixed>): mixed
      */
     public static $assert;
     protected RequestParameters $parameters;
@@ -164,8 +166,7 @@ class PostTest extends TestCase
 function file_get_contents(string $filename, bool $use_include_path = false, mixed $context = null, int $offset = 0, ?int $length = null): false|string
 {
     $args = func_get_args();
-    if (PostTest::$assert) {
-        /** @var callable $assert */
+    if (null !== PostTest::$assert) {
         $assert = PostTest::$assert;
         $result = call_user_func($assert, $args);
         if (null === $result) {

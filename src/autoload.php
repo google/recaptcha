@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /* An autoloader for ReCaptcha\Foo classes. This should be required()
  * by the user before attempting to instantiate any of the ReCaptcha
  * classes.
@@ -34,7 +36,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-spl_autoload_register(function ($class) {
+spl_autoload_register(function (string $class): void {
     if (!str_starts_with($class, 'ReCaptcha\\')) {
         /* If the class does not lie under the "ReCaptcha" namespace,
          * then we can exit immediately.
@@ -52,7 +54,7 @@ spl_autoload_register(function ($class) {
      * we look here first, so that we don't waste time searching for
      * test classes in the common case.
      */
-    $path = dirname(__FILE__).'/'.$class.'.php';
+    $path = __DIR__.'/'.$class.'.php';
     if (is_readable($path)) {
         require_once $path;
 
@@ -62,7 +64,7 @@ spl_autoload_register(function ($class) {
     /* If we didn't find what we're looking for already, maybe it's
      * a test class?
      */
-    $path = dirname(__FILE__).'/../tests/'.$class.'.php';
+    $path = __DIR__.'/../tests/'.$class.'.php';
     if (is_readable($path)) {
         require_once $path;
     }
