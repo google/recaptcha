@@ -18,10 +18,10 @@ jobs:
         php: ['8.4', '8.5']
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
       with:
         php-version: ${{ matrix.php }}
         extensions: dom, curl, libxml, mbstring, tokenizer, xml, xmlwriter
@@ -32,7 +32,7 @@ jobs:
 
     - name: Cache Composer packages
       id: composer-cache
-      uses: actions/cache@v4
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
         path: vendor
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
@@ -57,6 +57,35 @@ jobs:
         COVERALLS_PARALLEL: true
         COVERALLS_FLAG_NAME: php-${{ matrix.php }}
       run: vendor/bin/php-coveralls -v
+
+  backward-compatibility:
+    name: Backward compatibility check
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      with:
+        # The check compares the PR against the last release tag, so it needs
+        # the full history rather than a shallow clone.
+        fetch-depth: 0
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+      with:
+        php-version: '8.4'
+
+    # Installed into its own directory at run time rather than through a
+    # docker action or this project's dev dependencies, so the check always
+    # runs with current releases and its dependencies stay out of the
+    # library's own dependency resolution.
+    - name: Install roave/backward-compatibility-check
+      run: |
+        mkdir bc-check
+        cd bc-check
+        composer require --no-interaction roave/backward-compatibility-check
+
+    - name: Check for BC breaks since the last release
+      run: bc-check/vendor/bin/roave-backward-compatibility-check --format=github-actions
 
   finish:
     needs: build
