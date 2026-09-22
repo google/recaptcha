@@ -42,7 +42,7 @@ namespace ReCaptcha;
 /**
  * The response returned from the service.
  */
-readonly class Response
+readonly class Response implements \JsonSerializable
 {
     /**
      * Constructor.
@@ -87,8 +87,7 @@ readonly class Response
         }
 
         if (isset($responseData['error-codes']) && is_array($responseData['error-codes'])) {
-            /** @var array<string> $errorCodes */
-            $errorCodes = $responseData['error-codes'];
+            $errorCodes = array_values(array_filter($responseData['error-codes'], 'is_string'));
 
             return new Response(false, $errorCodes, $hostname, $challengeTs, $apkPackageName, $score, $action);
         }
@@ -178,5 +177,23 @@ readonly class Response
             'action' => $this->getAction(),
             'error-codes' => $this->getErrorCodes(),
         ];
+    }
+
+    /**
+     * Specify data which should be serialized to JSON.
+     *
+     * @return array{
+     *     success: bool,
+     *     hostname: string,
+     *     challenge_ts: string,
+     *     apk_package_name: string,
+     *     score: null|float,
+     *     action: string,
+     *     error-codes: string[]
+     * }
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

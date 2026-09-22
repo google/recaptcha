@@ -123,6 +123,10 @@ class ResponseTest extends TestCase
                 '{"success": false, "error-codes": 123}',
                 false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
             ],
+            [
+                '{"success": false, "error-codes": ["valid-error", 123, null]}',
+                false, ['valid-error'], null, null, null, null, null,
+            ],
         ];
     }
 
@@ -194,5 +198,12 @@ class ResponseTest extends TestCase
             'action' => 'homepage',
         ];
         $this->assertEquals($expected, $response->toArray());
+    }
+
+    public function testJsonSerialize(): void
+    {
+        $response = new Response(true, [], 'hostname', 'timestamp', 'apk', 0.5, 'homepage');
+        $this->assertSame($response->toArray(), $response->jsonSerialize());
+        $this->assertSame(json_encode($response->toArray()), json_encode($response));
     }
 }

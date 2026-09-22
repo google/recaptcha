@@ -57,13 +57,20 @@ class CurlPost implements RequestMethod
     private string $siteVerifyUrl;
 
     /**
+     * Timeout (in seconds) for the cURL request.
+     */
+    private int $timeout;
+
+    /**
      * Only needed if you want to override the defaults.
      *
      * @param null|string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @param int         $timeout       timeout in seconds for the request (defaults to 60)
      */
-    public function __construct(?string $siteVerifyUrl = null)
+    public function __construct(?string $siteVerifyUrl = null, int $timeout = 60)
     {
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
+        $this->timeout = $timeout;
     }
 
     /**
@@ -87,7 +94,8 @@ class CurlPost implements RequestMethod
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_TIMEOUT => 60,
+            CURLOPT_CONNECTTIMEOUT => $this->timeout,
+            CURLOPT_TIMEOUT => $this->timeout,
         ];
         curl_setopt_array($handle, $options);
 

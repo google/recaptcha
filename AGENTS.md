@@ -35,9 +35,9 @@ This file provides authoritative context, architectural invariants, branching po
 
 ### Release Checklist
 When preparing a new release (`X.Y.Z`):
-1. Update `ReCaptcha::VERSION` (`public const string VERSION = 'php_X.Y.Z';`) in [`src/ReCaptcha/ReCaptcha.php`](src/ReCaptcha/ReCaptcha.php).
+1. Update `ReCaptcha::VERSION` (`public const VERSION = 'php_X.Y.Z';`) in [`src/ReCaptcha/ReCaptcha.php`](src/ReCaptcha/ReCaptcha.php).
 2. If starting a new minor/major series, update `extra.branch-alias.dev-main` in [`composer.json`](composer.json).
-3. Run all quality gates (`composer validate --strict`, `composer run audit`, `composer run lint`, `composer run phpstan`, `composer run test`).
+3. Run all quality gates (`composer validate --strict`, `composer audit`, `composer run lint`, `composer run phpstan`, `composer run test`).
 4. Tag `X.Y.Z` on the target branch and publish structured GitHub Release notes (`Overview`, `Breaking Changes` if major, `Bug Fixes` / `What's Changed`, `Compatibility & Upgrade Guide`, and `Full Changelog` compare link).
 
 ---

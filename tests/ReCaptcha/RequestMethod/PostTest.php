@@ -85,6 +85,30 @@ class PostTest extends TestCase
         $this->assertEquals(1, $this->runcount, 'The assertion was ran');
     }
 
+    public function testCustomTimeout(): void
+    {
+        $req = new Post(null, 10);
+        self::$assert = [$this, 'customTimeoutOptionsCallback'];
+        $req->submit($this->parameters);
+        $this->assertEquals(1, $this->runcount, 'The assertion was ran');
+    }
+
+    /**
+     * @param array<int, mixed> $args
+     */
+    public function customTimeoutOptionsCallback(array $args): void
+    {
+        ++$this->runcount;
+
+        /** @var resource $context */
+        $context = $args[2];
+        $options = stream_context_get_options($context);
+
+        /** @var array<string, mixed> $httpOptions */
+        $httpOptions = $options['http'];
+        $this->assertSame(10, $httpOptions['timeout']);
+    }
+
     public function testConnectionFailureReturnsError(): void
     {
         $req = new Post('https://bad.connection/');

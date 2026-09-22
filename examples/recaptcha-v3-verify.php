@@ -54,21 +54,17 @@ if (('' === $siteKey || '' === $secret) && is_readable(__DIR__.'/config.php')) {
 }
 
 // Effectively we're providing an API endpoint here that will accept the token, verify it, and return the action / score to the page
-// In production, always sanitize and validate the input you retrieve from the request.
-/** @var string $secret */
+// In production, always sanitize and validate the input you retrieve from the request, and hardcode (or allowlist) the expected action server-side.
 $recaptcha = new ReCaptcha($secret);
 
-/** @var string $serverName */
-$serverName = $_SERVER['SERVER_NAME'];
+$allowedActions = ['examples/v3scores', 'examples/csp'];
+$action = isset($_GET['action']) && is_string($_GET['action']) && in_array($_GET['action'], $allowedActions, true)
+    ? $_GET['action']
+    : 'examples/v3scores';
 
-/** @var string $action */
-$action = $_GET['action'];
-
-/** @var string $token */
-$token = $_GET['token'];
-
-/** @var null|string $remoteAddr */
-$remoteAddr = $_SERVER['REMOTE_ADDR'];
+$token = isset($_GET['token']) && is_string($_GET['token']) ? $_GET['token'] : '';
+$serverName = isset($_SERVER['SERVER_NAME']) && is_string($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+$remoteAddr = isset($_SERVER['REMOTE_ADDR']) && is_string($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
 
 $resp = $recaptcha->setExpectedHostname($serverName)
     ->setExpectedAction($action)
@@ -76,4 +72,4 @@ $resp = $recaptcha->setExpectedHostname($serverName)
     ->verify($token, $remoteAddr)
 ;
 header('Content-type:application/json');
-echo json_encode($resp->toArray());
+echo json_encode($resp);

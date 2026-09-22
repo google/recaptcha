@@ -53,13 +53,20 @@ class SocketPost implements RequestMethod
     private string $siteVerifyUrl;
 
     /**
+     * Timeout (in seconds) for the socket connection and stream read.
+     */
+    private int $timeout;
+
+    /**
      * Only needed if you want to override the defaults.
      *
      * @param null|string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @param int         $timeout       timeout in seconds for the request (defaults to 60)
      */
-    public function __construct(?string $siteVerifyUrl = null)
+    public function __construct(?string $siteVerifyUrl = null, int $timeout = 60)
     {
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
+        $this->timeout = $timeout;
     }
 
     /**
@@ -79,13 +86,13 @@ class SocketPost implements RequestMethod
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
         }
 
-        $handle = fsockopen('ssl://'.$urlParsed['host'], 443, $errno, $errstr, 30);
+        $handle = fsockopen('ssl://'.$urlParsed['host'], 443, $errno, $errstr, $this->timeout);
 
         if (false === $handle || 0 !== $errno || '' !== $errstr) {
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
         }
 
-        if (false === stream_set_timeout($handle, 60)) {
+        if (false === stream_set_timeout($handle, $this->timeout)) {
             fclose($handle);
 
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
@@ -113,7 +120,7 @@ class SocketPost implements RequestMethod
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
         }
 
-        $parts = preg_split("#\n\\s*\n#Uis", $response);
+        $parts = preg_split("#\n\\s*\n#Uis", $response, 2);
 
         if (!is_array($parts) || !isset($parts[1])) {
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
