@@ -49,7 +49,7 @@ class ReCaptcha
      *
      * @var string
      */
-    public const VERSION = 'php_2.0.0';
+    public const VERSION = 'php_2.1.0';
 
     /**
      * URL for reCAPTCHA siteverify API.

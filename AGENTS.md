@@ -21,7 +21,7 @@ This file provides authoritative context, architectural invariants, branching po
 ### Active Branches
 | Branch | Series | PHP Constraint | Type System & Mutability Contract |
 | :--- | :--- | :--- | :--- |
-| **`main`** | **`2.x`** (`2.0.x-dev`) | `>=8.4` | `declare(strict_types=1)` in all files, strict scalar/return type hints, `readonly` properties on `RequestParameters` and `Response`. |
+| **`main`** | **`2.x`** (`2.1.x-dev`) | `>=8.4` | `declare(strict_types=1)` in all files, strict scalar/return type hints, `readonly` properties on `RequestParameters` and `Response`. |
 | **`1.x`** | **`1.5.x`** (`1.5.x-dev`) | `>=8.0` | Coercive PHP typing (no `declare(strict_types=1)` in `src/`), non-`readonly` properties, backward-compatible with `1.0.0`–`1.5.x`. |
 
 ### Backward Compatibility Enforcement (`roave/backward-compatibility-check`)
