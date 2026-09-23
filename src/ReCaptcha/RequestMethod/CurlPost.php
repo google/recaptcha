@@ -62,6 +62,11 @@ class CurlPost implements RequestMethod
     private int $timeout;
 
     /**
+     * Lazily initialized cURL handle reused across requests.
+     */
+    private ?object $handle = null;
+
+    /**
      * Only needed if you want to override the defaults.
      *
      * @param null|string $siteVerifyUrl URL for reCAPTCHA siteverify API
@@ -82,7 +87,13 @@ class CurlPost implements RequestMethod
      */
     public function submit(RequestParameters $params): string
     {
-        $handle = curl_init($this->siteVerifyUrl);
+        if (null === $this->handle) {
+            $handle = curl_init($this->siteVerifyUrl);
+            if (false === $handle) {
+                return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+            }
+            $this->handle = $handle;
+        }
 
         $options = [
             CURLOPT_POST => true,
@@ -97,14 +108,18 @@ class CurlPost implements RequestMethod
             CURLOPT_CONNECTTIMEOUT => $this->timeout,
             CURLOPT_TIMEOUT => $this->timeout,
         ];
-        curl_setopt_array($handle, $options);
+        curl_setopt_array($this->handle, $options);
 
-        $response = curl_exec($handle);
+        $response = curl_exec($this->handle);
 
-        if (is_string($response)) {
-            return $response;
+        if (!is_string($response)) {
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
         }
 
-        return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+        if (200 !== curl_getinfo($this->handle, CURLINFO_HTTP_CODE)) {
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
+        }
+
+        return $response;
     }
 }

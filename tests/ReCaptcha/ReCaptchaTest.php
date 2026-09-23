@@ -295,7 +295,59 @@ class ReCaptchaTest extends TestCase
         $method = $this->getMockRequestMethod('{"success": true, "challenge_ts": "invalid-timestamp"}');
         $rc = new ReCaptcha('secret', $method);
         $response = $rc->setChallengeTimeout(60)->verify('response');
-        $this->assertTrue($response->isSuccess());
+        $this->assertFalse($response->isSuccess());
+        $this->assertEquals([ReCaptcha::E_CHALLENGE_TIMEOUT], $response->getErrorCodes());
+    }
+
+    public function testVerifyWithMissingChallengeTsAndTimeout(): void
+    {
+        $method = $this->getMockRequestMethod('{"success": true}');
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->setChallengeTimeout(60)->verify('response');
+        $this->assertFalse($response->isSuccess());
+        $this->assertEquals([ReCaptcha::E_CHALLENGE_TIMEOUT], $response->getErrorCodes());
+    }
+
+    public function testVerifyZeroThresholdFailsWhenScoreIsMissing(): void
+    {
+        $method = $this->getMockRequestMethod('{"success": true}');
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->setScoreThreshold(0.0)->verify('response');
+        $this->assertFalse($response->isSuccess());
+        $this->assertEquals([ReCaptcha::E_SCORE_THRESHOLD_NOT_MET], $response->getErrorCodes());
+
+        $methodWithZeroScore = $this->getMockRequestMethod('{"success": true, "score": 0.0}');
+        $rcWithZeroScore = new ReCaptcha('secret', $methodWithZeroScore);
+        $responseWithZeroScore = $rcWithZeroScore->setScoreThreshold(0.0)->verify('response');
+        $this->assertTrue($responseWithZeroScore->isSuccess());
+    }
+
+    public function testImmutableWithMethodsDoNotMutateOriginalInstance(): void
+    {
+        $method = $this->getMockRequestMethod('{"success": true, "hostname": "other.host", "apk_package_name": "other.apk", "action": "other/action", "score": 0.2}');
+        $base = new ReCaptcha('secret', $method);
+
+        $withHostname = $base->withExpectedHostname('expected.host');
+        $withApk = $base->withExpectedApkPackageName('expected.apk');
+        $withAction = $base->withExpectedAction('expected/action');
+        $withThreshold = $base->withScoreThreshold(0.8);
+        $withTimeout = $base->withChallengeTimeout(60);
+
+        $this->assertNotSame($base, $withHostname);
+        $this->assertNotSame($base, $withApk);
+        $this->assertNotSame($base, $withAction);
+        $this->assertNotSame($base, $withThreshold);
+        $this->assertNotSame($base, $withTimeout);
+
+        // Original $base instance remains unmutated and passes verification
+        $this->assertTrue($base->verify('response')->isSuccess());
+
+        // Derived instances enforce their respective rules
+        $this->assertEquals([ReCaptcha::E_HOSTNAME_MISMATCH], $withHostname->verify('response')->getErrorCodes());
+        $this->assertEquals([ReCaptcha::E_APK_PACKAGE_NAME_MISMATCH], $withApk->verify('response')->getErrorCodes());
+        $this->assertEquals([ReCaptcha::E_ACTION_MISMATCH], $withAction->verify('response')->getErrorCodes());
+        $this->assertEquals([ReCaptcha::E_SCORE_THRESHOLD_NOT_MET], $withThreshold->verify('response')->getErrorCodes());
+        $this->assertEquals([ReCaptcha::E_CHALLENGE_TIMEOUT], $withTimeout->verify('response')->getErrorCodes());
     }
 
     public function testVerifyMergesErrors(): void
@@ -305,6 +357,29 @@ class ReCaptchaTest extends TestCase
         $response = $rc->setScoreThreshold(0.5)->verify('response');
         $this->assertFalse($response->isSuccess());
         $this->assertEquals(['initial-error', ReCaptcha::E_SCORE_THRESHOLD_NOT_MET], $response->getErrorCodes());
+    }
+
+    public function testStandaloneAutoloaderHandlesClassesCleanly(): void
+    {
+        require __DIR__.'/../../src/autoload.php';
+        $autoloaders = spl_autoload_functions();
+        $this->assertNotEmpty($autoloaders);
+
+        $standaloneLoader = end($autoloaders);
+        $this->assertIsCallable($standaloneLoader);
+
+        try {
+            // Non-ReCaptcha namespace exits early without error
+            $standaloneLoader('NonExistentVendor\NonExistentClass');
+            // Existing ReCaptcha src and test classes resolve cleanly via require_once
+            $standaloneLoader(ReCaptcha::class);
+            $standaloneLoader(self::class);
+            // Non-existent ReCaptcha class completes without error
+            $standaloneLoader('ReCaptcha\NonExistentClass');
+            $this->assertTrue(class_exists(ReCaptcha::class, false));
+        } finally {
+            spl_autoload_unregister($standaloneLoader);
+        }
     }
 
     private function getMockRequestMethod(string $responseJson): RequestMethod

@@ -51,6 +51,9 @@ use ReCaptcha\RequestParameters;
 class CurlPostGlobalState
 {
     public static ?string $initUrl = null;
+    public static int $initCount = 0;
+    public static bool $initFails = false;
+    public static int $httpCode = 200;
 
     /**
      * @var null|array<int, mixed>
@@ -63,11 +66,12 @@ class CurlPostGlobalState
 /**
  * Mock curl_init in the ReCaptcha\RequestMethod namespace.
  */
-function curl_init(?string $url = null): \stdClass
+function curl_init(?string $url = null): false|object
 {
+    ++CurlPostGlobalState::$initCount;
     CurlPostGlobalState::$initUrl = $url;
 
-    return new \stdClass();
+    return CurlPostGlobalState::$initFails ? false : new \stdClass();
 }
 
 /**
@@ -75,7 +79,7 @@ function curl_init(?string $url = null): \stdClass
  *
  * @param array<int, mixed> $options
  */
-function curl_setopt_array(\stdClass $ch, array $options): bool
+function curl_setopt_array(object $ch, array $options): bool
 {
     CurlPostGlobalState::$setoptArrayOptions = $options;
 
@@ -85,9 +89,17 @@ function curl_setopt_array(\stdClass $ch, array $options): bool
 /**
  * Mock curl_exec in the ReCaptcha\RequestMethod namespace.
  */
-function curl_exec(\stdClass $ch): bool|string
+function curl_exec(object $ch): bool|string
 {
     return CurlPostGlobalState::$execResponse;
+}
+
+/**
+ * Mock curl_getinfo in the ReCaptcha\RequestMethod namespace.
+ */
+function curl_getinfo(object $ch, ?int $option = null): mixed
+{
+    return CurlPostGlobalState::$httpCode;
 }
 
 /**
@@ -100,6 +112,9 @@ class CurlPostTest extends TestCase
     protected function setUp(): void
     {
         CurlPostGlobalState::$initUrl = null;
+        CurlPostGlobalState::$initCount = 0;
+        CurlPostGlobalState::$initFails = false;
+        CurlPostGlobalState::$httpCode = 200;
         CurlPostGlobalState::$setoptArrayOptions = null;
         CurlPostGlobalState::$execResponse = 'RESPONSEBODY';
     }
@@ -117,6 +132,14 @@ class CurlPostTest extends TestCase
         $this->assertSame(60, $options[CURLOPT_CONNECTTIMEOUT]);
         $this->assertSame(60, $options[CURLOPT_TIMEOUT]);
         $this->assertEquals('RESPONSEBODY', $response);
+    }
+
+    public function testHandleIsReusedAcrossMultipleSubmissions(): void
+    {
+        $pc = new CurlPost();
+        $this->assertSame('RESPONSEBODY', $pc->submit(new RequestParameters('secret', 'response1')));
+        $this->assertSame('RESPONSEBODY', $pc->submit(new RequestParameters('secret', 'response2')));
+        $this->assertSame(1, CurlPostGlobalState::$initCount);
     }
 
     public function testCustomTimeout(): void
@@ -141,6 +164,15 @@ class CurlPostTest extends TestCase
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
+    public function testCurlInitFailureReturnsError(): void
+    {
+        CurlPostGlobalState::$initFails = true;
+        $pc = new CurlPost();
+        $response = $pc->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
+    }
+
     public function testConnectionFailureReturnsError(): void
     {
         CurlPostGlobalState::$execResponse = false;
@@ -148,5 +180,14 @@ class CurlPostTest extends TestCase
         $response = $pc->submit(new RequestParameters('secret', 'response'));
 
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
+    }
+
+    public function testBadHttpStatusReturnsError(): void
+    {
+        CurlPostGlobalState::$httpCode = 500;
+        $pc = new CurlPost();
+        $response = $pc->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
     }
 }
