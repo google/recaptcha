@@ -6,6 +6,7 @@
 /AGENTS.md export-ignore
 /app.yaml export-ignore
 /ARCHITECTURE.md export-ignore
+/composer.lock export-ignore
 /CONTRIBUTING.md export-ignore
 /examples export-ignore
 /phpstan.neon export-ignore
