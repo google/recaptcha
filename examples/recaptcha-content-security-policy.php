@@ -63,7 +63,7 @@ header(
     .'frame-src https://www.google.com/; ' // allow frames from this URL
 
     ."style-src 'self'; " // allow style from our own origin
-    ."connect-src 'self'; " // allow the fetch calls to our own origin
+    ."connect-src 'self' https://www.google.com/recaptcha/; " // allow the fetch calls to our own origin and reCAPTCHA service
 );
 
 // Register API keys at https://www.google.com/recaptcha/admin
@@ -131,7 +131,7 @@ if ('' === $siteKey || '' === $secret) {
         grecaptcha.ready(function() {
             document.querySelector('.step1').classList.remove('hidden');
             grecaptcha.execute('<?php echo (string) $siteKey; ?>', {action: '<?php echo $pageAction; ?>'}).then(function(token) {
-                document.querySelector('.token').textContent = 'fetch(\'/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token=\' + encodeURIComponent(token))';
+                document.querySelector('.token').textContent = 'fetch(\'/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token=' + encodeURIComponent(token) + '\')';
                 document.querySelector('.step2').classList.remove('hidden');
 
                 fetch('/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token=' + encodeURIComponent(token)).then(function(response) {
