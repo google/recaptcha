@@ -12,21 +12,20 @@ This file provides authoritative context, architectural invariants, branching po
   - `composer.json` `require` MUST only specify `"php": ">=8.4"` (and optional PHP extensions in `suggest` if ever needed). Never add third-party runtime packages to `require`.
   - The library MUST work both via Composer's PSR-4 autoloader (`vendor/autoload.php`) and via the standalone autoloader (`src/autoload.php`) for non-Composer installations.
 - **Distribution Cleanliness**:
-  - All development, CI, test, documentation, and agent configuration files MUST be listed with `export-ignore` in [`.gitattributes`](.gitattributes) so Composer `--prefer-dist` archives contain only runtime library files (`src/`, `composer.json`, `LICENSE`, `README.md`, `SECURITY.md`).
+  - All development, CI, test, documentation, and agent configuration files MUST be listed with `export-ignore` in [`.gitattributes`](.gitattributes) so Composer `--prefer-dist` archives contain only runtime library files (`src/`, `composer.json`, `LICENSE`, `README.md`).
 
 ---
 
 ## 2. Branching Model & Semantic Versioning (`SemVer`)
 
-### Active Branches
+### Active Branch
 | Branch | Series | PHP Constraint | Type System & Mutability Contract |
 | :--- | :--- | :--- | :--- |
-| **`main`** | **`2.x`** (`2.0.x-dev`) | `>=8.4` | `declare(strict_types=1)` in all files, strict scalar/return type hints, `readonly` properties on `RequestParameters` and `Response`. |
-| **`1.x`** | **`1.5.x`** (`1.5.x-dev`) | `>=8.0` | Coercive PHP typing (no `declare(strict_types=1)` in `src/`), non-`readonly` properties, backward-compatible with `1.0.0`–`1.5.x`. |
+| **`main`** | **`2.x`** (`2.1.x-dev`) | `>=8.4` | `declare(strict_types=1)` in all files, strict scalar/return type hints, `readonly` properties on `RequestParameters` and `Response`. |
 
 ### Backward Compatibility Enforcement (`roave/backward-compatibility-check`)
 - Every push and pull request on `main` runs `roave/backward-compatibility-check` against the latest tagged release in `.github/workflows/php.yml`.
-- **Allowed changes in minor/patch releases (`2.0.x`, `2.x.0`)**:
+- **Allowed changes in minor/patch releases (`2.1.x`, `2.x.0`)**:
   - Updating the value of `ReCaptcha\ReCaptcha::VERSION` (explicitly allowlisted in [`.roave-backward-compatibility-check.xml`](.roave-backward-compatibility-check.xml)).
   - Internal implementation improvements that do not alter class hierarchies, public/protected method signatures, parameter types, return types, property types/visibility, or constant values.
   - Adding new optional parameters with default values or new public methods/constants (minor release `2.x.0`).

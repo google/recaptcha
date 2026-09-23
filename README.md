@@ -15,7 +15,7 @@ and v3.
 - reCAPTCHA: https://cloud.google.com/security/products/recaptcha
 - This repo: https://github.com/google/recaptcha
 - Hosted demo: https://recaptcha-demo.appspot.com/
-- Version: 2.0.0
+- Version: 2.1.0
 - License: BSD, see [LICENSE](LICENSE)
 
 > [!IMPORTANT]
@@ -45,7 +45,7 @@ Alternatively, add the dependency directly to your `composer.json` file:
 
 ### Support for earlier versions of PHP
 
-Version 2.0 requires PHP 8.4 and up. From the 1.3 release support moved to PHP 8
+Version 2.x requires PHP 8.4 and up. From the 1.3 release support moved to PHP 8
 and up (use `^1.5` for the 1.x compatibility line). For earlier versions of PHP,
 you will need to stay with the 1.2 releases.
 
