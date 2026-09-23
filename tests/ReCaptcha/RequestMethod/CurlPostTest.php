@@ -114,6 +114,20 @@ class CurlPostTest extends TestCase
         /** @var array<int, mixed> $options */
         $options = CurlPostGlobalState::$setoptArrayOptions;
         $this->assertTrue($options[CURLOPT_POST]);
+        $this->assertSame(60, $options[CURLOPT_CONNECTTIMEOUT]);
+        $this->assertSame(60, $options[CURLOPT_TIMEOUT]);
+        $this->assertEquals('RESPONSEBODY', $response);
+    }
+
+    public function testCustomTimeout(): void
+    {
+        $pc = new CurlPost(null, 10);
+        $response = $pc->submit(new RequestParameters('secret', 'response'));
+
+        /** @var array<int, mixed> $options */
+        $options = CurlPostGlobalState::$setoptArrayOptions;
+        $this->assertSame(10, $options[CURLOPT_CONNECTTIMEOUT]);
+        $this->assertSame(10, $options[CURLOPT_TIMEOUT]);
         $this->assertEquals('RESPONSEBODY', $response);
     }
 

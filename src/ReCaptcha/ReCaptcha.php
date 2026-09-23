@@ -59,6 +59,13 @@ class ReCaptcha
     public const SITE_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
 
     /**
+     * Alternative global URL for reCAPTCHA siteverify API when www.google.com is not accessible.
+     *
+     * @var string
+     */
+    public const SITE_VERIFY_URL_ALTERNATIVE = 'https://www.recaptcha.net/recaptcha/api/siteverify';
+
+    /**
      * User response token parameter name.
      *
      * @var string
@@ -159,7 +166,7 @@ class ReCaptcha
      *
      * @throws \RuntimeException if $secret is invalid
      */
-    public function __construct(string $secret, ?RequestMethod $requestMethod = null)
+    public function __construct(#[\SensitiveParameter] string $secret, ?RequestMethod $requestMethod = null)
     {
         if ('' === $secret) {
             throw new \RuntimeException('No secret provided');

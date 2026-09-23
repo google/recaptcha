@@ -54,13 +54,20 @@ class Post implements RequestMethod
     private string $siteVerifyUrl;
 
     /**
+     * Timeout (in seconds) for the HTTP stream context.
+     */
+    private int $timeout;
+
+    /**
      * Only needed if you want to override the defaults.
      *
      * @param null|string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @param int         $timeout       timeout in seconds for the request (defaults to 60)
      */
-    public function __construct(?string $siteVerifyUrl = null)
+    public function __construct(?string $siteVerifyUrl = null, int $timeout = 60)
     {
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
+        $this->timeout = $timeout;
     }
 
     /**
@@ -81,7 +88,7 @@ class Post implements RequestMethod
                 'header' => "Content-type: application/x-www-form-urlencoded\r\n",
                 'method' => 'POST',
                 'content' => $params->toQueryString(),
-                'timeout' => 60,
+                'timeout' => $this->timeout,
             ],
         ];
         $context = stream_context_create($options);

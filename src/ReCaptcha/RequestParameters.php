@@ -53,6 +53,7 @@ readonly class RequestParameters
      * @param null|string $version  version of this client library
      */
     public function __construct(
+        #[\SensitiveParameter]
         private string $secret,
         private string $response,
         private ?string $remoteIp = null,

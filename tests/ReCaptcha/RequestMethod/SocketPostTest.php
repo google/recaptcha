@@ -63,6 +63,8 @@ class SocketPostGlobalState
     public static int $feofCount = 0;
     public static bool $fcloseCalled = false;
     public static bool $streamSetTimeoutSuccess = true;
+    public static ?float $fsockopenTimeout = null;
+    public static ?int $streamTimeoutSeconds = null;
 }
 
 /**
@@ -71,6 +73,7 @@ class SocketPostGlobalState
 function fsockopen(string $hostname, int $port = -1, int &$errno = 0, string &$errstr = '', ?float $timeout = null): false|\stdClass
 {
     SocketPostGlobalState::$fsockopenHostname = $hostname;
+    SocketPostGlobalState::$fsockopenTimeout = $timeout;
     $errno = SocketPostGlobalState::$fsockopenErrno;
     $errstr = SocketPostGlobalState::$fsockopenErrstr;
 
@@ -112,6 +115,8 @@ function stream_get_contents(\stdClass $handle, ?int $length = null, int $offset
  */
 function stream_set_timeout(\stdClass $handle, int $seconds, int $microseconds = 0): bool
 {
+    SocketPostGlobalState::$streamTimeoutSeconds = $seconds;
+
     return SocketPostGlobalState::$streamSetTimeoutSuccess;
 }
 
@@ -142,6 +147,8 @@ class SocketPostTest extends TestCase
         SocketPostGlobalState::$fgetsResponses = [];
         SocketPostGlobalState::$fcloseCalled = false;
         SocketPostGlobalState::$streamSetTimeoutSuccess = true;
+        SocketPostGlobalState::$fsockopenTimeout = null;
+        SocketPostGlobalState::$streamTimeoutSeconds = null;
     }
 
     public function testSubmit(): void
@@ -157,8 +164,28 @@ class SocketPostTest extends TestCase
         $response = $sp->submit(new RequestParameters('secret', 'response'));
 
         $this->assertEquals('ssl://www.google.com', SocketPostGlobalState::$fsockopenHostname);
+        $this->assertSame(60.0, SocketPostGlobalState::$fsockopenTimeout);
+        $this->assertSame(60, SocketPostGlobalState::$streamTimeoutSeconds);
         $this->assertStringContainsString('secret=secret', SocketPostGlobalState::$fwriteData);
         $this->assertStringContainsString('response=response', SocketPostGlobalState::$fwriteData);
+        $this->assertEquals('RESPONSEBODY', $response);
+        $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
+    }
+
+    public function testCustomTimeout(): void
+    {
+        SocketPostGlobalState::$fgetsResponses = [
+            "HTTP/1.0 200 OK\r\n",
+            "Content-Type: application/json\r\n",
+            "\r\n",
+            'RESPONSEBODY',
+        ];
+
+        $sp = new SocketPost(null, 10);
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertSame(10.0, SocketPostGlobalState::$fsockopenTimeout);
+        $this->assertSame(10, SocketPostGlobalState::$streamTimeoutSeconds);
         $this->assertEquals('RESPONSEBODY', $response);
         $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
     }

@@ -99,12 +99,12 @@ if ('' === $siteKey || '' === $secret) {
         grecaptcha.ready(function() {
             document.querySelector('.step1').classList.remove('hidden');
             grecaptcha.execute('<?php echo (string) $siteKey; ?>', {action: '<?php echo $pageAction; ?>'}).then(function(token) {
-                document.querySelector('.token').innerHTML = 'fetch(\'/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token=\'' + token;
+                document.querySelector('.token').textContent = 'fetch(\'/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token=' + encodeURIComponent(token) + '\')';
                 document.querySelector('.step2').classList.remove('hidden');
 
-                fetch('/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token='+token).then(function(response) {
+                fetch('/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token=' + encodeURIComponent(token)).then(function(response) {
                     response.json().then(function(data) {
-                        document.querySelector('.response').innerHTML = JSON.stringify(data, null, 2);
+                        document.querySelector('.response').textContent = JSON.stringify(data, null, 2);
                         document.querySelector('.step3').classList.remove('hidden');
                     });
                 });
