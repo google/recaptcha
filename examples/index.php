@@ -67,6 +67,7 @@ declare(strict_types=1);
     <li><h2>reCAPTCHA v3</h2>
     <ul>
       <li><a href="/recaptcha-v3-request-scores.php">Request scores</a></li>
+      <li><a href="/recaptcha-v3-immutable.php">Immutable <kbd>with*()</kbd> builders</a></li>
     </ul>
     </li>
     <li><h2>General</h2>
