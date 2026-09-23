@@ -45,7 +45,7 @@ Alternatively, add the dependency directly to your `composer.json` file:
 
 ### Support for earlier versions of PHP
 
-Version 2.0 requires PHP 8.4 and up. From the 1.3 release support moved to PHP 8
+Version 2.x requires PHP 8.4 and up. From the 1.3 release support moved to PHP 8
 and up (use `^1.5` for the 1.x compatibility line). For earlier versions of PHP,
 you will need to stay with the 1.2 releases.
 
