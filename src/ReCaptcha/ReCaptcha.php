@@ -216,14 +216,14 @@ class ReCaptcha
             $validationErrors[] = self::E_ACTION_MISMATCH;
         }
 
-        if (null !== $this->threshold && $this->threshold > $initialResponse->getScore()) {
+        if (null !== $this->threshold && (null === $initialResponse->getScore() || $this->threshold > $initialResponse->getScore())) {
             $validationErrors[] = self::E_SCORE_THRESHOLD_NOT_MET;
         }
 
         if (null !== $this->timeoutSeconds) {
             $challengeTs = strtotime($initialResponse->getChallengeTs());
 
-            if ($challengeTs > 0 && time() - $challengeTs > $this->timeoutSeconds) {
+            if (false === $challengeTs || $challengeTs <= 0 || time() - $challengeTs > $this->timeoutSeconds) {
                 $validationErrors[] = self::E_CHALLENGE_TIMEOUT;
             }
         }
@@ -259,6 +259,20 @@ class ReCaptcha
     }
 
     /**
+     * Return a new instance with the expected hostname configured without mutating the current instance.
+     *
+     * @param string $hostname Expected hostname
+     *
+     * @return ReCaptcha Cloned instance with the expected hostname set
+     */
+    public function withExpectedHostname(string $hostname): self
+    {
+        $clone = clone $this;
+
+        return $clone->setExpectedHostname($hostname);
+    }
+
+    /**
      * Provide an APK package name to match against in verify().
      *
      * @param string $apkPackageName Expected APK package name
@@ -270,6 +284,20 @@ class ReCaptcha
         $this->apkPackageName = $apkPackageName;
 
         return $this;
+    }
+
+    /**
+     * Return a new instance with the expected APK package name configured without mutating the current instance.
+     *
+     * @param string $apkPackageName Expected APK package name
+     *
+     * @return ReCaptcha Cloned instance with the expected APK package name set
+     */
+    public function withExpectedApkPackageName(string $apkPackageName): self
+    {
+        $clone = clone $this;
+
+        return $clone->setExpectedApkPackageName($apkPackageName);
     }
 
     /**
@@ -288,6 +316,20 @@ class ReCaptcha
     }
 
     /**
+     * Return a new instance with the expected action configured without mutating the current instance.
+     *
+     * @param string $action Expected action
+     *
+     * @return ReCaptcha Cloned instance with the expected action set
+     */
+    public function withExpectedAction(string $action): self
+    {
+        $clone = clone $this;
+
+        return $clone->setExpectedAction($action);
+    }
+
+    /**
      * Provide a threshold to meet or exceed in verify()
      * Threshold should be a float between 0 and 1 which will be tested as response >= threshold.
      *
@@ -303,6 +345,20 @@ class ReCaptcha
     }
 
     /**
+     * Return a new instance with the score threshold configured without mutating the current instance.
+     *
+     * @param float $threshold Expected threshold
+     *
+     * @return ReCaptcha Cloned instance with the score threshold set
+     */
+    public function withScoreThreshold(float $threshold): self
+    {
+        $clone = clone $this;
+
+        return $clone->setScoreThreshold($threshold);
+    }
+
+    /**
      * Provide a timeout in seconds to test against the challenge timestamp in verify().
      *
      * @param int $timeoutSeconds Maximum time (seconds) elapsed since the challenge timestamp
@@ -314,5 +370,19 @@ class ReCaptcha
         $this->timeoutSeconds = $timeoutSeconds;
 
         return $this;
+    }
+
+    /**
+     * Return a new instance with the challenge timeout configured without mutating the current instance.
+     *
+     * @param int $timeoutSeconds Maximum time (seconds) elapsed since the challenge timestamp
+     *
+     * @return ReCaptcha Cloned instance with the challenge timeout set
+     */
+    public function withChallengeTimeout(int $timeoutSeconds): self
+    {
+        $clone = clone $this;
+
+        return $clone->setChallengeTimeout($timeoutSeconds);
     }
 }

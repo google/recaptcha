@@ -105,7 +105,7 @@ The following methods are available:
   "Domain/Package Name Validation" for your credentials.
 - `setExpectedAction($action)`: ensures the action matches for the v3 API.
 - `setScoreThreshold($threshold)`: set a score threshold for responses from the
-  v3 API
+  v3 API.
 - `setChallengeTimeout($timeoutSeconds)`: set a timeout between the user passing
   the reCAPTCHA and your server processing it.
 
@@ -127,20 +127,39 @@ if ($resp->isSuccess()) {
 }
 ```
 
-You can find the constants for the libraries error codes in the `ReCaptcha`
-class constants, e.g. `ReCaptcha::E_HOSTNAME_MISMATCH`
+Each `set`\*`()` method also has an immutable `with`\*`()` counterpart
+(`withExpectedHostname()`, `withExpectedApkPackageName()`,
+`withExpectedAction()`, `withScoreThreshold()`, `withChallengeTimeout()`) that
+returns a cloned `ReCaptcha` instance rather than mutating the existing instance
+in place. Use `with`\*`()` when sharing a base `ReCaptcha` instance in a
+dependency injection container or persistent worker runtime:
+
+```php
+<?php
+$baseRecaptcha = (new \ReCaptcha\ReCaptcha($secret))
+    ->withExpectedHostname('recaptcha-demo.appspot.com')
+    ->withChallengeTimeout(120);
+
+$resp = $baseRecaptcha
+    ->withExpectedAction('homepage')
+    ->withScoreThreshold(0.5)
+    ->verify($gRecaptchaResponse, $remoteIp);
+```
+
+You can find the constants for the library's error codes in the `ReCaptcha`
+class constants, e.g. `ReCaptcha::E_HOSTNAME_MISMATCH`.
 
 ### Alternate request methods
 
 > [!NOTE]
 > As of version 1.4.2, the default behavior has changed.
 
-By default, the library will attempt to use [cURL](https://secure.php.net/curl) to make the
+By default, the library will attempt to use [cURL](https://www.php.net/curl) to make the
 POST request to the reCAPTCHA service. This is handled by the
 [`RequestMethod\CurlPost`](./src/ReCaptcha/RequestMethod/CurlPost.php) class.
 If cURL is not available, it will fall back to using
-[`stream_context_create()`](https://secure.php.net/stream_context_create) and
-[`file_get_contents()`](https://secure.php.net/file_get_contents) via the
+[`stream_context_create()`](https://www.php.net/stream_context_create) and
+[`file_get_contents()`](https://www.php.net/file_get_contents) via the
 [`RequestMethod\Post`](./src/ReCaptcha/RequestMethod/Post.php) class.
 
 To keep the previous behavior of always using `file_get_contents()` regardless of cURL's availability, you can explicitly configure it:
@@ -153,7 +172,7 @@ $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\Post
 You may need to use other methods for making requests in your environment. The
 [`ReCaptcha`](./src/ReCaptcha/ReCaptcha.php) class allows an optional
 [`RequestMethod`](./src/ReCaptcha/RequestMethod.php) instance to configure this.
-For example, if you want to force the use of [cURL](https://secure.php.net/curl) you
+For example, if you want to force the use of [cURL](https://www.php.net/curl) you
 can do this:
 
 ```php
@@ -161,11 +180,23 @@ can do this:
 $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\CurlPost());
 ```
 
-Alternatively, you can also use a [socket](https://secure.php.net/fsockopen):
+Alternatively, you can also use a [socket](https://www.php.net/fsockopen):
 
 ```php
 <?php
 $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\SocketPost());
+```
+
+Each `RequestMethod` implementation also accepts an optional custom verify URL
+(such as `ReCaptcha::SITE_VERIFY_URL_ALTERNATIVE` when `www.google.com` is not
+accessible) and an optional timeout in seconds (default `60`):
+
+```php
+<?php
+$recaptcha = new \ReCaptcha\ReCaptcha(
+    $secret,
+    new \ReCaptcha\RequestMethod\CurlPost(\ReCaptcha\ReCaptcha::SITE_VERIFY_URL_ALTERNATIVE, 10)
+);
 ```
 
 For more details on usage and structure, see [ARCHITECTURE](ARCHITECTURE.md).
@@ -190,7 +221,7 @@ project](https://cloud.google.com/appengine/docs/flexible/php/download).
 ## Contributing
 
 No one ever has enough engineers, so we're very happy to accept contributions
-via Pull Requests. For details, see [CONTRIBUTING](CONTRIBUTING.md)
+via Pull Requests. For details, see [CONTRIBUTING](CONTRIBUTING.md).
 
 To set up your local checkout, install the dependencies:
 
@@ -208,6 +239,8 @@ git add composer.json composer.lock
 Before committing code, make sure it meets the quality and formatting standards:
 
 ```bash
+composer validate --strict
+composer audit
 composer run phpstan
 composer run lint-fix
 ```

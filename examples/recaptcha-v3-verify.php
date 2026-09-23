@@ -55,21 +55,37 @@ if (('' === $siteKey || '' === $secret) && is_readable(__DIR__.'/config.php')) {
 
 // Effectively we're providing an API endpoint here that will accept the token, verify it, and return the action / score to the page
 // In production, always sanitize and validate the input you retrieve from the request, and hardcode (or allowlist) the expected action server-side.
-$recaptcha = new ReCaptcha($secret);
+$baseRecaptcha = new ReCaptcha($secret)
+    ->withExpectedHostname(isset($_SERVER['SERVER_NAME']) && is_string($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '')
+    ->withChallengeTimeout(120)
+;
 
-$allowedActions = ['examples/v3scores', 'examples/csp'];
-$action = isset($_GET['action']) && is_string($_GET['action']) && in_array($_GET['action'], $allowedActions, true)
+$allowedActions = [
+    'examples/v3scores' => 0.5,
+    'examples/csp' => 0.5,
+    'examples/v3immutable' => 0.5,
+    'examples/v3strict' => 0.99,
+];
+$action = isset($_GET['action']) && is_string($_GET['action']) && isset($allowedActions[$_GET['action']])
     ? $_GET['action']
     : 'examples/v3scores';
 
 $token = isset($_GET['token']) && is_string($_GET['token']) ? $_GET['token'] : '';
-$serverName = isset($_SERVER['SERVER_NAME']) && is_string($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
 $remoteAddr = isset($_SERVER['REMOTE_ADDR']) && is_string($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
 
-$resp = $recaptcha->setExpectedHostname($serverName)
-    ->setExpectedAction($action)
-    ->setScoreThreshold(0.5)
-    ->verify($token, $remoteAddr)
+// Derive a strict verifier first to demonstrate that with*() does not mutate $baseRecaptcha
+$strictVerifier = $baseRecaptcha
+    ->withExpectedAction('examples/v3strict')
+    ->withScoreThreshold(0.99)
 ;
+
+$verifier = 'examples/v3strict' === $action
+    ? $strictVerifier
+    : $baseRecaptcha
+        ->withExpectedAction($action)
+        ->withScoreThreshold($allowedActions[$action])
+;
+
+$resp = $verifier->verify($token, $remoteAddr);
 header('Content-type:application/json');
 echo json_encode($resp);

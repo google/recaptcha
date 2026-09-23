@@ -89,15 +89,21 @@ class Post implements RequestMethod
                 'method' => 'POST',
                 'content' => $params->toQueryString(),
                 'timeout' => $this->timeout,
+                'ignore_errors' => true,
             ],
         ];
         $context = stream_context_create($options);
         $response = file_get_contents($this->siteVerifyUrl, false, $context);
 
-        if (is_string($response)) {
-            return $response;
+        if (!is_string($response)) {
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
         }
 
-        return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+        $headers = http_get_last_response_headers();
+        if (is_array($headers) && isset($headers[0]) && 1 !== preg_match('#^HTTP/\d+\.\d+\s+200\b#', $headers[0])) {
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
+        }
+
+        return $response;
     }
 }

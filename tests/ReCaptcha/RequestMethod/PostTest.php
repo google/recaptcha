@@ -56,17 +56,24 @@ class PostTest extends TestCase
      * @var null|callable(array<int, mixed>): mixed
      */
     public static $assert;
+
+    /**
+     * @var null|array<int, string>
+     */
+    public static ?array $responseHeaders = ['HTTP/1.1 200 OK'];
     protected RequestParameters $parameters;
     protected int $runcount = 0;
 
     public function setUp(): void
     {
         $this->parameters = new RequestParameters('secret', 'response', 'remoteip', 'version');
+        self::$responseHeaders = ['HTTP/1.1 200 OK'];
     }
 
     public function tearDown(): void
     {
         self::$assert = null;
+        self::$responseHeaders = ['HTTP/1.1 200 OK'];
     }
 
     public function testHTTPContextOptions(): void
@@ -117,6 +124,15 @@ class PostTest extends TestCase
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
 
+    public function testBadHttpStatusReturnsError(): void
+    {
+        $req = new Post();
+        self::$responseHeaders = ['HTTP/1.1 502 Bad Gateway'];
+        self::$assert = static fn (): string => '<html>Bad Gateway</html>';
+        $response = $req->submit($this->parameters);
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
+    }
+
     public function connectionFailureResponse(): bool
     {
         return false;
@@ -165,6 +181,8 @@ class PostTest extends TestCase
 
         $this->assertArrayHasKey('timeout', $httpOptions);
         $this->assertEquals(60, $httpOptions['timeout']);
+        $this->assertArrayHasKey('ignore_errors', $httpOptions);
+        $this->assertTrue((bool) $httpOptions['ignore_errors']);
 
         $this->assertArrayHasKey('verify_peer', $sslOptions);
         $this->assertTrue((bool) $sslOptions['verify_peer']);
@@ -185,6 +203,14 @@ class PostTest extends TestCase
         $this->assertFalse($args[1]);
         $this->assertTrue(is_resource($args[2]), 'The context options should be a resource');
     }
+}
+
+/**
+ * @return null|array<int, string>
+ */
+function http_get_last_response_headers(): ?array
+{
+    return PostTest::$responseHeaders;
 }
 
 function file_get_contents(string $filename, bool $use_include_path = false, mixed $context = null, int $offset = 0, ?int $length = null): false|string

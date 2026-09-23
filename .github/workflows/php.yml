@@ -85,7 +85,7 @@ jobs:
       run: |
         mkdir bc-check
         cd bc-check
-        composer require --no-interaction roave/backward-compatibility-check
+        composer require --no-interaction "roave/backward-compatibility-check:^8.22"
 
     - name: Check for BC breaks since the last release
       run: bc-check/vendor/bin/roave-backward-compatibility-check --format=github-actions

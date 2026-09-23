@@ -107,7 +107,18 @@ class SocketPost implements RequestMethod
         $request .= "Connection: close\r\n\r\n";
         $request .= $content."\r\n\r\n";
 
-        fwrite($handle, $request);
+        $totalWritten = 0;
+        $requestLength = strlen($request);
+        while ($totalWritten < $requestLength) {
+            $written = fwrite($handle, substr($request, $totalWritten));
+            if (false === $written || 0 === $written) {
+                fclose($handle);
+
+                return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+            }
+            $totalWritten += $written;
+        }
+
         $response = stream_get_contents($handle);
 
         fclose($handle);

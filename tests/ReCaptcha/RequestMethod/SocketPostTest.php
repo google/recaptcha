@@ -55,6 +55,8 @@ class SocketPostGlobalState
     public static string $fsockopenErrstr = '';
     public static bool $fsockopenSuccess = true;
     public static string $fwriteData = '';
+    public static ?int $fwriteChunkSize = null;
+    public static bool $fwriteFails = false;
 
     /**
      * @var array<int, false|string>
@@ -83,8 +85,19 @@ function fsockopen(string $hostname, int $port = -1, int &$errno = 0, string &$e
 /**
  * Mock fwrite in the ReCaptcha\RequestMethod namespace.
  */
-function fwrite(\stdClass $handle, string $string, ?int $length = null): int
+function fwrite(\stdClass $handle, string $string, ?int $length = null): false|int
 {
+    if (SocketPostGlobalState::$fwriteFails) {
+        return false;
+    }
+
+    if (null !== SocketPostGlobalState::$fwriteChunkSize) {
+        $chunk = substr($string, 0, SocketPostGlobalState::$fwriteChunkSize);
+        SocketPostGlobalState::$fwriteData .= $chunk;
+
+        return strlen($chunk);
+    }
+
     SocketPostGlobalState::$fwriteData .= $string;
 
     return strlen($string);
@@ -144,6 +157,8 @@ class SocketPostTest extends TestCase
         SocketPostGlobalState::$fsockopenErrstr = '';
         SocketPostGlobalState::$fsockopenSuccess = true;
         SocketPostGlobalState::$fwriteData = '';
+        SocketPostGlobalState::$fwriteChunkSize = null;
+        SocketPostGlobalState::$fwriteFails = false;
         SocketPostGlobalState::$fgetsResponses = [];
         SocketPostGlobalState::$fcloseCalled = false;
         SocketPostGlobalState::$streamSetTimeoutSuccess = true;
@@ -346,5 +361,34 @@ class SocketPostTest extends TestCase
         $response = $sp->submit(new RequestParameters('secret', 'response'));
 
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
+    }
+
+    public function testPartialSocketWritesCompleteFullRequest(): void
+    {
+        SocketPostGlobalState::$fwriteChunkSize = 16;
+        SocketPostGlobalState::$fgetsResponses = [
+            "HTTP/1.0 200 OK\r\n",
+            "Content-Type: application/json\r\n",
+            "\r\n",
+            'RESPONSEBODY',
+        ];
+
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertStringContainsString('secret=secret&response=response', SocketPostGlobalState::$fwriteData);
+        $this->assertEquals('RESPONSEBODY', $response);
+        $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
+    }
+
+    public function testFwriteFailureClosesHandleAndReturnsError(): void
+    {
+        SocketPostGlobalState::$fwriteFails = true;
+
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
+        $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
     }
 }
