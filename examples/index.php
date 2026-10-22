@@ -34,6 +34,31 @@ declare(strict_types=1);
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+$path = parse_url(\is_string($requestUri) ? $requestUri : '/', PHP_URL_PATH);
+$exampleScripts = [
+    '/recaptcha-content-security-policy.php' => __DIR__.'/recaptcha-content-security-policy.php',
+    '/recaptcha-request-curl.php' => __DIR__.'/recaptcha-request-curl.php',
+    '/recaptcha-request-post.php' => __DIR__.'/recaptcha-request-post.php',
+    '/recaptcha-request-socket.php' => __DIR__.'/recaptcha-request-socket.php',
+    '/recaptcha-v2-checkbox-explicit.php' => __DIR__.'/recaptcha-v2-checkbox-explicit.php',
+    '/recaptcha-v2-checkbox.php' => __DIR__.'/recaptcha-v2-checkbox.php',
+    '/recaptcha-v2-invisible.php' => __DIR__.'/recaptcha-v2-invisible.php',
+    '/recaptcha-v3-immutable.php' => __DIR__.'/recaptcha-v3-immutable.php',
+    '/recaptcha-v3-request-scores.php' => __DIR__.'/recaptcha-v3-request-scores.php',
+    '/recaptcha-v3-verify.php' => __DIR__.'/recaptcha-v3-verify.php',
+];
+if (\is_string($path) && isset($exampleScripts[$path])) {
+    require $exampleScripts[$path];
+
+    return;
+}
+if ('/' !== $path && '/index.php' !== $path) {
+    http_response_code(404);
+    echo '404 Not Found';
+
+    return;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

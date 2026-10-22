@@ -44,11 +44,11 @@ use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestMethod\Post;
 
 // Register API keys at https://www.google.com/recaptcha/admin
-$siteKey = '';
-$secret = '';
+$siteKey = (string) getenv('RECAPTCHA_V2_STANDARD_SITE');
+$secret = (string) getenv('RECAPTCHA_V2_STANDARD_SECRET');
 
 // Copy the config.php.dist file to config.php and update it with your keys to run the examples
-if (is_readable(__DIR__.'/config.php')) {
+if (('' === $siteKey || '' === $secret) && is_readable(__DIR__.'/config.php')) {
     /** @var array{'v2-standard': array{site: string, secret: string}} $config */
     $config = include __DIR__.'/config.php';
     $siteKey = $config['v2-standard']['site'];
