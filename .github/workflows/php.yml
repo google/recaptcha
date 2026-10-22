@@ -97,3 +97,20 @@ jobs:
     - name: Coveralls Finished
       run: |
         curl https://coveralls.io/webhook?repo_token=${{ secrets.GITHUB_TOKEN }} -d "repo_name=$GITHUB_REPOSITORY&payload[build_num]=${{ github.run_id }}&payload[status]=done"
+
+  deploy-demo:
+    name: Deploy demo
+    needs: [build, backward-compatibility]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Trigger Cloud Build deployment
+      env:
+        WEBHOOK_URL: ${{ secrets.CLOUD_BUILD_DEPLOY_WEBHOOK_URL }}
+      run: |
+        if [ -n "$WEBHOOK_URL" ]; then
+          curl --fail --silent --show-error -X POST \
+            -H "Content-Type: application/json" \
+            -d "{\"sha\":\"${{ github.sha }}\"}" \
+            "$WEBHOOK_URL"
+        fi

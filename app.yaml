@@ -1,8 +1,14 @@
-runtime: php
-env: flex
+runtime: php85
+entrypoint: serve examples/index.php
 
-skip_files:
-- tests
+automatic_scaling:
+  max_instances: 5
 
-runtime_config:
-  document_root: examples
+handlers:
+  - url: /examples.css
+    static_files: examples/examples.css
+    upload: examples/examples\.css
+    secure: always
+  - url: /.*
+    script: auto
+    secure: always
