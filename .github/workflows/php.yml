@@ -21,7 +21,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
       with:
         php-version: ${{ matrix.php }}
         extensions: dom, curl, libxml, mbstring, tokenizer, xml, xmlwriter
@@ -73,7 +73,7 @@ jobs:
         fetch-depth: 0
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
       with:
         php-version: '8.4'
 
@@ -85,7 +85,7 @@ jobs:
       run: |
         mkdir bc-check
         cd bc-check
-        composer require --no-interaction "roave/backward-compatibility-check:^8.22"
+        composer require --no-interaction "roave/backward-compatibility-check:^8.23"
 
     - name: Check for BC breaks since the last release
       run: bc-check/vendor/bin/roave-backward-compatibility-check --format=github-actions
