@@ -35,6 +35,11 @@ declare(strict_types=1);
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+$httpHost = $_SERVER['HTTP_HOST'] ?? '';
+$parsedHost = \is_string($httpHost) ? parse_url('http://'.$httpHost, PHP_URL_HOST) : null;
+if (\is_string($parsedHost) && '' !== $parsedHost) {
+    $_SERVER['SERVER_NAME'] = $parsedHost;
+}
 $path = parse_url(\is_string($requestUri) ? $requestUri : '/', PHP_URL_PATH);
 $exampleScripts = [
     '/recaptcha-content-security-policy.php' => __DIR__.'/recaptcha-content-security-policy.php',
