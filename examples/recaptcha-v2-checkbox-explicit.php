@@ -62,7 +62,7 @@ $lang = 'en';
 <meta name="viewport" content="width=device-width,height=device-height,minimum-scale=1">
 <link rel="shortcut icon" href="https://www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
 <link rel="canonical" href="https://recaptcha-demo.appspot.com/recaptcha-v2-checkbox-explicit.php">
-<script type="application/ld+json">{ "@context": "http://schema.org", "@type": "WebSite", "name": "reCAPTCHA demo - \"I'm not a robot\" checkbox - Explicit render", "url": "https://recaptcha-demo.appspot.com/recaptcha-v2-checkbox-explicit.php" }</script>
+<script type="application/ld+json">{ "@context": "https://schema.org", "@type": "WebSite", "name": "reCAPTCHA demo - \"I'm not a robot\" checkbox - Explicit render", "url": "https://recaptcha-demo.appspot.com/recaptcha-v2-checkbox-explicit.php" }</script>
 <meta name="description" content="reCAPTCHA demo - &quot;I'm not a robot&quot; checkbox - Explicit render" />
 <meta property="og:url" content="https://recaptcha-demo.appspot.com/recaptcha-v2-checkbox-explicit.php" />
 <meta property="og:type" content="website" />
@@ -98,14 +98,9 @@ if ('' === $siteKey || '' === $secret) {
     // This makes use of fsockopen() instead.
     //  $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\SocketPost());
     // Make the call to verify the response and also pass the user's IP address
-    /** @var string $serverName */
-    $serverName = $_SERVER['SERVER_NAME'];
-
-    /** @var string $responseKey */
-    $responseKey = $_POST[ReCaptcha::RESPONSE_KEY];
-
-    /** @var null|string $remoteAddr */
-    $remoteAddr = $_SERVER['REMOTE_ADDR'];
+    $serverName = isset($_SERVER['SERVER_NAME']) && is_string($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+    $responseKey = is_string($_POST[ReCaptcha::RESPONSE_KEY]) ? $_POST[ReCaptcha::RESPONSE_KEY] : '';
+    $remoteAddr = isset($_SERVER['REMOTE_ADDR']) && is_string($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
 
     $resp = $recaptcha->setExpectedHostname($serverName)
         ->verify($responseKey, $remoteAddr)
@@ -148,12 +143,12 @@ if ('' === $siteKey || '' === $secret) {
     var onloadCallback = function() {
         var captchaContainer = document.querySelector('.g-recaptcha');
         grecaptcha.render(captchaContainer, {
-          'sitekey' : '<?php echo (string) $siteKey; ?>'
+          'sitekey' : <?php echo json_encode($siteKey, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_THROW_ON_ERROR); ?>
         });
         document.querySelector('button[type="submit"]').disabled = false;
     };
     </script>
-    <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=<?php echo $lang; ?>&onload=onloadCallback&render=explicit" async defer></script>
+    <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=<?php echo htmlspecialchars(rawurlencode($lang), ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?>&amp;onload=onloadCallback&amp;render=explicit" async defer></script>
     <?php
 }?>
 </main>

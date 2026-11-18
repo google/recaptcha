@@ -48,7 +48,7 @@ readonly class RequestParameters
      * Initialise parameters.
      *
      * @param string      $secret   site secret
-     * @param string      $response value from g-captcha-response form field
+     * @param string      $response value from g-recaptcha-response form field
      * @param null|string $remoteIp user's IP address
      * @param null|string $version  version of this client library
      */
@@ -69,11 +69,11 @@ readonly class RequestParameters
     {
         $params = ['secret' => $this->secret, 'response' => $this->response];
 
-        if (!is_null($this->remoteIp)) {
+        if (null !== $this->remoteIp) {
             $params['remoteip'] = $this->remoteIp;
         }
 
-        if (!is_null($this->version)) {
+        if (null !== $this->version) {
             $params['version'] = $this->version;
         }
 

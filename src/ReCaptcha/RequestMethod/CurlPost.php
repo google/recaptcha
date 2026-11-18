@@ -47,7 +47,7 @@ use ReCaptcha\RequestParameters;
  * Sends cURL request to the reCAPTCHA service.
  * Note: this requires the cURL extension to be enabled in PHP.
  *
- * @see http://php.net/manual/en/book.curl.php
+ * @see https://www.php.net/manual/en/book.curl.php
  */
 class CurlPost implements RequestMethod
 {
@@ -74,8 +74,16 @@ class CurlPost implements RequestMethod
      */
     public function __construct(?string $siteVerifyUrl = null, int $timeout = 60)
     {
-        $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
+        $this->siteVerifyUrl = $siteVerifyUrl ?? ReCaptcha::SITE_VERIFY_URL;
         $this->timeout = $timeout;
+    }
+
+    /**
+     * Reset the lazy cURL handle on clone so cloned instances do not share a handle.
+     */
+    public function __clone(): void
+    {
+        $this->handle = null;
     }
 
     /**
@@ -87,6 +95,10 @@ class CurlPost implements RequestMethod
      */
     public function submit(RequestParameters $params): string
     {
+        if ($this->timeout < 0) {
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+        }
+
         if (null === $this->handle) {
             $handle = curl_init($this->siteVerifyUrl);
             if (false === $handle) {
@@ -105,6 +117,7 @@ class CurlPost implements RequestMethod
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_CONNECTTIMEOUT => $this->timeout,
             CURLOPT_TIMEOUT => $this->timeout,
         ];

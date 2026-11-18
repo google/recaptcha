@@ -133,6 +133,35 @@ class PostTest extends TestCase
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
     }
 
+    public function testRedirectHeadersEndingIn200ReturnsResponse(): void
+    {
+        $req = new Post();
+        self::$responseHeaders = [
+            'HTTP/1.1 302 Found',
+            'Location: https://www.google.com/recaptcha/api/siteverify',
+            'HTTP/1.1 200 OK',
+        ];
+        self::$assert = static fn (): string => 'RESPONSEBODY';
+        $response = $req->submit($this->parameters);
+        $this->assertSame('RESPONSEBODY', $response);
+    }
+
+    public function testMissingResponseHeadersAllowsStreamWrapperResponse(): void
+    {
+        $req = new Post();
+        self::$responseHeaders = null;
+        self::$assert = static fn (): string => 'RESPONSEBODY';
+        $response = $req->submit($this->parameters);
+        $this->assertSame('RESPONSEBODY', $response);
+    }
+
+    public function testNegativeTimeoutReturnsError(): void
+    {
+        $req = new Post(null, -1);
+        $response = $req->submit($this->parameters);
+        $this->assertSame('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
+    }
+
     public function connectionFailureResponse(): bool
     {
         return false;

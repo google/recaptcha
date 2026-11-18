@@ -40,6 +40,7 @@ declare(strict_types=1);
 // not install via Composer.
 require_once __DIR__.'/../src/autoload.php';
 use ReCaptcha\ReCaptcha;
+use ReCaptcha\Response;
 
 // Register API keys at https://www.google.com/recaptcha/admin
 $siteKey = (string) getenv('RECAPTCHA_V3_SITE');
@@ -51,6 +52,13 @@ if (('' === $siteKey || '' === $secret) && is_readable(__DIR__.'/config.php')) {
     $config = include __DIR__.'/config.php';
     $siteKey = $config['v3']['site'];
     $secret = $config['v3']['secret'];
+}
+
+if ('' === trim($siteKey) || '' === trim($secret)) {
+    header('Content-Type: application/json');
+    echo json_encode(new Response(false, ['missing-input-secret']));
+
+    return;
 }
 
 // Effectively we're providing an API endpoint here that will accept the token, verify it, and return the action / score to the page

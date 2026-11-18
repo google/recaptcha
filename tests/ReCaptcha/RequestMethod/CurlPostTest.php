@@ -129,6 +129,8 @@ class CurlPostTest extends TestCase
         /** @var array<int, mixed> $options */
         $options = CurlPostGlobalState::$setoptArrayOptions;
         $this->assertTrue($options[CURLOPT_POST]);
+        $this->assertTrue($options[CURLOPT_SSL_VERIFYPEER]);
+        $this->assertSame(2, $options[CURLOPT_SSL_VERIFYHOST]);
         $this->assertSame(60, $options[CURLOPT_CONNECTTIMEOUT]);
         $this->assertSame(60, $options[CURLOPT_TIMEOUT]);
         $this->assertEquals('RESPONSEBODY', $response);
@@ -140,6 +142,25 @@ class CurlPostTest extends TestCase
         $this->assertSame('RESPONSEBODY', $pc->submit(new RequestParameters('secret', 'response1')));
         $this->assertSame('RESPONSEBODY', $pc->submit(new RequestParameters('secret', 'response2')));
         $this->assertSame(1, CurlPostGlobalState::$initCount);
+    }
+
+    public function testCloneResetsHandle(): void
+    {
+        $pc = new CurlPost();
+        $this->assertSame('RESPONSEBODY', $pc->submit(new RequestParameters('secret', 'response1')));
+
+        $cloned = clone $pc;
+        $this->assertSame('RESPONSEBODY', $cloned->submit(new RequestParameters('secret', 'response2')));
+        $this->assertSame(2, CurlPostGlobalState::$initCount);
+    }
+
+    public function testNegativeTimeoutReturnsError(): void
+    {
+        $pc = new CurlPost(null, -1);
+        $response = $pc->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertSame('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
+        $this->assertSame(0, CurlPostGlobalState::$initCount);
     }
 
     public function testCustomTimeout(): void

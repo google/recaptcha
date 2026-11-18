@@ -62,7 +62,7 @@ $lang = 'en';
 <meta name="viewport" content="width=device-width,height=device-height,minimum-scale=1">
 <link rel="shortcut icon" href="https://www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
 <link rel="canonical" href="https://recaptcha-demo.appspot.com/recaptcha-v2-invisible.php">
-<script type="application/ld+json">{ "@context": "http://schema.org", "@type": "WebSite", "name": "reCAPTCHA demo - Invisible", "url": "https://recaptcha-demo.appspot.com/recaptcha-v2-invisible.php" }</script>
+<script type="application/ld+json">{ "@context": "https://schema.org", "@type": "WebSite", "name": "reCAPTCHA demo - Invisible", "url": "https://recaptcha-demo.appspot.com/recaptcha-v2-invisible.php" }</script>
 <meta name="description" content="reCAPTCHA demo - Invisible" />
 <meta property="og:url" content="https://recaptcha-demo.appspot.com/recaptcha-v2-invisible.php" />
 <meta property="og:type" content="website" />
@@ -99,14 +99,9 @@ if ('' === $siteKey || '' === $secret) {
     //  $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\SocketPost());
 
     // Make the call to verify the response and also pass the user's IP address
-    /** @var string $serverName */
-    $serverName = $_SERVER['SERVER_NAME'];
-
-    /** @var string $responseKey */
-    $responseKey = $_POST[ReCaptcha::RESPONSE_KEY];
-
-    /** @var null|string $remoteAddr */
-    $remoteAddr = $_SERVER['REMOTE_ADDR'];
+    $serverName = isset($_SERVER['SERVER_NAME']) && is_string($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+    $responseKey = is_string($_POST[ReCaptcha::RESPONSE_KEY]) ? $_POST[ReCaptcha::RESPONSE_KEY] : '';
+    $remoteAddr = isset($_SERVER['REMOTE_ADDR']) && is_string($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
 
     $resp = $recaptcha->setExpectedHostname($serverName)
         ->verify($responseKey, $remoteAddr)
@@ -138,10 +133,10 @@ if ('' === $siteKey || '' === $secret) {
             <legend>An example form</legend>
             <label class="form-field">Example input A: <input type="text" name="ex-a" value="foo"></label>
             <label class="form-field">Example input B: <input type="text" name="ex-b" value="bar"></label>
-            <button class="g-recaptcha form-field" data-sitekey="<?php echo (string) $siteKey; ?>" data-callback='onSubmit'>Submit <span aria-hidden="true">↦</span></button>
+            <button class="g-recaptcha form-field" data-sitekey="<?php echo htmlspecialchars($siteKey, ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?>" data-callback='onSubmit'>Submit <span aria-hidden="true">↦</span></button>
         </fieldset>
     </form>
-    <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=<?php echo $lang; ?>" async defer></script>
+    <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=<?php echo htmlspecialchars(rawurlencode($lang), ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?>" async defer></script>
     <script type="text/javascript">
         function onSubmit(token) {
             document.getElementById("demo-form").submit();

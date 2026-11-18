@@ -322,6 +322,25 @@ class ReCaptchaTest extends TestCase
         $this->assertTrue($responseWithZeroScore->isSuccess());
     }
 
+    public function testVerifyNanThresholdFails(): void
+    {
+        $method = $this->getMockRequestMethod('{"success": true, "score": 0.9}');
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->setScoreThreshold(NAN)->verify('response');
+        $this->assertFalse($response->isSuccess());
+        $this->assertSame([ReCaptcha::E_SCORE_THRESHOLD_NOT_MET], $response->getErrorCodes());
+    }
+
+    public function testVerifyNegativeChallengeTimeoutFails(): void
+    {
+        $challengeTs = date('Y-m-d\TH:i:s\Z', time());
+        $method = $this->getMockRequestMethod('{"success": true, "challenge_ts": "'.$challengeTs.'"}');
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->setChallengeTimeout(-1)->verify('response');
+        $this->assertFalse($response->isSuccess());
+        $this->assertSame([ReCaptcha::E_CHALLENGE_TIMEOUT], $response->getErrorCodes());
+    }
+
     public function testImmutableWithMethodsDoNotMutateOriginalInstance(): void
     {
         $method = $this->getMockRequestMethod('{"success": true, "hostname": "other.host", "apk_package_name": "other.apk", "action": "other/action", "score": 0.2}');
