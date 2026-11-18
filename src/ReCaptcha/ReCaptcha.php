@@ -148,7 +148,7 @@ class ReCaptcha
     private string $secret;
 
     /**
-     * Method used to communicate with service. Defaults to POST request.
+     * Method used to communicate with service. Defaults to CurlPost when cURL is available, otherwise Post.
      */
     private RequestMethod $requestMethod;
 
@@ -161,8 +161,8 @@ class ReCaptcha
     /**
      * Create a configured instance to use the reCAPTCHA service.
      *
-     * @param string        $secret        the shared key between your site and reCAPTCHA
-     * @param RequestMethod $requestMethod method used to send the request. Defaults to POST.
+     * @param string             $secret        the shared key between your site and reCAPTCHA
+     * @param null|RequestMethod $requestMethod method used to send the request. Defaults to CurlPost (or Post if cURL is unavailable).
      *
      * @throws \RuntimeException if $secret is invalid
      */
@@ -216,14 +216,15 @@ class ReCaptcha
             $validationErrors[] = self::E_ACTION_MISMATCH;
         }
 
-        if (null !== $this->threshold && (null === $initialResponse->getScore() || $this->threshold > $initialResponse->getScore())) {
+        $score = $initialResponse->getScore();
+        if (null !== $this->threshold && (is_nan($this->threshold) || null === $score || $this->threshold > $score)) {
             $validationErrors[] = self::E_SCORE_THRESHOLD_NOT_MET;
         }
 
         if (null !== $this->timeoutSeconds) {
             $challengeTs = strtotime($initialResponse->getChallengeTs());
 
-            if (false === $challengeTs || $challengeTs <= 0 || time() - $challengeTs > $this->timeoutSeconds) {
+            if (false === $challengeTs || $challengeTs <= 0 || $this->timeoutSeconds < 0 || time() - $challengeTs > $this->timeoutSeconds) {
                 $validationErrors[] = self::E_CHALLENGE_TIMEOUT;
             }
         }

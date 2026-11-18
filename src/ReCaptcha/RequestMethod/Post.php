@@ -66,7 +66,7 @@ class Post implements RequestMethod
      */
     public function __construct(?string $siteVerifyUrl = null, int $timeout = 60)
     {
-        $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
+        $this->siteVerifyUrl = $siteVerifyUrl ?? ReCaptcha::SITE_VERIFY_URL;
         $this->timeout = $timeout;
     }
 
@@ -79,6 +79,10 @@ class Post implements RequestMethod
      */
     public function submit(RequestParameters $params): string
     {
+        if ($this->timeout < 0) {
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+        }
+
         $options = [
             'ssl' => [
                 'verify_peer' => true,
@@ -100,7 +104,16 @@ class Post implements RequestMethod
         }
 
         $headers = http_get_last_response_headers();
-        if (is_array($headers) && isset($headers[0]) && 1 !== preg_match('#^HTTP/\d+\.\d+\s+200\b#', $headers[0])) {
+        $statusLine = null;
+        if (is_array($headers)) {
+            foreach ($headers as $header) {
+                if (str_starts_with($header, 'HTTP/')) {
+                    $statusLine = $header;
+                }
+            }
+        }
+
+        if (null !== $statusLine && 1 !== preg_match('#^HTTP/\d+\.\d+\s+200\b#', $statusLine)) {
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}';
         }
 

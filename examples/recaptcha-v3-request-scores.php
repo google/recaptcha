@@ -61,7 +61,7 @@ $pageAction = 'examples/v3scores';
 <meta name="viewport" content="width=device-width,height=device-height,minimum-scale=1">
 <link rel="shortcut icon" href="https://www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
 <link rel="canonical" href="https://recaptcha-demo.appspot.com/recaptcha-v3-request-scores.php">
-<script type="application/ld+json">{ "@context": "http://schema.org", "@type": "WebSite", "name": "reCAPTCHA demo - Request scores", "url": "https://recaptcha-demo.appspot.com/recaptcha-v3-request-scores.php" }</script>
+<script type="application/ld+json">{ "@context": "https://schema.org", "@type": "WebSite", "name": "reCAPTCHA demo - Request scores", "url": "https://recaptcha-demo.appspot.com/recaptcha-v3-request-scores.php" }</script>
 <meta name="description" content="reCAPTCHA demo - Request scores" />
 <meta property="og:url" content="https://recaptcha-demo.appspot.com/recaptcha-v3-request-scores.php" />
 <meta property="og:type" content="website" />
@@ -87,22 +87,24 @@ if ('' === $siteKey || '' === $secret) {
     <p><strong>NOTE:</strong>This is a sample implementation, the score returned here is not a reflection on your Google account or type of traffic. In production, refer to the distribution of scores shown in <a href="https://www.google.com/recaptcha/admin" target="_blank">your admin interface</a> and adjust your own threshold accordingly. <strong>Do not raise issues regarding the score you see here.</strong></p>
     <ol id="recaptcha-steps">
         <li class="step0">reCAPTCHA script loading</li>
-        <li class="step1 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo (string) $siteKey; ?>', {action: '<?php echo $pageAction; ?>'})'</pre></li>
+        <li class="step1 hidden"><kbd>grecaptcha.ready()</kbd> fired, calling <pre>grecaptcha.execute('<?php echo htmlspecialchars($siteKey, ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?>', {action: '<?php echo htmlspecialchars($pageAction, ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?>'})</pre></li>
         <li class="step2 hidden">Received token from reCAPTCHA service, sending to our backend with:
-        <pre class="token">fetch('/recaptcha-v3-verify.php?token=abc123</pre></li>
+        <pre class="token">fetch('/recaptcha-v3-verify.php?token=abc123')</pre></li>
         <li class="step3 hidden">Received response from our backend: <pre class="response">{"json": "from-backend"}</pre></li>
     </ol>
     <p><a href="/recaptcha-v3-request-scores.php"><span aria-hidden="true">⤴️</span> Try again</a></p>
-    <script src="https://www.google.com/recaptcha/api.js?render=<?php echo (string) $siteKey; ?>"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=<?php echo htmlspecialchars(rawurlencode($siteKey), ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?>"></script>
     <script>
         const steps = document.getElementById('recaptcha-steps');
+        const siteKey = <?php echo json_encode($siteKey, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_THROW_ON_ERROR); ?>;
+        const pageAction = <?php echo json_encode($pageAction, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_THROW_ON_ERROR); ?>;
         grecaptcha.ready(function() {
             document.querySelector('.step1').classList.remove('hidden');
-            grecaptcha.execute('<?php echo (string) $siteKey; ?>', {action: '<?php echo $pageAction; ?>'}).then(function(token) {
-                document.querySelector('.token').textContent = 'fetch(\'/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token=' + encodeURIComponent(token) + '\')';
+            grecaptcha.execute(siteKey, {action: pageAction}).then(function(token) {
+                document.querySelector('.token').textContent = 'fetch(\'/recaptcha-v3-verify.php?action=' + encodeURIComponent(pageAction) + '&token=' + encodeURIComponent(token) + '\')';
                 document.querySelector('.step2').classList.remove('hidden');
 
-                fetch('/recaptcha-v3-verify.php?action=<?php echo $pageAction; ?>&token=' + encodeURIComponent(token)).then(function(response) {
+                fetch('/recaptcha-v3-verify.php?action=' + encodeURIComponent(pageAction) + '&token=' + encodeURIComponent(token)).then(function(response) {
                     response.json().then(function(data) {
                         document.querySelector('.response').textContent = JSON.stringify(data, null, 2);
                         document.querySelector('.step3').classList.remove('hidden');

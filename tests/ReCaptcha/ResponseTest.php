@@ -127,6 +127,10 @@ class ResponseTest extends TestCase
                 '{"success": false, "error-codes": ["valid-error", 123, null]}',
                 false, ['valid-error'], null, null, null, null, null,
             ],
+            [
+                '{"success": true, "score": "1e999"}',
+                true, [], null, null, null, null, null,
+            ],
         ];
     }
 

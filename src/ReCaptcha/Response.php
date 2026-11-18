@@ -70,7 +70,7 @@ readonly class Response implements \JsonSerializable
      */
     public static function fromJson(string $json): Response
     {
-        $responseData = json_decode($json, true);
+        $responseData = json_decode($json, true, 16);
 
         if (!is_array($responseData)) {
             return new Response(false, [ReCaptcha::E_INVALID_JSON]);
@@ -79,7 +79,8 @@ readonly class Response implements \JsonSerializable
         $hostname = isset($responseData['hostname']) && is_string($responseData['hostname']) ? $responseData['hostname'] : '';
         $challengeTs = isset($responseData['challenge_ts']) && is_string($responseData['challenge_ts']) ? $responseData['challenge_ts'] : '';
         $apkPackageName = isset($responseData['apk_package_name']) && is_string($responseData['apk_package_name']) ? $responseData['apk_package_name'] : '';
-        $score = isset($responseData['score']) && is_numeric($responseData['score']) ? floatval($responseData['score']) : null;
+        $rawScore = isset($responseData['score']) && is_numeric($responseData['score']) ? (float) $responseData['score'] : null;
+        $score = null !== $rawScore && is_finite($rawScore) ? $rawScore : null;
         $action = isset($responseData['action']) && is_string($responseData['action']) ? $responseData['action'] : '';
 
         if (isset($responseData['success']) && true === $responseData['success']) {

@@ -213,10 +213,10 @@ composer run-script serve-examples
 This makes use of the in-built PHP dev server to host the examples at
 http://localhost:8080/
 
-These are also hosted on Google AppEngine Flexible environment at
+These are also hosted on Google App Engine Standard environment at
 https://recaptcha-demo.appspot.com/. This is configured by
-[`app.yaml`](./app.yaml) which you can also use to [deploy to your own AppEngine
-project](https://cloud.google.com/appengine/docs/flexible/php/download).
+[`app.yaml`](./app.yaml) which you can also use to [deploy to your own App Engine
+project](https://cloud.google.com/appengine/docs/standard/php-gen2/runtime).
 
 ## Contributing
 

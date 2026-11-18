@@ -71,7 +71,7 @@ if ('/' !== $path && '/index.php' !== $path) {
 <meta name="viewport" content="width=device-width,height=device-height,minimum-scale=1">
 <link rel="shortcut icon" href="https://www.gstatic.com/recaptcha/admin/favicon.ico" type="image/x-icon"/>
 <link rel="canonical" href="https://recaptcha-demo.appspot.com/">
-<script type="application/ld+json">{ "@context": "http://schema.org", "@type": "WebSite", "name": "reCAPTCHA demo", "url": "http://recaptcha-demo.appspot.com/" }</script>
+<script type="application/ld+json">{ "@context": "https://schema.org", "@type": "WebSite", "name": "reCAPTCHA demo", "url": "https://recaptcha-demo.appspot.com/" }</script>
 <meta name="description" content="reCAPTCHA demo" />
 <meta property="og:url" content="https://recaptcha-demo.appspot.com/" />
 <meta property="og:type" content="website" />
