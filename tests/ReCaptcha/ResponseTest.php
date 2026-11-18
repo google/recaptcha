@@ -153,6 +153,16 @@ class ResponseTest extends TestCase
         $this->assertEquals($errorCodes, $response->getErrorCodes());
     }
 
+    public function testHasErrorCode(): void
+    {
+        $response = new Response(false, [ReCaptcha::E_HOSTNAME_MISMATCH]);
+        $this->assertTrue($response->hasErrorCode(ReCaptcha::E_HOSTNAME_MISMATCH));
+        $this->assertFalse($response->hasErrorCode(ReCaptcha::E_ACTION_MISMATCH));
+
+        $emptyResponse = new Response(true);
+        $this->assertFalse($emptyResponse->hasErrorCode(ReCaptcha::E_HOSTNAME_MISMATCH));
+    }
+
     public function testGetHostname(): void
     {
         $hostname = 'google.com';
