@@ -21,11 +21,11 @@ This file provides authoritative context, architectural invariants, branching po
 ### Active Branch
 | Branch | Series | PHP Constraint | Type System & Mutability Contract |
 | :--- | :--- | :--- | :--- |
-| **`main`** | **`2.x`** (`2.1.x-dev`) | `>=8.4` | `declare(strict_types=1)` in all files, strict scalar/return type hints, `readonly` properties on `RequestParameters` and `Response`. |
+| **`main`** | **`2.x`** (`2.2.x-dev`) | `>=8.4` | `declare(strict_types=1)` in all files, strict scalar/return type hints, `readonly` properties on `RequestParameters` and `Response`. |
 
 ### Backward Compatibility Enforcement (`roave/backward-compatibility-check`)
 - Every push and pull request on `main` runs `roave/backward-compatibility-check` against the latest tagged release in `.github/workflows/php.yml`.
-- **Allowed changes in minor/patch releases (`2.1.x`, `2.x.0`)**:
+- **Allowed changes in minor/patch releases (`2.2.x`, `2.x.0`)**:
   - Updating the value of `ReCaptcha\ReCaptcha::VERSION` (explicitly allowlisted in [`.roave-backward-compatibility-check.xml`](.roave-backward-compatibility-check.xml)).
   - Internal implementation improvements that do not alter class hierarchies, public/protected method signatures, parameter types, return types, property types/visibility, or constant values.
   - Adding new optional parameters with default values or new public methods/constants (minor release `2.x.0`).
