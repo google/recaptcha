@@ -115,6 +115,14 @@ readonly class Response implements \JsonSerializable
     }
 
     /**
+     * Check whether the response contains the given error code.
+     */
+    public function hasErrorCode(string $errorCode): bool
+    {
+        return in_array($errorCode, $this->errorCodes, true);
+    }
+
+    /**
      * Get hostname.
      */
     public function getHostname(): string

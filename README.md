@@ -147,7 +147,8 @@ $resp = $baseRecaptcha
 ```
 
 You can find the constants for the library's error codes in the `ReCaptcha`
-class constants, e.g. `ReCaptcha::E_HOSTNAME_MISMATCH`.
+class constants, e.g. `ReCaptcha::E_HOSTNAME_MISMATCH`, and check for a specific
+error code via `$resp->hasErrorCode(\ReCaptcha\ReCaptcha::E_HOSTNAME_MISMATCH)`.
 
 ### Alternate request methods
 
